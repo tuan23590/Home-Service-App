@@ -25,5 +25,6 @@ Hướng dẫn cài đặt vào chạy dự án:
     ```
 
     Sau khi chạy lệnh trên, ứng dụng sẽ được khởi chạy và sẵn sàng để sử dụng.
+   
     Nhấn "a" để mở app android
     Nhấn "W" để mở web
