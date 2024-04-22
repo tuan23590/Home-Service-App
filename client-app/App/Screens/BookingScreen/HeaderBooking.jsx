@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons';
 
 
-export default function HeaderBooking() {
+export default function HeaderBooking({hideModal}) {
   const param = useRoute().params;
   const navigation = useNavigation();
   useEffect(() => {
@@ -14,10 +14,10 @@ export default function HeaderBooking() {
     <View style={{padding: 20}}> 
      <TouchableOpacity style={{display:'flex',flexDirection:'row',gap: 10,
     alignItems: 'center'}}
-    onPress={()=>navigation.goBack()}
+    onPress={()=>hideModal()}
     >
      <Ionicons name="chevron-back-sharp" size={24} color="black" />
-      <Text style={{fontSize:17}}>{param?.category?.name}</Text>
+      <Text style={{fontSize:17}}>Tạo đơn</Text>
      </TouchableOpacity>
     </View>
   )

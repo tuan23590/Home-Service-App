@@ -2,7 +2,7 @@ import { View, Text, FlatList, Image, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Heading from '../../Compunents/Heading'
 import GlobalAPI from '../../Utils/GlobalAPI';
-export default function Discover() {
+export default function KhamPha() {
  const [discovers, setDiscovers] = useState([]);
   useEffect(() => {  
     getDiscovers();

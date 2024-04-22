@@ -1,12 +1,15 @@
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import GlobalApi from '../../Utils/GlobalAPI'
 import Colors from '../../Utils/Colors'
 import { Shadow } from 'react-native-shadow-2'
 import Heading from '../../Compunents/Heading'
 import { useNavigation } from '@react-navigation/native'
-export default function Categories() {
-    const [categories, setCategories] = useState([])
+import BookingSingle from './../BookingScreen/BookingSingle';
+export default function DoanhMuc() {
+    const [categories, setCategories] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+
     const navigation = useNavigation();
 
     useEffect(() => {getCategories()}, [])
@@ -23,10 +26,11 @@ export default function Categories() {
       numColumns={4}
       renderItem={({item, index}) => index<=3&&(
         <TouchableOpacity style={styles.container} 
-        onPress={() => navigation.push(item.type, {category: item,index: index})}
+        // onPress={() => navigation.push(item.type, {category: item,index: index})}
+        onPress={() => setModalVisible(true)}
         >
           <View style={styles.iconContainer}>
-          <Shadow distance={5} startColor={'#a475ba'} endColor={'#ff00ff10'} offset={[2, 3]}>
+          <Shadow distance={5} startColor={Colors.ORANGE} endColor={Colors.WHITE} offset={[2, 3]}>
           <Image source={{ uri: item?.icon?.url }} 
           style={styles.icon}/>
           </Shadow>
@@ -35,6 +39,12 @@ export default function Categories() {
         </TouchableOpacity>
       )}
       />
+      <Modal
+      animationType='slide'
+      visible={modalVisible}
+      >
+        <BookingSingle hideModal={()=>setModalVisible(false)}/>
+      </Modal>
     </View>
   )
 }

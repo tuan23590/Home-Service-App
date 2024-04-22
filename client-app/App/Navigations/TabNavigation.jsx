@@ -9,16 +9,16 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import NotifyScreen from './../Screens/NotifyScreen/NotifyScreen';
 import PromotionScreen from './../Screens/PromotionScreen/PromotionScreen';
 import ActivateScreen from './../Screens/ActivateScreen/ActivateScreen';
-import HomeNavigation from './HomeNavigation';
+import TrangChu from '../Screens/TrangChu/TrangChu.jsx';
 
 const Tab = createBottomTabNavigator();
 export default function TabNavigation() {
   return (
     <Tab.Navigator screenOptions={{
       headerShown: false,
-      tabBarActiveTintColor: Colors.PRIMARY,
+      tabBarActiveTintColor: Colors.ORANGE,
     }}>
-      <Tab.Screen name="Main" component={HomeNavigation}
+    <Tab.Screen name="Tab-TrangChu" component={TrangChu}
       options={{
         tabBarLabel: ({color})=>(
           <Text style={{color:color,fontSize: 12,marginTop:-7}}>Trang chủ</Text>
@@ -29,7 +29,7 @@ export default function TabNavigation() {
       }}
       />
 
-    <Tab.Screen name="Activate" component={ActivateScreen}
+    <Tab.Screen name="HoatDong" component={ActivateScreen}
       options={{
         tabBarLabel: ({color})=>(
           <Text style={{color:color,fontSize: 12,marginTop:-7}}>Hoạt động</Text>
@@ -40,7 +40,7 @@ export default function TabNavigation() {
       }} />
 
 
-    <Tab.Screen name="Promotion" component={PromotionScreen}
+    <Tab.Screen name="KhuyenMai" component={PromotionScreen}
       options={{
         tabBarLabel: ({color})=>(
           <Text style={{color:color,fontSize: 12,marginTop:-7}}>Khuyến mãi</Text>
@@ -49,7 +49,7 @@ export default function TabNavigation() {
           <AntDesign name="gift" size={size} color={color} />
         )
       }} />
-      <Tab.Screen name="Notify" component={NotifyScreen}
+      <Tab.Screen name="ThongBao" component={NotifyScreen}
       options={{
         tabBarLabel: ({color})=>(
           <Text style={{color:color,fontSize: 12,marginTop:-7}}>Thông báo</Text>
@@ -58,7 +58,7 @@ export default function TabNavigation() {
           <Ionicons name="notifications-outline" size={size} color={color} />
         )
       }} />
-      <Tab.Screen name="Profile" component={ProfileScreen}
+      <Tab.Screen name="TaiKhoan" component={ProfileScreen}
       options={{
         tabBarLabel: ({color})=>(
           <Text style={{color:color,fontSize: 12,marginTop:-7}}>Tài khoản</Text>
