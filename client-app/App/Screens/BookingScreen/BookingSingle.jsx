@@ -23,7 +23,7 @@ export default function BookingSingle({hideModal}) {
     </View>
     <View style={{marginHorizontal:20}}>
       <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
-      <BookingTime onTimeSelect={setSelected} />
+      <BookingTime onTimeSelect={setSelected}/>
       <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
       <BookingService />
       <Heading text={"Tùy chọn"}/>

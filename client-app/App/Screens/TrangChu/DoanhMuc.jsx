@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native'
 import BookingSingle from './../BookingScreen/BookingSingle';
 export default function DoanhMuc() {
     const [categories, setCategories] = useState([]);
+    
     const [modalVisible, setModalVisible] = useState(false);
 
     const navigation = useNavigation();

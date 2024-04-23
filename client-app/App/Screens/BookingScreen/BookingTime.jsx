@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect } from 'react'
 import Colors from './../../Utils/Colors'
 
-export default function BookingTime({ onTimeSelect }) {
+export default function BookingTime({ onTimeSelect}) {
   const [selected, setSelected] = React.useState();
   useEffect(() => {
     setSelected("2 giờ");
