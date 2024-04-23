@@ -2,7 +2,8 @@ import { Outlet, createBrowserRouter } from "react-router-dom";
 import Login from "../../pages/Login";
 import Home from "../../pages/Home";
 import Test from "../../pages/Test";
-
+import { DonHangLoader } from "../../utils/DonHangUtils";
+import Detal from "../../pages/Detal";
 const AuthLayout = ()=>{
    return <Outlet />
 }
@@ -22,28 +23,17 @@ export default createBrowserRouter([
     {
         element: <Test/>,
         path: '/test',
-        loader: async ()=>{
-            const query = `query MyQuery {
-                categories {
-                  name
-                  id
-                  type
-                }
-              }
-              `;
-            const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    query
-                })
-            });
-            const data = await res.json();
-            return data;
-        }
-    }]
+        loader: DonHangLoader,
+        children:[
+            {
+                element: <Detal />,
+                path: `DonHang/:maDonHang`
+            }
+        ]
+    },
+    {
+        
+    }
+]
 }
 ])
