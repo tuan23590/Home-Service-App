@@ -43,6 +43,7 @@ export default function DoanhMuc() {
       <Modal
       animationType='slide'
       visible={modalVisible}
+      style={{top: -20}}
       >
         <BookingSingle hideModal={()=>setModalVisible(false)}/>
       </Modal>

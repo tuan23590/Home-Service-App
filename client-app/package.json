@@ -27,7 +27,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-shadow-2": "^7.0.8",
     "react-native-virtualized-view": "^1.0.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "react-native-maps": "1.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

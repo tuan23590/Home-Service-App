@@ -53,9 +53,35 @@ const getDiscovers=async()=>{
   const result = await request(MASTER_URL, query)
   return result;
 }
+const getDichVus=async()=>{ 
+  const query = gql`
+  query getDichVus {
+    dichVus {
+      id
+      tenDichVu
+      thoiGian
+      giaTien
+      bieuTuong {
+        chon {
+          url
+        }
+        thuong {
+          url
+        }
+      }
+    }
+  }         
+  `
+  const result = await request(MASTER_URL, query)
+  return result;
+}
+
 
 export default {
     getSlider,
     getCategory,
-    getDiscovers
+    getDiscovers,
+    getDichVus
 };
+
+
