@@ -12,7 +12,7 @@ export default function BookingSingle({hideModal}) {
   const [selected, setSelected] = useState();
   return (
     <View>
-       <View style={{padding: 20}}> 
+       <View style={{padding: 20, marginTop: 20}}> 
      <TouchableOpacity style={{display:'flex',flexDirection:'row',gap: 10,
     alignItems: 'center'}}
     onPress={()=>hideModal()}
