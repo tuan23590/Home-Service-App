@@ -28,3 +28,14 @@ Hướng dẫn cài đặt vào chạy dự án:
    
     Nhấn "a" để mở app android
     Nhấn "W" để mở web
+
+
+5. chạy server:
+
+    ```
+    cd server 
+    ```
+
+    ```
+    nodemon server.mjs
+    ```
