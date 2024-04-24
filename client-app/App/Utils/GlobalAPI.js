@@ -55,24 +55,19 @@ const getDiscovers=async()=>{
 }
 const getDichVus=async()=>{ 
   const query = gql`
-  query getDichVus {
-    dichVus {
-      id
-      tenDichVu
+  query Query {
+    DichVus {
+      TenDichVu
+      maDichVu
+      moTaDichVu
+      gia
       thoiGian
-      giaTien
-      bieuTuong {
-        chon {
-          url
-        }
-        thuong {
-          url
-        }
-      }
+      icon
+      iconSelected
     }
   }         
   `
-  const result = await request(MASTER_URL, query)
+  const result = await request("http://localhost:4000/graphql", query)
   return result;
 }
 

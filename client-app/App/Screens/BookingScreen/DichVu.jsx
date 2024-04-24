@@ -6,11 +6,11 @@ import Colors from '../../Utils/Colors'
 
 export default function BookingService({onselectedDichVu}) {
   const [dichVus, setDichVus] = useState([]);
-
+  
   useEffect(() => {getDichVus()}, [])
   const getDichVus = async () => {
     GlobalAPI.getDichVus().then(res => {
-      setDichVus(res?.dichVus)
+      setDichVus(res?.DichVus)
     })
   }
 
@@ -34,7 +34,7 @@ export default function BookingService({onselectedDichVu}) {
             >
               <View style={[styles.item, selectedItem === item && { borderColor: Colors.ORANGE }]}>
                 <Image 
-                  source={{ uri: selectedItem === item ? item?.bieuTuong?.chon?.url : item?.bieuTuong?.thuong?.url }}
+                  source={{ uri: selectedItem === item ? item?.icon : item?.iconSelected }}
                   style={{ width: 50, height: 50 }} 
                 />
               </View>
