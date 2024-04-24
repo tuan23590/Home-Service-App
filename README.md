@@ -30,7 +30,7 @@ Hướng dẫn cài đặt vào chạy dự án:
     Nhấn "W" để mở web
 
 
-5. chạy server:
+chạy server:
 
     ```
     cd server 
