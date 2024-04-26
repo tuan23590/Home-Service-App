@@ -20,7 +20,7 @@ export default function BookingService({onselectedDichVu}) {
     setSelectedItem(item);
     onselectedDichVu(item);
   }
-
+ console.log(dichVus)
   return (
     <>
       <FlatList
@@ -34,7 +34,7 @@ export default function BookingService({onselectedDichVu}) {
             >
               <View style={[styles.item, selectedItem === item && { borderColor: Colors.ORANGE }]}>
                 <Image 
-                  source={{ uri: selectedItem === item ? item?.icon : item?.iconSelected }}
+                  source={{ uri: selectedItem === item ? item?.iconSelected : item?.icon }}
                   style={{ width: 50, height: 50 }} 
                 />
               </View>
@@ -42,14 +42,14 @@ export default function BookingService({onselectedDichVu}) {
                 <Text style={[styles.itemText, selectedItem === item && { color: Colors.ORANGE }]}>
                   {item?.tenDichVu}
                 </Text>
-                {item?.giaTien && (
+                {item?.gia && (
                   <Text style={[styles.itemText, selectedItem === item && { color: Colors.ORANGE }]}>
-                    + {item?.giaTien} đ
+                    +{item?.gia} VND
                   </Text>
                 )}
                 {item?.thoiGian && (
                   <Text style={[styles.itemText, selectedItem === item && { color: Colors.ORANGE }]}>
-                    + {item?.thoiGian} giờ
+                    +{item?.thoiGian}h
                   </Text>
                 )}
               </View>

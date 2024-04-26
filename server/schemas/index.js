@@ -34,7 +34,7 @@
 
 export const typeDefs = `#graphql
     type DichVu {
-        TenDichVu: String,
+        tenDichVu: String,
         maDichVu: String,
         moTaDichVu: String,
         gia: Int,
@@ -46,6 +46,6 @@ export const typeDefs = `#graphql
         DichVus: [DichVu],
     },
     type Mutation {
-        addDichVu(TenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
+        addDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
     }
 `

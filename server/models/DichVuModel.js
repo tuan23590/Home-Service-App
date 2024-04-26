@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const DichVuSchema = new mongoose.Schema({
-    TenDichVu: {
+    tenDichVu: {
         type: String,
         require: true
     },
