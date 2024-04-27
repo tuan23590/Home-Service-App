@@ -9,7 +9,7 @@ const NhanVienSchema = new mongoose.Schema({
         type: Boolean
     },
     ngaySinh:{
-        type: Date
+        type: String
     },
     diaChi:{
         type: String
