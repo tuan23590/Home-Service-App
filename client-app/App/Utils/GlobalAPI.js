@@ -57,7 +57,7 @@ const getDichVus=async()=>{
   const query = gql`
   query Query {
     DichVus {
-      TenDichVu
+      tenDichVu
       maDichVu
       moTaDichVu
       gia

@@ -37,5 +37,5 @@ chạy server:
     ```
 
     ```
-    nodemon server.mjs
+    npm run server
     ```
