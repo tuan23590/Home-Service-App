@@ -1,23 +1,25 @@
 export const DonHangLoader = async ()=> {
-    const query = `query QueryDonHang {
-        donHangs {
-          id
-          maDonHang
-          khachHang
-          nhanVien
-          ngayDatHang
-          dichVu
-          ghiChu
-          vatNuoi
-          thoiGianThucHien {
-            thoiGianBatDau
-            thoiGianKetThuc
-            trangThai
-          }
-          tongTien
-          thanhToan
+    const query = `query MyQuery {
+      donHangs {
+        id
+        maDonHang
+        khachHang
+        ngayDatHang
+        dichVu
+        nhanVien
+        thanhToan
+        thoiGianThucHien {
+          thoiGianBatDau
+          thoiGianKetThuc
+          trangThai
         }
-      }              
+        tongTien
+        trangThaiDonHang
+        vatNuoi
+      
+      }
+    }
+          
       `;
     const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master',{
         method: 'POST',

@@ -1,5 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { Link, Outlet, useLoaderData } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { Button, Card, CardContent, Typography } from '@mui/material';
 
 export default function Test() {
@@ -36,3 +38,4 @@ export default function Test() {
     </div>
   );
 }
+
