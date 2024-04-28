@@ -1,23 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
-import { AppBar, Toolbar, Typography, Container, Button, Menu, MenuItem, CircularProgress } from '@mui/material';
+import { AppBar, Toolbar,IconButton, Typography, Container, Button, Menu, MenuItem, CircularProgress } from '@mui/material';
 // import { useLoaderData } from 'react-router-dom'; 
+import HomeIcon from '@mui/icons-material/Home';
 
 export default function Home() {
   const [anchorElAboutUs, setAnchorElAboutUs] = React.useState(null);
   const [anchorElServices, setAnchorElServices] = React.useState(null);
   const [anchorElBecomePartner, setAnchorElBecomePartner] = React.useState(null); 
   const [anchorElManage, setAnchorElManage] = React.useState(null);
-  // const [loading, setLoading] = React.useState(true); // State để kiểm soát trạng thái tải
 
-  // const { data } = useLoaderData();
-  // console.log(data);
-
-  // React.useEffect(() => {
-
-  //   setLoading(false);
-  // }, []);
 
   const handleAboutUsClick = (event) => {
     setAnchorElAboutUs(event.currentTarget);
@@ -46,10 +39,10 @@ export default function Home() {
   return (
     <div>
       <AppBar position="static">
-        <Toolbar style={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1 }}>
-            Trang Chủ - Giúp việc nhà
-          </Typography>
+        <Toolbar style={{ justifyContent: 'space-between', display: 'flex'}}>
+          <IconButton component={Link} to="/" color="inherit">
+            <HomeIcon /> 
+          </IconButton>
           <div>
           <Button
               aria-controls="menu-manage"
@@ -114,7 +107,6 @@ export default function Home() {
               <MenuItem component={Link} to="/services/service7">Dịch Vụ 7</MenuItem>
               <MenuItem component={Link} to="/services/service8">Dịch Vụ 8</MenuItem>
             </Menu>
-          </div>
           <Button
               aria-controls="menu-become-partner"
               aria-haspopup="true"
@@ -135,6 +127,7 @@ export default function Home() {
               <MenuItem component={Link} to="/">Cộng tác viên dọn dẹp buồng phòng</MenuItem>
               <MenuItem component={Link} to="/">Cộng tác viên giặt ủi</MenuItem>
             </Menu>
+            </div>
           <div>
             <Button component={Link} to="/login" color="inherit">Đăng Nhập</Button>
             <Button component={Link} to="/" color="inherit">Đăng Ký</Button>
@@ -144,7 +137,6 @@ export default function Home() {
       </AppBar>
       <Container>
         { (
-          // Hiển thị nội dung sau khi dữ liệu đã được tải
           <Typography variant="h2" sx={{ my: 4 }}>Chào mừng bạn đến với Trang Chủ</Typography>
         )}
       </Container>

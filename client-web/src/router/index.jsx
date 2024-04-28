@@ -38,10 +38,6 @@ export default createBrowserRouter([
         path: '/order',
         loader: DonHangLoader,
         children:[
-            {
-                element: <Detal />,
-                path: `DonHang/:maDonHang`
-            }
         ]
     },
     {
