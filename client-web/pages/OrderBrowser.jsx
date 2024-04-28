@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -18,7 +17,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Snackbar
 } from '@mui/material';
 
 const DonHangLoader = async () => {
@@ -85,6 +85,8 @@ export default function OrderBrowser() {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [nhanViens, setNhanViens] = useState([]);
   const [selectedNhanViens, setSelectedNhanViens] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,7 +123,8 @@ export default function OrderBrowser() {
       }
 
       if (!selectedNhanViens[maDonHang]) {
-        console.error('Vui lòng chọn nhân viên cho đơn hàng này.');
+        setSnackbarMessage('Vui lòng chọn nhân viên cho đơn hàng này.');
+        setSnackbarOpen(true);
         return;
       }
 
@@ -150,6 +153,10 @@ export default function OrderBrowser() {
 
   const handleCloseConfirmDialog = () => {
     setConfirmDialogOpen(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   if (loading) {
@@ -254,6 +261,19 @@ export default function OrderBrowser() {
             </Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message={snackbarMessage}
+          action={
+            <React.Fragment>
+              <Button color="secondary" size="small" onClick={handleSnackbarClose}>
+                Đóng
+              </Button>
+            </React.Fragment>
+          }
+        />
       </Container>
     </div>
   );
