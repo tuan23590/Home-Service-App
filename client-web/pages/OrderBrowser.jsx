@@ -174,8 +174,6 @@ export default function OrderBrowser() {
           <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1 }}>
             Trang Chủ - Giúp việc nhà
           </Typography>
-          <Button component={Link} to="/login" color="inherit">Đăng Nhập</Button>
-          <Button component={Link} to="/register" color="inherit">Đăng Ký</Button>
         </Toolbar>
       </AppBar>
       <Container>

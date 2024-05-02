@@ -5,44 +5,50 @@ import Test from "../../pages/Test";
 import { DonHangLoader } from "../../utils/DonHangUtils";
 import Detal from "../../pages/Detal";
 import OrderBrowser from "../../pages/OrderBrowser";
-const AuthLayout = ()=>{
-   return <Outlet />
-}
+import ServiceRegistration from "../../pages/ServiceRegistration"; 
+
+const AuthLayout = () => {
+   return <Outlet />;
+};
 
 // eslint-disable-next-line react-refresh/only-export-components
 export default createBrowserRouter([
-{
-    element:<AuthLayout />,
-    children:[
     {
-        element : <Login />,
-        path : '/login',
-    },
-    {
-        element : <Home />,
-        path : '/',
-    },
-    {
-        element: <Test/>,
-        path: '/test',
-        loader: DonHangLoader,
-        children:[
+        element: <AuthLayout />,
+        children: [
             {
-                element: <Detal />,
-                path: `DonHang/:maDonHang`
+                element: <Login />,
+                path: '/login',
+            },
+            {
+                element: (
+                    <> 
+                        <Home /> 
+                    </>
+                ),
+                path: '/',
+            },
+            {
+                element: <Test />,
+                path: '/test',
+                loader: DonHangLoader,
+                children: [
+                    {
+                        element: <Detal />,
+                        path: `DonHang/:maDonHang`,
+                    },
+                ],
+            },
+            {
+                element: <OrderBrowser />,
+                path: '/order',
+                loader: DonHangLoader,
+                children: [],
+            },
+            {
+                element:   <ServiceRegistration />,
+                path: 'dv1',
             }
-        ]
+        ],
     },
-    {
-        element: <OrderBrowser />,
-        path: '/order',
-        loader: DonHangLoader,
-        children:[
-        ]
-    },
-    {
-        
-    }
-]
-}
-])
+]);
