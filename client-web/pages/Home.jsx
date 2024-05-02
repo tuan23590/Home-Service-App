@@ -1,16 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
-import { AppBar, Toolbar,IconButton, Typography, Container, Button, Menu, MenuItem, CircularProgress } from '@mui/material';
-// import { useLoaderData } from 'react-router-dom'; 
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, IconButton, Typography, Container, Button, Menu, MenuItem } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 
 export default function Home() {
-  const [anchorElAboutUs, setAnchorElAboutUs] = React.useState(null);
-  const [anchorElServices, setAnchorElServices] = React.useState(null);
-  const [anchorElBecomePartner, setAnchorElBecomePartner] = React.useState(null); 
-  const [anchorElManage, setAnchorElManage] = React.useState(null);
-
+  const [anchorElAboutUs, setAnchorElAboutUs] = useState(null);
+  const [anchorElServices, setAnchorElServices] = useState(null);
+  const [anchorElBecomePartner, setAnchorElBecomePartner] = useState(null);
+  const [anchorElManage, setAnchorElManage] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Set giá trị mặc định cho isLoggedIn là true
+  const [currentUser, setCurrentUser] = useState(''); // Thêm biến state để lưu trữ tên người dùng hiện tại
 
   const handleAboutUsClick = (event) => {
     setAnchorElAboutUs(event.currentTarget);
@@ -33,7 +33,11 @@ export default function Home() {
     setAnchorElServices(null);
     setAnchorElBecomePartner(null); 
     setAnchorElManage(null);
+  };
 
+  const handleLogout = () => { 
+    setIsLoggedIn(false);
+    setCurrentUser(null); // Cập nhật currentUser khi đăng xuất
   };
 
   return (
@@ -44,7 +48,7 @@ export default function Home() {
             <HomeIcon /> 
           </IconButton>
           <div>
-          <Button
+            <Button
               aria-controls="menu-manage"
               aria-haspopup="true"
               onClick={handleManageClick}
@@ -107,7 +111,7 @@ export default function Home() {
               <MenuItem component={Link} to="/services/service7">Dịch Vụ 7</MenuItem>
               <MenuItem component={Link} to="/services/service8">Dịch Vụ 8</MenuItem>
             </Menu>
-          <Button
+            <Button
               aria-controls="menu-become-partner"
               aria-haspopup="true"
               onClick={handleBecomePartnerClick}
@@ -127,11 +131,19 @@ export default function Home() {
               <MenuItem component={Link} to="/">Cộng tác viên dọn dẹp buồng phòng</MenuItem>
               <MenuItem component={Link} to="/">Cộng tác viên giặt ủi</MenuItem>
             </Menu>
-            </div>
+          </div>
           <div>
-            <Button component={Link} to="/login" color="inherit">Đăng Nhập</Button>
-            <Button component={Link} to="/" color="inherit">Đăng Ký</Button>
-            
+            {isLoggedIn ? (
+              <div>
+                <Typography variant="body1" sx={{ mr: 2 }}>Xin chào {currentUser}</Typography>
+                <Button onClick={handleLogout} color="inherit">Đăng Xuất</Button>
+              </div>
+            ) : (
+              <div>
+                <Button component={Link} to="/login" color="inherit">Đăng Nhập</Button>
+                <Button component={Link} to="/" color="inherit">Đăng Ký</Button>
+              </div>
+            )}
           </div>
         </Toolbar>
       </AppBar>
