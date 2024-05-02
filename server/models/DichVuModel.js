@@ -5,6 +5,12 @@ const DichVuSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    maDichVu:{
+        type: String
+    },
+    loaiDichVu:{
+        type: String
+    },
     moTaDichVu:{
         type: String
     },

@@ -99,6 +99,8 @@ export const typeDefs = `#graphql
         KhachHangs: [KhachHang],
         LichThucHiens: [LichThucHien],
         NhanViens: [NhanVien],
+        DichVuCaLe: [DichVu],
+        DichVuThem: [DichVu],
     },
     type Mutation {
         addDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,

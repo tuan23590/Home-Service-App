@@ -1,41 +1,64 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Colors from './../../Utils/Colors'
+import GlobalAPI from '../../Utils/GlobalAPI';
 
-export default function BookingTime({ onTimeSelect}) {
+export default function BookingTime({ thoiGianChonDichVuThem,onTimeSelect}) {
   const [selected, setSelected] = React.useState();
+  const [dichVuCaLe, setDichVuCaLe] = useState([]);
+
   useEffect(() => {
-    setSelected("2 giờ");
-    onTimeSelect("2 giờ");
-  }, [])
+    const fetchDichVuCaLe = async () => {
+      try {
+        const res = await GlobalAPI.getDichVuCaLe();
+        if (res?.DichVuCaLe) {
+          setDichVuCaLe(res.DichVuCaLe);
+          if (res.DichVuCaLe.length > 0) {
+            setSelected(res.DichVuCaLe[0]);
+            onTimeSelect(res.DichVuCaLe[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching dich vus:", error);
+      }
+    };
+    fetchDichVuCaLe();
+  }, []);
+
+
+  useEffect(() => {
+    console.log('thoiGianChonDichVuThem = ', thoiGianChonDichVuThem);
+  }, [thoiGianChonDichVuThem]);
+
+
+  const handlePress = (item) => {
+    setSelected(item);
+    onTimeSelect(item);
+  }
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={[selected === item ? styles.itemSelect : styles.item]}
+      onPress={() => { handlePress(item) }}
+    >
+      <Text style={styles.text}>{item.thoiGian} giờ</Text>
+      <Text>{item.moTaDichVu}m²</Text>
+      <Text>{parseInt(parseInt(item.moTaDichVu) / 25)} Phòng</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={{ flexDirection: 'row', marginTop: 30}}>
-      <TouchableOpacity style={[selected=="2 giờ"?styles.itemSelect:styles.item]}
-      onPress={()=>{setSelected("2 giờ"); onTimeSelect("2 giờ")}}
-      >
-        <Text style={styles.text}>2 giờ</Text>
-        <Text>55m²</Text>
-        <Text>2 Phòng</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[selected=="3 giờ"?styles.itemSelect:styles.item]}
-      onPress={()=>{setSelected("3 giờ"); onTimeSelect("3 giờ")}}
-      >
-      <Text style={styles.text}>3 giờ</Text>
-        <Text>85m²</Text>
-        <Text>3 Phòng</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[selected=="4 giờ"?styles.itemSelect:styles.item]}
-      onPress={()=>{setSelected("4 giờ"); onTimeSelect("4 giờ")}}
-      >
-      <Text style={styles.text}>4 giờ</Text>
-        <Text>105m²</Text>
-        <Text>4 Phòng</Text>
-      </TouchableOpacity>
-    </View>
-  )
+    <FlatList
+      data={dichVuCaLe}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => index.toString()}
+      horizontal
+      contentContainerStyle={{ marginTop: 10 }}
+      showsHorizontalScrollIndicator={false}
+    />
+  );
 }
+
 const styles = StyleSheet.create({ 
   text: {
     color: Colors.ORANGE,

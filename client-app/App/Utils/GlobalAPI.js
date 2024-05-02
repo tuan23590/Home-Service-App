@@ -21,7 +21,7 @@ return result;
 }
 
 
-getCategory=async()=>{
+const getCategory=async()=>{
     const query = gql`
     query getCategory {
         categories {
@@ -53,10 +53,12 @@ const getDiscovers=async()=>{
   const result = await request(MASTER_URL, query)
   return result;
 }
-const getDichVus=async()=>{ 
+
+const getDichVuThem=async()=>{ 
+  
   const query = gql`
-  query Query {
-    DichVus {
+  query DichVuThem {
+    DichVuThem {
       tenDichVu
       maDichVu
       moTaDichVu
@@ -65,18 +67,32 @@ const getDichVus=async()=>{
       icon
       iconSelected
     }
-  }         
+  }        
   `
-  const result = await request("http://localhost:4000/graphql", query)
+  const result = await request("http://192.168.1.23:4000/graphql", query)
   return result;
 }
-
-
+const getDichVuCaLe=async()=>{ 
+  
+  const query = gql`
+  query Query {
+    DichVuCaLe {
+      maDichVu
+      moTaDichVu
+      gia
+      thoiGian
+    }
+  }        
+  `
+  const result = await request("http://192.168.1.23:4000/graphql", query)
+  return result;
+}
 export default {
     getSlider,
     getCategory,
     getDiscovers,
-    getDichVus
+    getDichVuThem,
+    getDichVuCaLe
 };
 
 

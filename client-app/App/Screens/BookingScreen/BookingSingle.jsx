@@ -13,6 +13,7 @@ export default function BookingSingle({hideModal}) {
   const [selected, setSelected] = useState();
   const [selectedDichVu, setSelectedDichVu] = useState();
   const [modalVisible, setModalVisible] = useState(false);
+  const [thoiGianChonDichVuThem, setThoiGianChonDichVuThem] = useState(2);
 
   return (
     <View>
@@ -35,15 +36,17 @@ export default function BookingSingle({hideModal}) {
 
     <View style={{marginHorizontal:20}}>
       <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
-      <ThoiLuong onTimeSelect={setSelected}/>
+      <ThoiLuong onTimeSelect={setSelected} thoiGianChonDichVuThem={thoiGianChonDichVuThem}/>
+
       <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
       <DichVu onselectedDichVu={setSelectedDichVu} />
+
       <Heading text={"Tùy chọn"}/>
       <BookingOption />
       <TouchableOpacity 
-        onPress={()=>alert(selectedDichVu?.tenDichVu, selected)}
+        onPress={()=>{setThoiGianChonDichVuThem(thoiGianChonDichVuThem+1)}}
       >
-        <Text style={styles.confirmBtn}>Tiếp theo ({selectedDichVu?.tenDichVu}) ({selected}) </Text>
+        <Text style={styles.confirmBtn}>Tiếp theo {selected?.thoiGian}</Text>
       </TouchableOpacity>
     </View>
 

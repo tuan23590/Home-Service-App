@@ -38,6 +38,14 @@ export const resolvers = {
             const data = await NhanVienModel.find();
             return data;
         },
+        DichVuCaLe: async ()=>{
+            const data = await DichVuModel.find({ loaiDichVu: "CaLe" });
+            return data;
+        },
+        DichVuThem: async ()=>{
+            const data = await DichVuModel.find({ loaiDichVu: "DichVuThem" });
+            return data;
+        }
         // productByProductId: async (parent,args)=>{
         //     const productId = args.productId;
         //     const foundProduct = await ProductModel.findOne({
