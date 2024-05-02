@@ -6,6 +6,7 @@ import { DonHangLoader } from "../../utils/DonHangUtils";
 import Detal from "../../pages/Detal";
 import OrderBrowser from "../../pages/OrderBrowser";
 import ServiceRegistration from "../../pages/ServiceRegistration"; 
+import ThemDonHang from "../../pages/ThemDonHang";
 
 const AuthLayout = () => {
    return <Outlet />;
@@ -48,6 +49,10 @@ export default createBrowserRouter([
             {
                 element:   <ServiceRegistration />,
                 path: 'dv1',
+            },
+            {
+                element: <ThemDonHang />,
+                path: '/themdonhang',
             }
         ],
     },
