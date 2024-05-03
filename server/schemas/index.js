@@ -43,7 +43,7 @@ export const typeDefs = `#graphql
         iconSelected: String,
     },
     type ChuyenMon {
-        tencChuyenMon: String,
+        tenChuyenMon: String,
     },
     type DiaChi {
         tinh: String,
@@ -82,10 +82,11 @@ export const typeDefs = `#graphql
         ngayBatDau: String,
         ngayKetThuc: String,
         soGioThucHien: Int,
+        trangThaiDonHang: String,
         idLichThucHien: [String],
         idKhachHang: String,
         idNhanVien: String,
-        idDanhSachDichVu: [String],
+        idDanhSachDichVu: [DichVu],
         vatNuoi: String,
         ghiCHu: String,
         saoDanhGia: String,
@@ -103,6 +104,20 @@ export const typeDefs = `#graphql
         DichVuThem: [DichVu],
     },
     type Mutation {
-        addDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
+        themDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
+        themDonHang(maDonHang:  String,
+            ngayDatHang: String,
+            ngayBatDau: String,
+            ngayKetThuc: String,
+            soGioThucHien: Int,
+            idLichThucHien: [String],
+            idKhachHang: String,
+            idNhanVien: String,
+            idDanhSachDichVu: [String],
+            vatNuoi: String,
+            ghiCHu: String,
+            saoDanhGia: String,
+            trangThaiDonHang: String,
+            ghiChuDanhGia: String): DonHang
     }
 `

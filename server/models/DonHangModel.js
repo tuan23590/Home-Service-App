@@ -16,6 +16,9 @@ const DonHangSchema = new mongoose.Schema({
     soGioThucHien:{
         type: Number
     },
+    trangThaiDonHang: {
+        type: String
+    },
     idLichThucHien:{
         type: [String]
     },
