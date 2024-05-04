@@ -1,23 +1,52 @@
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import HeaderBooking from './HeaderBooking'
 import Heading from './../../Compunents/Heading'
 import ThoiLuong from './ThoiLuong'
 import DichVu from './DichVu';
-import BookingOption from './BookingOption'
+import TuyChon from './TuyChon'
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors'
 import MapPicker from '../../Compunents/MapPicker'
+import GlobalAPI from '../../Utils/GlobalAPI'
+import { parse } from 'graphql'
 
 export default function BookingSingle({hideModal}) {
-  const [selected, setSelected] = useState();
-  const [selectedDichVu, setSelectedDichVu] = useState();
   const [modalVisible, setModalVisible] = useState(false);
-  const [thoiGianChonDichVuThem, setThoiGianChonDichVuThem] = useState(2);
 
+  const [chonDichVu, setChonDichVu] = useState([]);
+
+  const [chonThoiLuong, setChonThoiLuong] = useState();
+  const [vatNuoi, setVatNuoi] = useState('');
+  const [dichVuThem, setDichVuThem] = useState([]);
+  const [dichVuCaLe, setDichVuCaLe] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataDichVuCaLe = await GlobalAPI.getDichVuCaLe();
+        const dataDichVuThem = await GlobalAPI.getDichVuThem();
+        if (dataDichVuCaLe?.DichVuCaLe) {
+          setDichVuCaLe(dataDichVuCaLe.DichVuCaLe);
+        }
+        if (dataDichVuThem?.DichVuThem) {
+          setDichVuThem(dataDichVuThem.DichVuThem);
+        }
+      } catch (error) {
+        console.error("Error fetching:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+
+    
+  const press = () => {
+    console.log(chonThoiLuong);
+    console.log(chonDichVu.length);
+  }
   return (
     <View>
-
       <View style={{padding: 20}}> 
      <TouchableOpacity style={{display:'flex',flexDirection:'row',gap: 10,
     alignItems: 'center'}}
@@ -32,21 +61,19 @@ export default function BookingSingle({hideModal}) {
     </View>
 
 
-
-
     <View style={{marginHorizontal:20}}>
       <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
-      <ThoiLuong onTimeSelect={setSelected} thoiGianChonDichVuThem={thoiGianChonDichVuThem}/>
+      <ThoiLuong data={dichVuCaLe} childenSelected={setChonThoiLuong} parentSelected = {chonThoiLuong} />
 
       <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
-      <DichVu onselectedDichVu={setSelectedDichVu} />
+      <DichVu data={dichVuThem} onselectedDichVu={setChonDichVu} />
 
       <Heading text={"Tùy chọn"}/>
-      <BookingOption />
+      <TuyChon onselectedVatNuoi={setVatNuoi} />
       <TouchableOpacity 
-        onPress={()=>{setThoiGianChonDichVuThem(thoiGianChonDichVuThem+1)}}
+        onPress={()=>press()}
       >
-        <Text style={styles.confirmBtn}>Tiếp theo {selected?.thoiGian}</Text>
+        <Text style={styles.confirmBtn}>Tiếp theo</Text>
       </TouchableOpacity>
     </View>
 
@@ -63,7 +90,7 @@ export default function BookingSingle({hideModal}) {
 
 const styles = StyleSheet.create({ 
   confirmBtn:{
-    backgroundColor: Colors.ORANGE,
+    backgroundColor: Colors.GREEN,
     color: 'white',
     padding: 15,
     textAlign: 'center',

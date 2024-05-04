@@ -1,28 +1,10 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import GlobalAPI from '../../Utils/GlobalAPI'
 import Colors from '../../Utils/Colors'
 
 
-export default function BookingService({onselectedDichVu}) {
+export default function BookingService({data,onselectedDichVu}) {
   const [dichVus, setDichVus] = useState([]);
-  
-  useEffect(() => {
-    const fetchDichVuThem = async () => {
-      
-      try {
-        const res = await GlobalAPI.getDichVuThem();
-        if (res?.DichVuThem) {
-          setDichVus(res.DichVuThem);
-        }
-      } catch (error) {
-        console.error("Error fetching dich vus:", error);
-      }
-    };
-  
-    fetchDichVuThem();
-  }, []);
-
   const [selectedItem, setSelectedItem] = useState([]);
 
   const handlePress = (item) => {
@@ -54,12 +36,10 @@ const renderItem = ({ item }) => (
   </TouchableOpacity>
 );
 
-
-
 return (
   <>
     <FlatList
-      data={dichVus}
+      data={data}
       numColumns={3}
       renderItem={({ item, index }) => (
         <View style={{ flexDirection: 'row', marginTop: 20, flex: 1 }}>

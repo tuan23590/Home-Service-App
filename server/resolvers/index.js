@@ -47,11 +47,11 @@ export const resolvers = {
             return data;
         }
     },
-    DonHangs: {
-        idDanhSachDichVu: ()=>{
-            return {text: 'test'}
-        }
-    },
+    // DonHangs: {
+    //     idDanhSachDichVu: ()=>{
+    //         return {text: 'test'}
+    //     }
+    // },
     Mutation: {
         themDichVu: async (parent,args)=>{
             const dichVuMoi = args;

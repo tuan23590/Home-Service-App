@@ -57,7 +57,7 @@ const getDiscovers=async()=>{
 const getDichVuThem=async()=>{ 
   
   const query = gql`
-  query DichVuThem {
+  query Query {
     DichVuThem {
       tenDichVu
       maDichVu

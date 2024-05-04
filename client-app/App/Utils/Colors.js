@@ -4,4 +4,5 @@ WHITE: '#ffffff',
 LIGHT_GRAY: '#f2f2f2',
 PURPLE:'#a475ba',
 ORANGE: '#cc5f29',
+GREEN: '#4caf50',
 }
