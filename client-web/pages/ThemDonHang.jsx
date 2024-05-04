@@ -1,10 +1,12 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { TextField, Button, InputLabel, Select, MenuItem } from '@mui/material';
 import { themDonHang } from '../utils/DonHangUtils';
+import { DBDataDichVu } from '../utils/DichVuUtils';
 
 export default function ThemDonHang() {
-
+    const [selectedDichVu, setSelectedDichVu] = useState('');
+    const [dichVus, setDichVus] = useState([]);
     const [formData, setFormData] = useState({
         maDonHang: '',
         khachHang: '',
@@ -18,14 +20,22 @@ export default function ThemDonHang() {
       const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
+        console.log(name, value);
       };
     
       const handleSubmit =  async () => {
         const data = await themDonHang(formData);
         console.log(data);
+        alert('Đã thêm đơn hàng');
       };
-
-
+    useEffect(() => {
+      const dataCBDV =  async () => {
+        const {data} = await DBDataDichVu();
+        console.log(data);
+        setDichVus(data.dichVus);
+        };
+      dataCBDV();
+    }, []);
 return (
     <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <TextField
@@ -58,12 +68,26 @@ return (
             value={formData.vatNuoi}
             onChange={handleChange}
         />
-        <TextField
+        {/* <TextField
             name="dichVu"
             label="Dịch vụ"
             value={formData.dichVu}
             onChange={handleChange}
-        />
+        /> */}
+        <InputLabel id="dich-vu-label">Dịch vụ</InputLabel>
+      <Select
+        labelId="dich-vu-label"
+        id="dich-vu-select"
+        name='dichVu'
+        value={selectedDichVu}
+        onChange={handleChange}
+      >
+        {dichVus.map((dichVu) => (
+          <MenuItem key={dichVu.id} value={dichVu.id}>
+            {dichVu.tenDichVu}
+          </MenuItem>
+        ))}
+      </Select>
         <TextField
             name="ghiChu"
             label="Ghi chú"
