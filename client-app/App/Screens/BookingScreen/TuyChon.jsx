@@ -30,9 +30,7 @@ export default function TuyChon({onselectedVatNuoi}) {
             }
     }
     useEffect(() => {
-        onselectedVatNuoi(vatNuoi);
-        console.log('Vat Nuôi: ',vatNuoi);
-        
+        onselectedVatNuoi(vatNuoi);        
     }, [openThuCung]);
     return (
         <View>

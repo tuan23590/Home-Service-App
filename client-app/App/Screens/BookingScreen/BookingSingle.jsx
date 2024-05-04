@@ -14,7 +14,7 @@ import { parse } from 'graphql'
 export default function BookingSingle({hideModal}) {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [chonDichVu, setChonDichVu] = useState([]);
+  const [chonDichVu, setChonDichVu] = useState();
 
   const [chonThoiLuong, setChonThoiLuong] = useState();
   const [vatNuoi, setVatNuoi] = useState('');
@@ -42,8 +42,9 @@ export default function BookingSingle({hideModal}) {
 
     
   const press = () => {
-    console.log(chonThoiLuong);
-    console.log(chonDichVu.length);
+    console.log('Thoi luong cong viec: ',chonThoiLuong);
+    console.log('So luong dich vu them: ',chonDichVu.length);
+    console.log('vat nuoi: ',vatNuoi);
   }
   return (
     <View>
