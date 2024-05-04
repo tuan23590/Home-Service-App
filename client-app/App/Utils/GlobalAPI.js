@@ -69,7 +69,7 @@ const getDichVuThem=async()=>{
     }
   }        
   `
-  const result = await request("http://192.168.1.23:4000/graphql", query)
+  const result = await request("http://172.16.133.119:4000/graphql", query)
   return result;
 }
 const getDichVuCaLe=async()=>{ 
@@ -84,7 +84,7 @@ const getDichVuCaLe=async()=>{
     }
   }        
   `
-  const result = await request("http://192.168.1.23:4000/graphql", query)
+  const result = await request("http://172.16.133.119:4000/graphql", query)
   return result;
 }
 export default {

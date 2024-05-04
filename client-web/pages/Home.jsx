@@ -47,7 +47,7 @@ export default function Home() {
   const renderCard = (index, image, title, description) => (
     <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
       <Card
-        elevation={hoveredCard === index ? 8 : 1} // Nâng cao card lên khi hover
+        elevation={hoveredCard === index ? 8 : 1} 
         onMouseEnter={() => setHoveredCard(index)}
         onMouseLeave={() => setHoveredCard(null)}
       >
@@ -95,7 +95,7 @@ export default function Home() {
               onClose={handleClose}
             >
               <MenuItem component={Link} to="/order" onClick={handleClose}>Quản lý Xét Duyệt</MenuItem>
-              <MenuItem component={Link} to="/manage/employees" onClick={handleClose}>Quản lý Nhân viên</MenuItem>
+              <MenuItem component={Link} to="/themdonhang" onClick={handleClose}>Thêm Đơn Hàng</MenuItem>
               <MenuItem component={Link} to="/manage/salary" onClick={handleClose}>Quản lý Lương</MenuItem>
               <MenuItem component={Link} to="/manage/statistics" onClick={handleClose}>Thống kê</MenuItem>
             </Menu>
@@ -134,13 +134,13 @@ export default function Home() {
               onClose={handleClose}
             >
               <MenuItem component={Link} to="/dv1">Giúp việc theo giờ</MenuItem>
-              <MenuItem component={Link} to="/services/service2">Dịch Vụ 2</MenuItem>
-              <MenuItem component={Link} to="/services/service3">Dịch Vụ 3</MenuItem>
-              <MenuItem component={Link} to="/services/service4">Dịch Vụ 4</MenuItem>
-              <MenuItem component={Link} to="/services/service5">Dịch Vụ 5</MenuItem>
-              <MenuItem component={Link} to="/services/service6">Dịch Vụ 6</MenuItem>
-              <MenuItem component={Link} to="/services/service7">Dịch Vụ 7</MenuItem>
-              <MenuItem component={Link} to="/services/service8">Dịch Vụ 8</MenuItem>
+              <MenuItem component={Link} to="/services/service2">Tổng vệ sinh</MenuItem>
+              <MenuItem component={Link} to="/services/service3">Đi chợ</MenuItem>
+              <MenuItem component={Link} to="/services/service4">Vệ sinh máy lạnh</MenuItem>
+              <MenuItem component={Link} to="/services/service5">Giặt ủi</MenuItem>
+              <MenuItem component={Link} to="/services/service6">Vệ sinh rèm nệm</MenuItem>
+              <MenuItem component={Link} to="/services/service7">Dọn dẹp buồng phòng</MenuItem>
+              <MenuItem component={Link} to="/services/service8">Nấu ăn gia đình</MenuItem>
             </Menu>
             <Button
               aria-controls="menu-become-partner"
@@ -157,8 +157,8 @@ export default function Home() {
               open={Boolean(anchorElBecomePartner)}
               onClose={handleClose}
             >
-              <MenuItem component={Link} to="/">Cộng tác viên giúp việc</MenuItem>
-              <MenuItem component={Link} to="/">Cộng tác viên nấu ăn</MenuItem>
+              <MenuItem component={Link} to="/dangkynhanviec">Cộng tác viên giúp việc</MenuItem>
+              <MenuItem component={Link} to="/dangkynauan">Cộng tác viên nấu ăn</MenuItem>
               <MenuItem component={Link} to="/">Cộng tác viên dọn dẹp buồng phòng</MenuItem>
               <MenuItem component={Link} to="/">Cộng tác viên giặt ủi</MenuItem>
             </Menu>
@@ -209,7 +209,7 @@ export default function Home() {
       </Container>
       <Toolbar>
           <Typography variant="body1" sx={{ flexGrow: 1 }}>
-            © 2024 Your Company Name. All rights reserved.
+            © 2024  TTCo., Ltd.
           </Typography>
           <Button color="inherit">Privacy Policy</Button>
           <Button color="inherit">Terms of Use</Button>

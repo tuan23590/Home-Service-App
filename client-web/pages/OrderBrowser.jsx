@@ -131,7 +131,6 @@ export default function OrderBrowser() {
       console.log('Duyệt đơn hàng với mã:', maDonHang);
       console.log('Nhân viên được chọn:', selectedNhanViens[maDonHang]);
 
-      // Cập nhật trạng thái đơn hàng thành "Đã xác nhận"
       const updatedData = {
         ...data,
         donHangs: data.donHangs.map((item) => {
@@ -199,12 +198,16 @@ export default function OrderBrowser() {
               <Typography variant="body1" gutterBottom>
                 <strong>Thanh toán:</strong> {donHang.thanhToan}
               </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Thời gian thực hiện:</strong> {donHang.thoiGianThucHien.thoiGianBatDau} - {donHang.thoiGianThucHien.thoiGianKetThuc}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Trạng thái:</strong> {donHang.thoiGianThucHien.trangThai}
-              </Typography>
+              {donHang.thoiGianThucHien && (
+                <>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Thời gian thực hiện:</strong> {donHang.thoiGianThucHien.thoiGianBatDau} - {donHang.thoiGianThucHien.thoiGianKetThuc}
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Trạng thái:</strong> {donHang.thoiGianThucHien.trangThai}
+                  </Typography>
+                </>
+              )}
               <Typography variant="body1" gutterBottom>
                 <strong>Tổng tiền:</strong> {donHang.tongTien}
               </Typography>

@@ -7,6 +7,8 @@ import Detal from "../../pages/Detal";
 import OrderBrowser from "../../pages/OrderBrowser";
 import ServiceRegistration from "../../pages/ServiceRegistration"; 
 import ThemDonHang from "../../pages/ThemDonHang";
+import DangKyNhanViec from "../../pages/DangKyNhanViec";
+import DangKyNauAn from "../../pages/DangKyNauAn";
 
 const AuthLayout = () => {
    return <Outlet />;
@@ -53,6 +55,14 @@ export default createBrowserRouter([
             {
                 element: <ThemDonHang />,
                 path: '/themdonhang',
+            },
+            {
+                element: <DangKyNhanViec />,
+                path: '/dangkynhanviec',
+            },
+            {
+                element: <DangKyNauAn />,
+                path: '/dangkynauan',
             }
         ],
     },
