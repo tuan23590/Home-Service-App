@@ -9,7 +9,8 @@ import ServiceRegistration from "../../pages/ServiceRegistration";
 import ThemDonHang from "../../pages/ThemDonHang";
 import DangKyNhanViec from "../../pages/DangKyNhanViec";
 import DangKyNauAn from "../../pages/DangKyNauAn";
-
+import CustomerInfo from "../../pages/CustomerInfo";
+import ReactGoogleMap from "../../pages/ReactGoogleMap";
 const AuthLayout = () => {
    return <Outlet />;
 };
@@ -63,6 +64,14 @@ export default createBrowserRouter([
             {
                 element: <DangKyNauAn />,
                 path: '/dangkynauan',
+            },
+            {
+                element: <CustomerInfo />,
+                path: '/hienthithongtin',
+            },
+            {
+                element: <ReactGoogleMap />,
+                path: '/map',
             }
         ],
     },

@@ -2,6 +2,8 @@
   "dependencies": {
     "@react-google-maps/api": "^2.19.3",
     "axios": "^1.6.8",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "react-google-autocomplete": "^2.7.3",
+    "react-google-places-autocomplete": "^4.0.1"
   }
 }

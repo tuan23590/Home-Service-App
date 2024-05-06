@@ -1,10 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Container, Button, Menu, MenuItem, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { AppBar, Toolbar, IconButton,Divider, Typography, Container, Button, Menu, MenuItem, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'; // Import GoogleMap, LoadScript và Marker từ react-google-maps/api
 
 export default function Home() {
   const [anchorElAboutUs, setAnchorElAboutUs] = useState(null);
@@ -207,6 +208,19 @@ export default function Home() {
           {renderCard(7, "/Image/nauangiadinh.png", "Nấu ăn gia đình", "Mang đến bữa ăn gia đình ấm áp , tròn vị ngon trong cuộc sống khi mà bạn quá bận rộn")}
         </Grid>
       </Container>
+      <Divider />
+      <LoadScript
+        googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
+      >
+         <GoogleMap
+          mapContainerStyle={{ height: '400px', width: '100%' }}
+          center={{ lat: 10.8231, lng: 106.6297 }} 
+          zoom={10}
+        >
+          <Marker position={{ lat: 10.8231, lng: 106.6297 }} /> 
+        </GoogleMap>
+      </LoadScript>
+      {/* Kết thúc phần Google Map */}
       <Toolbar>
           <Typography variant="body1" sx={{ flexGrow: 1 }}>
             © 2024  TTCo., Ltd.

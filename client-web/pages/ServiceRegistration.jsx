@@ -22,6 +22,8 @@ import {
   Snackbar,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import Autocomplete from 'react-google-autocomplete';
 
 export default function ServiceRegistration() {
   const [selectedDuration, setSelectedDuration] = useState('');
@@ -36,6 +38,7 @@ export default function ServiceRegistration() {
   const [nhanViens, setNhanViens] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employeeSelectionSuccess, setEmployeeSelectionSuccess] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
 
   const [serviceOptions, setServiceOptions] = useState({
     laundry: false,
@@ -120,10 +123,6 @@ export default function ServiceRegistration() {
     }));
   };
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -132,11 +131,21 @@ export default function ServiceRegistration() {
     setShowSnackbar(true);
     setOpenDialog(false);
     setEmployeeSelectionSuccess(true);
+
+    // After selecting employee, recalculate total price
+    calculateTotalPrice();
   };
 
   const handleSnackbarClose = () => {
     setShowSnackbar(false);
   };
+
+  const handlePlaceSelect = () => {
+    const addressObject = selectedPlace.getPlace();
+    const address = addressObject.formatted_address;
+    console.log(address);
+  };
+  
 
   const calculateTotalPrice = () => {
     let basePrice = 0;
@@ -166,6 +175,8 @@ export default function ServiceRegistration() {
     if (serviceOptions.equipmentDelivery) additionalPrice += 30000;
     if (serviceOptions.vacuumCleaning) additionalPrice += 30000;
 
+    if (selectedEmployee) additionalPrice += 20000;
+
     const totalPrice = (basePrice + additionalPrice) * repeatCount;
     setTotalPrice(totalPrice);
   };
@@ -185,6 +196,32 @@ export default function ServiceRegistration() {
       </AppBar>
       <Container>
         <Typography variant="h5" gutterBottom>Đăng ký dịch vụ</Typography>
+        <LoadScript
+      googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
+    >
+      <GoogleMap
+        mapContainerStyle={{ height: '400px', width: '100%' }}
+        center={{ lat: 10.8231, lng: 106.6297 }}
+        zoom={10}
+      >
+ <Autocomplete
+  onLoad={(autocomplete) => {
+    console.log('Autocomplete loaded:', autocomplete);
+  }}
+  onPlaceChanged={handlePlaceSelect}
+  style={{ width: '100%' }}
+  types={['geocode']}
+  componentRestrictions={{ country: 'vn' }}
+>
+</Autocomplete>
+      </GoogleMap>
+      <input
+        type="text"
+        value={selectedPlace}
+        onChange={(event) => setSelectedPlace(event.target.value)}
+        placeholder="Địa chỉ"
+      />
+    </LoadScript>
         <Typography variant="subtitle1" gutterBottom>Dịch vụ cố định</Typography>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -295,13 +332,19 @@ export default function ServiceRegistration() {
         </FormGroup>
         <Grid container spacing={2}>
           <Grid item>
-            <Button variant="contained" color="primary" onClick={handleOpenDialog}>
-              Chọn nhân viên
-            </Button>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={openDialog}
+                  onChange={(event) => setOpenDialog(event.target.checked)}
+                />
+              }
+              label="Chọn nhân viên"
+            />
           </Grid>
           <Grid item>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Đăng ký
+            <Button component={Link} to="/hienthithongtin" variant="contained" color="primary" onClick={handleSubmit}>
+              Tiếp Theo
             </Button>
           </Grid>
         </Grid>
@@ -333,7 +376,7 @@ export default function ServiceRegistration() {
           Tổng cộng: {totalPrice.toLocaleString('vi-VN')} VND
         </Typography>
         <Snackbar
-          open={showSnackbar || employeeSelectionSuccess} 
+          open={showSnackbar || employeeSelectionSuccess}
           autoHideDuration={6000}
           onClose={handleSnackbarClose}
           message="Đã chọn nhân viên thành công"
