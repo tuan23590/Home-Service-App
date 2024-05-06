@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -24,65 +24,75 @@ import {
 import { Link } from 'react-router-dom';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import Autocomplete from 'react-google-autocomplete';
+import { DonHangContext } from '../src/context/DonHangProvider';
+import { NhanVienLoader } from '../utils/NhanVienUtils';
 
 export default function ServiceRegistration() {
-  const [selectedDuration, setSelectedDuration] = useState('');
-  const [workDays, setWorkDays] = useState(Array(7).fill(false));
-  const [repeatWeekly, setRepeatWeekly] = useState(false);
-  const [repeatCount, setRepeatCount] = useState(1);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [openDialog, setOpenDialog] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [nhanViens, setNhanViens] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [employeeSelectionSuccess, setEmployeeSelectionSuccess] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState(null);
+  // const [selectedDuration, setSelectedDuration] = useState('');
+  // const [workDays, setWorkDays] = useState(Array(7).fill(false));
+  // const [repeatWeekly, setRepeatWeekly] = useState(false);
+  // const [repeatCount, setRepeatCount] = useState(1);
+  // const [startDate, setStartDate] = useState('');
+  // const [endDate, setEndDate] = useState('');
+  // const [openDialog, setOpenDialog] = useState(false);
+  // const [showSnackbar, setShowSnackbar] = useState(false);
+  // const [totalPrice, setTotalPrice] = useState(0);
+  // const [nhanViens, setNhanViens] = useState([]);
+  // const [selectedEmployee, setSelectedEmployee] = useState(null);
+  // const [employeeSelectionSuccess, setEmployeeSelectionSuccess] = useState(false);
+  // const [selectedPlace, setSelectedPlace] = useState(null);
 
-  const [serviceOptions, setServiceOptions] = useState({
-    laundry: false,
-    cooking: false,
-    equipmentDelivery: false,
-    vacuumCleaning: false,
-  });
-  const [petPreference, setPetPreference] = useState('');
+  // const [serviceOptions, setServiceOptions] = useState({
+  //   laundry: false,
+  //   cooking: false,
+  //   equipmentDelivery: false,
+  //   vacuumCleaning: false,
+  // });
+  // const [petPreference, setPetPreference] = useState('');
+
+  const {
+    selectedDuration,
+    setSelectedDuration,
+    workDays,
+    setWorkDays,
+    repeatWeekly,
+    setRepeatWeekly,
+    repeatCount,
+    setRepeatCount,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    openDialog,
+    setOpenDialog,
+    showSnackbar,
+    setShowSnackbar,
+    totalPrice,
+    setTotalPrice,
+    nhanViens,
+    setNhanViens,
+    selectedEmployee,
+    setSelectedEmployee,
+    employeeSelectionSuccess,
+    setEmployeeSelectionSuccess,
+    selectedPlace,
+    setSelectedPlace,
+    serviceOptions,
+    setServiceOptions,
+    petPreference,
+    setPetPreference,
+  } = useContext(DonHangContext);
 
   useEffect(() => {
-    const NhanVienLoader = async () => {
-      const query = `query MyQuery {
-        nhanViens {
-          id
-          ten
-          hinhAnh {
-            id
-          }
-        }
-      }`;
-
-      const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ query })
-      });
-
-      const data = await res.json();
-      return data;
-    };
-
-    const fetchNhanViens = async () => {
+    const fetchData = async () => {
       try {
-        const responseData = await NhanVienLoader();
-        setNhanViens(responseData.data.nhanViens);
+          const {data} = await NhanVienLoader();
+          setNhanViens(data.nhanViens);
       } catch (error) {
-        console.error('Error fetching employee data:', error);
+          console.error('Error fetching service data:', error);
       }
-    };
-
-    fetchNhanViens();
+  };
+  fetchData();
   }, []);
 
   useEffect(() => {
@@ -179,6 +189,7 @@ export default function ServiceRegistration() {
 
     const totalPrice = (basePrice + additionalPrice) * repeatCount;
     setTotalPrice(totalPrice);
+
   };
 
   const handleSubmit = () => {

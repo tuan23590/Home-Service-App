@@ -11,8 +11,11 @@ import DangKyNhanViec from "../../pages/DangKyNhanViec";
 import DangKyNauAn from "../../pages/DangKyNauAn";
 import CustomerInfo from "../../pages/CustomerInfo";
 import ReactGoogleMap from "../../pages/ReactGoogleMap";
+import DonHangProvider from "../../src/context/DonHangProvider";
 const AuthLayout = () => {
-   return <Outlet />;
+   return  <DonHangProvider>
+     <Outlet />
+     </DonHangProvider>
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
