@@ -135,7 +135,7 @@ const CustomerInfo = () => {
             <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
           </ListItem>
           <ListItem>
-            <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee.ten}`} />
+            <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee?.ten}`} />
           </ListItem>
           <ListItem>
             <ListItemText primary={`Dịch vụ thêm: ${selectedServices.join(', ')}`} />

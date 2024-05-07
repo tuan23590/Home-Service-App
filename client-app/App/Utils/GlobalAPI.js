@@ -3,6 +3,7 @@ import { request, gql } from 'graphql-request'
 
 
 const MASTER_URL = 'https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master'
+const API_URL = 'http://192.168.1.23:4000/graphql'
 
 const getSlider=async()=>{
 const query = gql`
@@ -69,7 +70,7 @@ const getDichVuThem=async()=>{
     }
   }        
   `
-  const result = await request("http://172.16.133.119:4000/graphql", query)
+  const result = await request(API_URL, query)
   return result;
 }
 const getDichVuCaLe=async()=>{ 
@@ -84,7 +85,7 @@ const getDichVuCaLe=async()=>{
     }
   }        
   `
-  const result = await request("http://172.16.133.119:4000/graphql", query)
+  const result = await request(API_URL, query)
   return result;
 }
 export default {
