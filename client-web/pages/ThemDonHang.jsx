@@ -1,20 +1,24 @@
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import { themDonHang } from '../utils/DonHangUtils';
 import { DBDataDichVu } from '../utils/DichVuUtils';
 
 export default function ThemDonHang() {
-    // eslint-disable-next-line no-unused-vars
     const [selectedDichVu, setSelectedDichVu] = useState('');
     const [dichVus, setDichVus] = useState([]);
     const [formData, setFormData] = useState({
         maDonHang: '',
-        khachHang: '',  
-        trangThaiDonHang: '',
+        khachHang: '',
+        ngayDatHang: '', // Thêm ngày đặt hàng
+        dichVu: '', // Thêm dịch vụ
+        nhanVien: '', // Thêm nhân viên
+        thanhToan: '', // Thêm thanh toán
+        thoiGianThucHien: '', // Thêm thời gian thực hiện
+        trangThai: '', // Thêm trạng thái
         tongTien: '',
+        trangThaiDonHang: '',
         vatNuoi: '',
-        dichVu: '',
         ghiChu: ''
     });
     
@@ -57,22 +61,12 @@ export default function ThemDonHang() {
                     onChange={handleChange}
                 />
                 <TextField
-                    name="trangThaiDonHang"
-                    label="Trạng thái đơn hàng"
-                    value={formData.trangThaiDonHang}
-                    onChange={handleChange}
-                />
-                <TextField
-                    name="tongTien"
-                    label="Tổng tiền"
-                    value={formData.tongTien}
-                    onChange={handleChange}
-                />
-                <TextField
-                    name="vatNuoi"
-                    label="Vật nuôi"
-                    value={formData.vatNuoi}
-                    onChange={handleChange}
+                    name="ngayDatHang" // Thêm ngày đặt hàng
+                    label="Ngày đặt hàng" // Thêm ngày đặt hàng
+                    value={formData.ngayDatHang} // Thêm ngày đặt hàng
+                    onChange={handleChange} // Thêm ngày đặt hàng
+                    type="date" // Thêm ngày đặt hàng
+                    InputLabelProps={{ shrink: true }} // Thêm ngày đặt hàng
                 />
                 <FormControl>
                     <InputLabel id="dich-vu-label">Dịch vụ</InputLabel>
@@ -80,7 +74,7 @@ export default function ThemDonHang() {
                         labelId="dich-vu-label"
                         id="dich-vu-select"
                         name='dichVu'
-                        value={selectedDichVu}
+                        value={formData.dichVu}
                         onChange={handleChange}
                     >
                         {dichVus.map((dichVu) => (
@@ -90,6 +84,50 @@ export default function ThemDonHang() {
                         ))}
                     </Select>
                 </FormControl>
+                <TextField
+                    name="nhanVien" // Thêm nhân viên
+                    label="Nhân viên" // Thêm nhân viên
+                    value={formData.nhanVien} // Thêm nhân viên
+                    onChange={handleChange} // Thêm nhân viên
+                />
+                <TextField
+                    name="thanhToan" // Thêm thanh toán
+                    label="Thanh toán" // Thêm thanh toán
+                    value={formData.thanhToan} // Thêm thanh toán
+                    onChange={handleChange} // Thêm thanh toán
+                />
+                <TextField
+                    name="thoiGianThucHien" // Thêm thời gian thực hiện
+                    label="Thời gian thực hiện" // Thêm thời gian thực hiện
+                    value={formData.thoiGianThucHien} // Thêm thời gian thực hiện
+                    onChange={handleChange} // Thêm thời gian thực hiện
+                    type="datetime-local" // Thêm thời gian thực hiện
+                    InputLabelProps={{ shrink: true }} // Thêm thời gian thực hiện
+                />
+                <TextField
+                    name="trangThai" // Thêm trạng thái
+                    label="Trạng thái" // Thêm trạng thái
+                    value={formData.trangThai} // Thêm trạng thái
+                    onChange={handleChange} // Thêm trạng thái
+                />
+                <TextField
+                    name="tongTien"
+                    label="Tổng tiền"
+                    value={formData.tongTien}
+                    onChange={handleChange}
+                />
+                <TextField
+                    name="trangThaiDonHang"
+                    label="Trạng thái đơn hàng"
+                    value={formData.trangThaiDonHang}
+                    onChange={handleChange}
+                />
+                <TextField
+                    name="vatNuoi"
+                    label="Vật nuôi"
+                    value={formData.vatNuoi}
+                    onChange={handleChange}
+                />
                 <TextField
                     name="ghiChu"
                     label="Ghi chú"

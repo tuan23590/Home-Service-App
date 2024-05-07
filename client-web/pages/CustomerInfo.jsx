@@ -1,16 +1,12 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-} from '@mui/material';
-
+import { Typography, List, ListItem, ListItemText, Box, Button } from '@mui/material';
+import { DBDataDichVu } from '../utils/DichVuUtils';
 import { DonHangContext } from '../src/context/DonHangProvider';
+import './CustomerInfo.css';
+import { Link } from 'react-router-dom';
 
 const CustomerInfo = () => {
-
   const {
     selectedDuration,
     workDays,
@@ -18,152 +14,140 @@ const CustomerInfo = () => {
     repeatCount,
     startDate,
     endDate,
-    openDialog,
-    showSnackbar,
     totalPrice,
     nhanViens,
-    selectedEmployee,
-    employeeSelectionSuccess,
     selectedPlace,
     serviceOptions,
     petPreference,
   } = useContext(DonHangContext);
 
-  // const {data} = useContext(DonHangContext);
+  const [dichVus, setDichVus] = useState([]);
+  const [selectedDichVu, setSelectedDichVu] = useState(''); // Thêm state cho selectedDichVu
+  const [formData, setFormData] = useState({
+    maDonHang: '',
+    khachHang: '',  
+    ngayDatHang: '',
+    nhanVien: '',
+    thoiGianThucHien: '',
+    trangThai: '',
+    trangThaiDonHang: '',
+    tongTien: '',
+    vatNuoi: '',
+    dichVu: '',
+    ghiChu: ''
+});
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await DBDataDichVu();
+        setDichVus(data.dichVus);
+      } catch (error) {
+        console.error('Error fetching service data:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  // console.log(data);
+  // Chuyển đổi ngày làm việc thành danh sách các ngày
+  const daysOfWeek = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+  const selectedWorkDays = workDays.reduce((acc, curr, index) => {
+    if (curr) {
+      acc.push(daysOfWeek[index]);
+    }
+    return acc;
+  }, []);
 
-  // const [loaiDichVuS, setLoaiDichVuS] = useState([]);
+  const selectedEmployeeNames = nhanViens.map((nhanVien) => nhanVien.ten);
+  const selectedEmployeeDisplay = selectedEmployeeNames.length > 0 ? selectedEmployeeNames.join(', ') : 'Chưa chọn';
 
-  // useEffect(() => {
-  //   const fetchLoaiDichVuS = async () => {
-  //     try {
-  //       const query = `
-  //         query MyQuery {
-  //           loaiDichVuS {
-  //             id
-  //             tenKhachHang
-  //             soDienThoai
-  //             diaChi
-  //             tenDichVu
-  //             thoiLuongLamViec
-  //             ngayLamViec
-  //             ngayBatDau
-  //             ngayKetThuc
-  //             soLanTrongTuan
-  //             lapLaiTrongTuan
-  //             dichVuThem
-  //             vatNuoi
-  //             nhanVien
-  //             tongCon
-  //           }
-  //         }
-  //       `;
+  const selectedServices = Object.entries(serviceOptions)
+    .filter(([key, value]) => value)
+    .map(([key]) => {
+      switch (key) {
+        case 'laundry':
+          return 'Giặt ủi';
+        case 'cooking':
+          return 'Nấu ăn';
+        case 'equipmentDelivery':
+          return 'Mang dụng cụ theo';
+        case 'vacuumCleaning':
+          return 'Hút bụi';
+        default:
+          return '';
+      }
+    });
 
-  //       const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Accept': 'application/json'
-  //         },
-  //         body: JSON.stringify({ query })
-  //       });
+  const petType = petPreference === 'dog' ? 'Chó' : 'Mèo';
 
-  //       const data = await res.json();
-  //       setLoaiDichVuS(data.data.loaiDichVuS);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
+  const handlePost = async () => {
+    // Lấy dữ liệu cần thiết từ context và dịch vụ từ DBDataDichVu
+    const selectedServiceName = dichVus.find(dichVu => dichVu.id === selectedDichVu)?.tenDichVu;
 
-  //   fetchLoaiDichVuS();
-  // }, []);
+    // Thực hiện logic đăng tin
+    console.log('Đã đăng tin');
+    console.log('Địa điểm đã chọn:', selectedPlace);
+    console.log('Ngày làm việc:', selectedWorkDays.join(', '));
+    console.log('Thời lượng được chọn:', selectedDuration, 'giờ');
+    console.log('Lặp lại hàng tuần:', repeatWeekly ? 'Có' : 'Không');
+    console.log('Số lần trong tuần:', repeatCount);
+    console.log('Ngày bắt đầu:', startDate);
+    console.log('Ngày kết thúc:', endDate);
+    console.log('Nhân viên được chọn:', selectedEmployeeDisplay);
+    console.log('Dịch vụ thêm:', selectedServices.join(', '));
+    console.log('Thú cưng:', petType);
+    console.log('Tổng tiền:', totalPrice, 'VNĐ');
+    console.log('Dịch vụ đã chọn:', selectedServiceName);
+  };
 
   return (
-    // <div>
-    //   <Typography variant="h4" gutterBottom>Thông tin của khách hàng</Typography>
-    //   <List>
-    //     {loaiDichVuS.map((item) => (
-    //       <React.Fragment key={item.id}>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Tên khách hàng: ${item.tenKhachHang}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Số điện thoại: ${item.soDienThoai}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Địa chỉ: ${item.diaChi}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Tên dịch vụ: ${item.tenDichVu}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Thời lượng làm việc: ${item.thoiLuongLamViec}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Ngày làm việc: ${item.ngayLamViec}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Ngày bắt đầu: ${item.ngayBatDau}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Ngày kết thúc: ${item.ngayKetThuc}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Số lần trong tuần: ${item.soLanTrongTuan}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Lặp lại hàng tuần: ${item.lapLaiTrongTuan ? 'Có' : 'Không'}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Dịch vụ thêm: ${item.dichVuThem}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Vật nuôi: ${item.vatNuoi}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Nhân viên: ${item.nhanVien}`} />
-    //         </ListItem>
-    //         <Divider />
-    //         <ListItem>
-    //           <ListItemText primary={`Tổng cộng: ${item.tongCon} VNĐ`} />
-    //         </ListItem>
-    //         <Divider />
-    //       </React.Fragment>
-    //     ))}
-    //   </List>
-    // </div>
-    <div>
-      <p>Selected Duration: {selectedDuration}</p>
-      <p>Work Days: {JSON.stringify(workDays)}</p>
-      <p>Repeat Weekly: {repeatWeekly.toString()}</p>
-      <p>Repeat Count: {repeatCount}</p>
-      <p>Start Date: {startDate}</p>
-      <p>End Date: {endDate}</p>
-      <p>Open Dialog: {openDialog.toString()}</p>
-      <p>Show Snackbar: {showSnackbar.toString()}</p>
-      <p>Total Price: {totalPrice}</p>
-      <p>Nhan Viens: {JSON.stringify(nhanViens)}</p>
-      <p>Selected Employee: {selectedEmployee}</p>
-      <p>Employee Selection Success: {employeeSelectionSuccess.toString()}</p>
-      <p>Selected Place: {selectedPlace}</p>
-      <p>Service Options: {JSON.stringify(serviceOptions)}</p>
-      <p>Pet Preference: {petPreference}</p>
-    </div>
+    <Box >
+      <div >
+        <Typography variant="h6">Thông tin đơn hàng</Typography>
+        <List>
+          <ListItem>
+            <ListItemText primary={`Địa điểm đã chọn: ${selectedPlace}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Thời lượng được chọn: ${selectedDuration} giờ`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Lặp lại hàng tuần: ${repeatWeekly ? 'Có' : 'Không'}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Số lần trong tuần: ${repeatCount}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày bắt đầu: ${startDate}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployeeDisplay}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Dịch vụ thêm: ${selectedServices.join(', ')}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Vật Nuôi: ${petType}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Tổng tiền: ${totalPrice} VNĐ`} />
+          </ListItem>
+        </List>
+        <Button variant="contained" color="primary" onClick={handlePost}>
+          Đăng tin
+        </Button>
+
+        <Button variant="contained" color="primary" component={Link} to="/dv1">
+  Trở về
+</Button>
+      </div>
+    </Box>
   );
 };
 

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext,useMemo } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -22,10 +22,17 @@ import {
   Snackbar,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-import Autocomplete from 'react-google-autocomplete';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { DonHangContext } from '../src/context/DonHangProvider';
 import { NhanVienLoader } from '../utils/NhanVienUtils';
+import "@reach/combobox/styles.css";
+// eslint-disable-next-line no-unused-vars
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import "@reach/combobox/styles.css";
+
 
 export default function ServiceRegistration() {
   // const [selectedDuration, setSelectedDuration] = useState('');
@@ -49,6 +56,8 @@ export default function ServiceRegistration() {
   //   vacuumCleaning: false,
   // });
   // const [petPreference, setPetPreference] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [selected, setSelected] = useState(null);
 
   const {
     selectedDuration,
@@ -76,7 +85,6 @@ export default function ServiceRegistration() {
     employeeSelectionSuccess,
     setEmployeeSelectionSuccess,
     selectedPlace,
-    setSelectedPlace,
     serviceOptions,
     setServiceOptions,
     petPreference,
@@ -142,7 +150,6 @@ export default function ServiceRegistration() {
     setOpenDialog(false);
     setEmployeeSelectionSuccess(true);
 
-    // After selecting employee, recalculate total price
     calculateTotalPrice();
   };
 
@@ -150,6 +157,7 @@ export default function ServiceRegistration() {
     setShowSnackbar(false);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handlePlaceSelect = () => {
     const addressObject = selectedPlace.getPlace();
     const address = addressObject.formatted_address;
@@ -196,6 +204,17 @@ export default function ServiceRegistration() {
     console.log('Đã đăng ký dịch vụ');
   };
 
+  const handleSearch = async () => {
+    try {
+      const results = await getGeocode({ address: searchValue });
+      const { lat, lng } = await getLatLng(results[0]);
+      setSelected({ lat, lng });
+      setSearchValue(results[0].formatted_address); 
+    } catch (error) {
+      console.error('Error searching address:', error);
+    }
+  };
+
   return (
     <div>
       <AppBar position="static">
@@ -207,32 +226,33 @@ export default function ServiceRegistration() {
       </AppBar>
       <Container>
         <Typography variant="h5" gutterBottom>Đăng ký dịch vụ</Typography>
-        <LoadScript
-      googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
-    >
-      <GoogleMap
-        mapContainerStyle={{ height: '400px', width: '100%' }}
-        center={{ lat: 10.8231, lng: 106.6297 }}
-        zoom={10}
-      >
- <Autocomplete
-  onLoad={(autocomplete) => {
-    console.log('Autocomplete loaded:', autocomplete);
-  }}
-  onPlaceChanged={handlePlaceSelect}
-  style={{ width: '100%' }}
-  types={['geocode']}
-  componentRestrictions={{ country: 'vn' }}
->
-</Autocomplete>
-      </GoogleMap>
-      <input
-        type="text"
-        value={selectedPlace}
-        onChange={(event) => setSelectedPlace(event.target.value)}
-        placeholder="Địa chỉ"
-      />
-    </LoadScript>
+         <LoadScript
+          googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
+        >
+          <GoogleMap
+            zoom={10}
+            center={selected ? selected : { lat: 10.8231, lng: 106.6297 }} 
+            mapContainerStyle={{ height: '400px', width: '100%' }}
+            onClick={(e) => {
+              const lat = e.latLng.lat();
+              const lng = e.latLng.lng();
+              setSelected({ lat, lng });
+            }}
+          >
+            {selected && <Marker position={selected} />}
+          </GoogleMap>
+        </LoadScript>
+        <div className="places-container">
+          <div>
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Enter an address"
+            />
+            <button onClick={handleSearch}>Search</button>
+          </div>
+        </div>
         <Typography variant="subtitle1" gutterBottom>Dịch vụ cố định</Typography>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -394,5 +414,16 @@ export default function ServiceRegistration() {
         />
       </Container>
     </div>
+    
   );
+}
+async function getAndSetAddress({ lat, lng, setSearchValue }) {
+  try {
+    const results = await getGeocode({ location: { lat, lng } });
+    if (results && results[0]) {
+      setSearchValue(results[0].formatted_address); 
+    }
+  } catch (error) {
+    console.error('Error getting address from latlng:', error);
+  }
 }

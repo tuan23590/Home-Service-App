@@ -1,0 +1,49 @@
+.CustomerInfo-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Heading style */
+  .CustomerInfo-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* List style */
+  .CustomerInfo-list {
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  /* List item style */
+  .CustomerInfo-listItem {
+    margin-bottom: 10px;
+  }
+  
+  /* Button style */
+  .CustomerInfo-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .CustomerInfo-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .CustomerInfo-button:focus {
+    outline: none;
+  }

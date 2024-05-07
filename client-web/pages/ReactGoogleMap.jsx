@@ -1,59 +1,68 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
-import { GoogleMap, LoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+  import { useState, useMemo } from "react";
+  import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
+  import usePlacesAutocomplete, {
+    getGeocode,
+    getLatLng,
+  } from "use-places-autocomplete";
+  import "@reach/combobox/styles.css";
 
-const MapComponent = () => {
-  const containerStyle = {
-    width: '400px',
-    height: '400px'
-  };
+  export default function Places() {
+    const center = useMemo(() => ({ lat: 10.8231, lng: 106.6297 }), []);
+    const [selected, setSelected] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
 
-  const center = {
-    lat: -3.745,
-    lng: -38.523
-  };
+    const handleSearch = async () => {
+      try {
+        const results = await getGeocode({ address: searchValue });
+        const { lat, lng } = await getLatLng(results[0]);
+        setSelected({ lat, lng });
+        setSearchValue(results[0].formatted_address); 
+      } catch (error) {
+        console.error('Error searching address:', error);
+      }
+    };
 
-  const onLoad = (ref) => {
-    console.log('search box: ', ref);
+    return (
+      <div>
+        <LoadScript
+          googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
+        >
+          <GoogleMap
+            zoom={10}
+            center={center}
+            mapContainerStyle={{ height: '400px', width: '100%' }}
+            onClick={(e) => {
+              const lat = e.latLng.lat();
+              const lng = e.latLng.lng();
+              setSelected({ lat, lng });
+              getAndSetAddress({ lat, lng });
+            }}
+          >
+            {selected && <Marker position={selected} />}
+          </GoogleMap>
+        </LoadScript>
+        <div className="places-container">
+          <div>
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Enter an address"
+            />
+            <button onClick={handleSearch}>Search</button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  return (
-    <LoadScript
-      googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
-      libraries={['places']}
-    >
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={10}
-      >
-        <StandaloneSearchBox
-          onLoad={onLoad}
-          onPlacesChanged={() => console.log('places changed')}
-        >
-          <input
-            type="text"
-            placeholder="Tìm kiếm địa chỉ"
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `240px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "50%",
-              marginLeft: "-120px"
-            }}
-          />
-        </StandaloneSearchBox>
-      </GoogleMap>
-    </LoadScript>
-  );
-};
-
-export default MapComponent;
+  async function getAndSetAddress({ lat, lng }) {
+    try {
+      const results = await getGeocode({ location: { lat, lng } });
+      if (results && results[0]) {
+        setSearchValue(results[0].formatted_address); 
+      }
+    } catch (error) {
+      console.error('Error getting address from latlng:', error);
+    }
+  }
