@@ -56,10 +56,17 @@ export default function ServiceRegistration() {
   //   vacuumCleaning: false,
   // });
   // const [petPreference, setPetPreference] = useState('');
-  const [searchValue, setSearchValue] = useState('');
+  
   const [selected, setSelected] = useState(null);
 
+
+  
+
+
+
   const {
+    searchValue,
+    setSearchValue,
     selectedDuration,
     setSelectedDuration,
     workDays,
@@ -90,6 +97,12 @@ export default function ServiceRegistration() {
     petPreference,
     setPetPreference,
   } = useContext(DonHangContext);
+
+
+
+  
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -391,8 +404,8 @@ export default function ServiceRegistration() {
                 <FormControlLabel
                   control={<Checkbox />}
                   label={employee.ten}
-                  checked={selectedEmployee === employee.id}
-                  onChange={() => setSelectedEmployee(employee.id)}
+                  checked={selectedEmployee === employee}
+                  onChange={() => setSelectedEmployee(employee)}
                 />
               </div>
             ))}

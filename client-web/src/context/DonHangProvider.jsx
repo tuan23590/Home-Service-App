@@ -18,7 +18,7 @@ export default function DonHangProvider({ children }) {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employeeSelectionSuccess, setEmployeeSelectionSuccess] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
-
+  const [searchValue, setSearchValue] = useState('');
   const [serviceOptions, setServiceOptions] = useState({
     laundry: false,
     cooking: false,
@@ -29,6 +29,8 @@ export default function DonHangProvider({ children }) {
   return (
     <DonHangContext.Provider
   value={{
+    searchValue,
+    setSearchValue,
     selectedDuration,
     setSelectedDuration,
     workDays,

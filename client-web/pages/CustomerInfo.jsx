@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 
 const CustomerInfo = () => {
   const {
+    searchValue,
     selectedDuration,
     workDays,
     repeatWeekly,
@@ -19,7 +20,14 @@ const CustomerInfo = () => {
     selectedPlace,
     serviceOptions,
     petPreference,
+    selectedEmployee,
   } = useContext(DonHangContext);
+
+
+  useEffect(() => {
+    console.log('selectedEmployee:', selectedEmployee);
+  }, [selectedEmployee]);
+
 
   const [dichVus, setDichVus] = useState([]);
   const [selectedDichVu, setSelectedDichVu] = useState(''); // Thêm state cho selectedDichVu
@@ -81,32 +89,32 @@ const CustomerInfo = () => {
   const petType = petPreference === 'dog' ? 'Chó' : 'Mèo';
 
   const handlePost = async () => {
-    // Lấy dữ liệu cần thiết từ context và dịch vụ từ DBDataDichVu
-    const selectedServiceName = dichVus.find(dichVu => dichVu.id === selectedDichVu)?.tenDichVu;
+    // // Lấy dữ liệu cần thiết từ context và dịch vụ từ DBDataDichVu
+    // const selectedServiceName = dichVus.find(dichVu => dichVu.id === selectedDichVu)?.tenDichVu;
 
-    // Thực hiện logic đăng tin
-    console.log('Đã đăng tin');
-    console.log('Địa điểm đã chọn:', selectedPlace);
-    console.log('Ngày làm việc:', selectedWorkDays.join(', '));
-    console.log('Thời lượng được chọn:', selectedDuration, 'giờ');
-    console.log('Lặp lại hàng tuần:', repeatWeekly ? 'Có' : 'Không');
-    console.log('Số lần trong tuần:', repeatCount);
-    console.log('Ngày bắt đầu:', startDate);
-    console.log('Ngày kết thúc:', endDate);
-    console.log('Nhân viên được chọn:', selectedEmployeeDisplay);
-    console.log('Dịch vụ thêm:', selectedServices.join(', '));
-    console.log('Thú cưng:', petType);
-    console.log('Tổng tiền:', totalPrice, 'VNĐ');
-    console.log('Dịch vụ đã chọn:', selectedServiceName);
+    // // Thực hiện logic đăng tin
+    // console.log('Đã đăng tin');
+    // console.log('Địa điểm đã chọn:', searchValue);
+    // console.log('Ngày làm việc:', selectedWorkDays.join(', '));
+    // console.log('Thời lượng được chọn:', selectedDuration, 'giờ');
+    // console.log('Lặp lại hàng tuần:', repeatWeekly ? 'Có' : 'Không');
+    // console.log('Số lần trong tuần:', repeatCount);
+    // console.log('Ngày bắt đầu:', startDate);
+    // console.log('Ngày kết thúc:', endDate);
+    // console.log('Nhân viên được chọn:', selectedEmployeeDisplay);
+    // console.log('Dịch vụ thêm:', selectedServices.join(', '));
+    // console.log('Thú cưng:', petType);
+    // console.log('Tổng tiền:', totalPrice, 'VNĐ');
+    // console.log('Dịch vụ đã chọn:', selectedServiceName);
   };
-
+  
   return (
     <Box >
       <div >
         <Typography variant="h6">Thông tin đơn hàng</Typography>
         <List>
           <ListItem>
-            <ListItemText primary={`Địa điểm đã chọn: ${selectedPlace}`} />
+            <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
           </ListItem>
           <ListItem>
             <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
@@ -127,7 +135,7 @@ const CustomerInfo = () => {
             <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
           </ListItem>
           <ListItem>
-            <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployeeDisplay}`} />
+            <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee.ten}`} />
           </ListItem>
           <ListItem>
             <ListItemText primary={`Dịch vụ thêm: ${selectedServices.join(', ')}`} />
