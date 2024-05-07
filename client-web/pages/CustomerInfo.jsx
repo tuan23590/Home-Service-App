@@ -1,10 +1,9 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useContext, useEffect, useState } from 'react';
-import { Typography, List, ListItem, ListItemText, Box, Button } from '@mui/material';
-import { DBDataDichVu } from '../utils/DichVuUtils';
+import { Typography, List, ListItem, ListItemText, Box, Button, Grid, TextField, FormControlLabel, Checkbox, MenuItem } from '@mui/material';
 import { DonHangContext } from '../src/context/DonHangProvider';
-import './CustomerInfo.css';
+import { DBDataDichVu } from '../utils/DichVuUtils';
 import { Link } from 'react-router-dom';
+import './CustomerInfo.css';
 
 const CustomerInfo = () => {
   const {
@@ -17,33 +16,20 @@ const CustomerInfo = () => {
     endDate,
     totalPrice,
     nhanViens,
-    selectedPlace,
     serviceOptions,
     petPreference,
     selectedEmployee,
   } = useContext(DonHangContext);
 
-
-  useEffect(() => {
-    console.log('selectedEmployee:', selectedEmployee);
-  }, [selectedEmployee]);
-
-
   const [dichVus, setDichVus] = useState([]);
-  const [selectedDichVu, setSelectedDichVu] = useState(''); // Thêm state cho selectedDichVu
-  const [formData, setFormData] = useState({
-    maDonHang: '',
-    khachHang: '',  
-    ngayDatHang: '',
-    nhanVien: '',
-    thoiGianThucHien: '',
-    trangThai: '',
-    trangThaiDonHang: '',
-    tongTien: '',
-    vatNuoi: '',
-    dichVu: '',
-    ghiChu: ''
-});
+  const [paymentInfo, setPaymentInfo] = useState({
+    bankAccountNumber: '',
+    expirationDate: '',
+    pin: '',
+    saveCardInfo: false,
+    paymentMethod: 'cash', // Mặc định là thanh toán bằng tiền mặt
+  });
+  const [showCreditCardFields, setShowCreditCardFields] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +43,6 @@ const CustomerInfo = () => {
     fetchData();
   }, []);
 
-  // Chuyển đổi ngày làm việc thành danh sách các ngày
   const daysOfWeek = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
   const selectedWorkDays = workDays.reduce((acc, curr, index) => {
     if (curr) {
@@ -89,31 +74,59 @@ const CustomerInfo = () => {
   const petType = petPreference === 'dog' ? 'Chó' : 'Mèo';
 
   const handlePost = async () => {
-    // // Lấy dữ liệu cần thiết từ context và dịch vụ từ DBDataDichVu
-    // const selectedServiceName = dichVus.find(dichVu => dichVu.id === selectedDichVu)?.tenDichVu;
-
-    // // Thực hiện logic đăng tin
-    // console.log('Đã đăng tin');
-    // console.log('Địa điểm đã chọn:', searchValue);
-    // console.log('Ngày làm việc:', selectedWorkDays.join(', '));
-    // console.log('Thời lượng được chọn:', selectedDuration, 'giờ');
-    // console.log('Lặp lại hàng tuần:', repeatWeekly ? 'Có' : 'Không');
-    // console.log('Số lần trong tuần:', repeatCount);
-    // console.log('Ngày bắt đầu:', startDate);
-    // console.log('Ngày kết thúc:', endDate);
-    // console.log('Nhân viên được chọn:', selectedEmployeeDisplay);
-    // console.log('Dịch vụ thêm:', selectedServices.join(', '));
-    // console.log('Thú cưng:', petType);
-    // console.log('Tổng tiền:', totalPrice, 'VNĐ');
-    // console.log('Dịch vụ đã chọn:', selectedServiceName);
+    if (paymentInfo.paymentMethod === 'cash') {
+      // Xử lý thanh toán bằng tiền mặt
+      console.log('Xử lý thanh toán bằng tiền mặt');
+    } else if (paymentInfo.paymentMethod === 'creditCard') {
+      // Xử lý thanh toán bằng thẻ ngân hàng
+      console.log('Xử lý thanh toán bằng thẻ ngân hàng');
+    }
   };
   
   return (
-    <Box >
-      <div >
-        <Typography variant="h6">Thông tin đơn hàng</Typography>
+    <Box className="customer-info-container">
+      <Typography variant="h6">Thông tin đơn hàng</Typography>
+      <List>
+        <ListItem>
+          <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Thời lượng được chọn: ${selectedDuration} giờ`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Lặp lại hàng tuần: ${repeatWeekly ? 'Có' : 'Không'}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Số lần trong tuần: ${repeatCount}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Ngày bắt đầu: ${startDate}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee?.ten}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Dịch vụ thêm: ${selectedServices.join(', ')}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Vật Nuôi: ${petType}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Tổng tiền: ${totalPrice} VNĐ`} />
+        </ListItem>
+      </List>
+
+      <Box mt={2}>
+        <Typography variant="h6">Thông tin thanh toán</Typography>
         <List>
           <ListItem>
+<<<<<<< HEAD
             <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
           </ListItem>
           <ListItem>
@@ -145,16 +158,77 @@ const CustomerInfo = () => {
           </ListItem>
           <ListItem>
             <ListItemText primary={`Tổng tiền: ${totalPrice} VNĐ`} />
+=======
+            <ListItemText primary="Phương thức thanh toán" />
+            <FormControlLabel
+              sx={{ marginLeft: 0 }}
+              control={
+                <TextField
+                  select
+                  value={paymentInfo.paymentMethod}
+                  onChange={(e) => {
+                    setPaymentInfo({ ...paymentInfo, paymentMethod: e.target.value });
+                    setShowCreditCardFields(e.target.value === 'creditCard');
+                  }}
+                >
+                  <MenuItem value="cash">Tiền mặt</MenuItem>
+                  <MenuItem value="creditCard">Thẻ ngân hàng</MenuItem>
+                </TextField>
+              }
+            />
+>>>>>>> af9190480993c83e376b262f287170fdbd1fbcae
           </ListItem>
+          {showCreditCardFields && (
+            <>
+              <ListItem>
+                <ListItemText primary="Số tài khoản ngân hàng" />
+                <TextField
+                  value={paymentInfo.bankAccountNumber}
+                  onChange={(e) => setPaymentInfo({ ...paymentInfo, bankAccountNumber: e.target.value })}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Ngày hết hạn thẻ" />
+                <TextField
+                  value={paymentInfo.expirationDate}
+                  onChange={(e) => setPaymentInfo({ ...paymentInfo, expirationDate: e.target.value })}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Mã PIN" />
+                <TextField
+                  value={paymentInfo.pin}
+                  onChange={(e) => setPaymentInfo({ ...paymentInfo, pin: e.target.value })}
+                />
+              </ListItem>
+              <ListItem>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={paymentInfo.saveCardInfo}
+                      onChange={(e) => setPaymentInfo({ ...paymentInfo, saveCardInfo: e.target.checked })}
+                    />
+                  }
+                  label="Lưu thông tin thẻ"
+                />
+              </ListItem>
+            </>
+          )}
         </List>
-        <Button variant="contained" color="primary" onClick={handlePost}>
-          Đăng tin
-        </Button>
+      </Box>
 
-        <Button variant="contained" color="primary" component={Link} to="/dv1">
-  Trở về
-</Button>
-      </div>
+      <Grid container spacing={2}>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={handlePost}>
+            Đăng tin
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" component={Link} to="/dv1">
+            Trở về
+          </Button>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
