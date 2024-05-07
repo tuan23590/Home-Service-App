@@ -165,17 +165,10 @@ export default function Home() {
             </Menu>
           </div>
           <div>
-            {isLoggedIn ? (
-              <div>
-                <Typography variant="body1" sx={{ mr: 2 }}>Xin chào {currentUser}</Typography>
-                <Button onClick={handleLogout} color="inherit">Đăng Xuất</Button>
-              </div>
-            ) : (
               <div>
                 <Button component={Link} to="/login" color="inherit">Đăng Nhập</Button>
                 <Button component={Link} to="/" color="inherit">Đăng Ký</Button>
               </div>
-            )}
           </div>
         </Toolbar>
       </AppBar>

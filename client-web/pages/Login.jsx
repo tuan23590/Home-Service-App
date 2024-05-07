@@ -1,30 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-import { TextField, Button, Checkbox, FormControlLabel, Snackbar } from '@mui/material';
+import { TextField, Button, Checkbox, FormControlLabel, Snackbar, Menu, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-const TaiKhoanLoader = async () => {
-  const query = `query MyQuery {
-    taiKhoans {
-      id
-      taiKhoan
-      matKhau
-      phanQuyen
-    }
-  }`;
-
-  const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({ query })
-  });
-
-  const data = await res.json();
-  return data;
-};
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,6 +12,7 @@ const Login = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [userRole, setUserRole] = useState('');
+  const [anchorElManage, setAnchorElManage] = useState(null); // State for management menu
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -43,22 +22,67 @@ const Login = () => {
     setPassword(event.target.value);
   };
 
+  const handleManageClick = (event) => {
+    setAnchorElManage(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorElManage(null);
+  };
+
+  const TaiKhoanLoader = async () => {
+    const query = `query MyQuery {
+      taiKhoans {
+        id
+        taiKhoan
+        matKhau
+        phanQuyen
+      }
+    }`;
+
+    const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ query })
+    });
+
+    const data = await res.json();
+    return data;
+  };
+
+  const authenticateUser = async () => {
+    try {
+      const data = await TaiKhoanLoader();
+      const taiKhoans = data.data.taiKhoans;
+      
+      const currentUser = taiKhoans.find(taiKhoan => taiKhoan.taiKhoan === username && taiKhoan.matKhau === password);
+
+      if (currentUser) {
+        return currentUser.phanQuyen;
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Error authenticating user:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const data = await TaiKhoanLoader();
-      const currentUser = data.data.taiKhoans.find(taiKhoan => taiKhoan.taiKhoan === username && taiKhoan.matKhau === password);
-      if (currentUser) {
-        setUserRole(currentUser.phanQuyen);
-        setSnackbarOpen(true);
-        setSnackbarMessage('Đăng nhập thành công!');
-        navigate('/');
-      } else {
-        setSnackbarOpen(true);
-        setSnackbarMessage('Thông tin tài khoản không chính xác.');
-      }
+      const role = await authenticateUser();
+      setUserRole(role);
+      setSnackbarOpen(true);
+      setSnackbarMessage('Đăng nhập thành công!');
+      navigate('/');
     } catch (error) {
-      console.error('Error loading taiKhoans:', error);
+      console.error('Error logging in:', error);
+      setSnackbarOpen(true);
+      setSnackbarMessage('Đăng nhập thất bại. Vui lòng thử lại.');
     }
   };
 
@@ -75,13 +99,7 @@ const Login = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center', 
-      minHeight: '100vh', 
-    }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
       <div style={{ width: '300px' }}>
         <h2>Đăng Nhập</h2>
         <form onSubmit={handleSubmit}>
@@ -127,7 +145,7 @@ const Login = () => {
             >
               Quên Mật Khẩu
             </Button>
-            <Button variant="text">Đăng Ký</Button>
+            <Button component={Link} to="/register" variant="text">Đăng Ký</Button>
           </div>
         </form>
         <Snackbar
@@ -137,9 +155,28 @@ const Login = () => {
           message={snackbarMessage}
         />
       </div>
-      {userRole && (
+      {userRole === 'Quản Lý' && (
         <div>
-          Phân quyền: {userRole}
+          <Button
+            aria-controls="menu-manage"
+            aria-haspopup="true"
+            onClick={handleManageClick}
+            color="inherit"
+            sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+          >
+            Quản lý
+          </Button>
+          <Menu
+            id="menu-manage"
+            anchorEl={anchorElManage}
+            open={Boolean(anchorElManage)}
+            onClose={handleClose}
+          >
+            <MenuItem component={Link} to="/order" onClick={handleClose}>Quản lý Xét Duyệt</MenuItem>
+            <MenuItem component={Link} to="/themdonhang" onClick={handleClose}>Thêm Đơn Hàng</MenuItem>
+            <MenuItem component={Link} to="/manage/salary" onClick={handleClose}>Quản lý Lương</MenuItem>
+            <MenuItem component={Link} to="/manage/statistics" onClick={handleClose}>Thống kê</MenuItem>
+          </Menu>
         </div>
       )}
     </div>
