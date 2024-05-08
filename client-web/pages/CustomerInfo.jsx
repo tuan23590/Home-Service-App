@@ -126,7 +126,6 @@ const CustomerInfo = () => {
         <Typography variant="h6">Thông tin thanh toán</Typography>
         <List>
           <ListItem>
-<<<<<<< HEAD
             <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
           </ListItem>
           <ListItem>
@@ -176,7 +175,6 @@ const CustomerInfo = () => {
                 </TextField>
               }
             />
->>>>>>> af9190480993c83e376b262f287170fdbd1fbcae
           </ListItem>
           {showCreditCardFields && (
             <>
