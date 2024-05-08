@@ -73,7 +73,6 @@ export default function ChonNgayLam() {
 
     return (
         <View>
-            <Text>test</Text>
             <View style={styles.container}>
                 <Text style={{ color: 'gray' }}>Chọn ngày làm</Text>
                 <Text style={{ fontWeight: 'bold' }}>Tháng {new Date().getMonth() + 1}/{new Date().getFullYear()}</Text>

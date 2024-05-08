@@ -1,16 +1,17 @@
 import { View, Text, Switch, Modal, Button, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors';
 import Heading from './../../Compunents/Heading';
 import { CheckBox,Input } from '@rneui/themed';
+import { formCaLeContext } from './BookingSingle';
 
-export default function TuyChon({onselectedVatNuoi}) {
+export default function TuyChon() {
     const [isSwitchOn1, setIsSwitchOn1] = useState(false);
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
-    const [vatNuoi, setVatNuoi] = useState('');
+    const {setVatNuoi} = useContext(formCaLeContext);
     const [openThuCung, setOpenThuCung] = useState(false);
     const [text, onTextChange] = useState('');
 
@@ -29,14 +30,11 @@ export default function TuyChon({onselectedVatNuoi}) {
                 setVatNuoi(vatNuoi => vatNuoi ? `${vatNuoi}, ${text}` : text);  
             }
     }
-    useEffect(() => {
-        onselectedVatNuoi(vatNuoi);        
-    }, [openThuCung]);
     return (
         <View>
             <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                 <AntDesign name="hearto" size={22} color="black" />
-                <Text style={{ marginLeft: 5 }}>Ưu tiên người làm yêu thích </Text>
+                <Text style={{ marginLeft: 5 }}>Ưu tiên Tasker yêu thích </Text>
                 <AntDesign name="questioncircleo" size={15} color="black" />
                 <Switch
                     style={{ position: 'absolute', right: 0}}

@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
-import React, { createContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import HeaderBooking from './HeaderBooking'
 import Heading from './../../Compunents/Heading'
 import ThoiLuong from './ThoiLuong'
@@ -10,18 +10,23 @@ import Colors from '../../Utils/Colors'
 import MapPicker from '../../Compunents/MapPicker'
 import GlobalAPI from '../../Utils/GlobalAPI'
 import ChonThoiGianLamViec from './ChonThoiGianLamViec';
-
+import numeral from 'numeral';
+import { createContext } from 'react';
+import { color } from '@rneui/themed/dist/config'
+export const formCaLeContext = createContext();
 
 export default function BookingSingle({hideModal}) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
-  const [chonDichVu, setChonDichVu] = useState();
+  const [chonDichVuThem, setChonDichVuThem] = useState();
 
   const [chonThoiLuong, setChonThoiLuong] = useState();
   const [vatNuoi, setVatNuoi] = useState('');
   const [dichVuThem, setDichVuThem] = useState([]);
   const [dichVuCaLe, setDichVuCaLe] = useState([]);
+  const [thoiGianLamViec, setThoiGianLamViec] = useState(0);
+  const [tongCong, setTongCong] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,12 +50,29 @@ export default function BookingSingle({hideModal}) {
     
   const press = () => {
     console.log('Thoi luong cong viec: ',chonThoiLuong);
-    console.log('So luong dich vu them: ',chonDichVu.length);
+    console.log('So luong dich vu them: ',chonDichVuThem.length);
     console.log('vat nuoi: ',vatNuoi);
     setModalThoiGianLamViec(true);
   }
+  useEffect(() => { 
+   
+    const tongTienDichVuThem = chonDichVuThem?.reduce((accumulator, current) => accumulator + current.gia, 0);
+    setTongCong(tongTienDichVuThem + chonThoiLuong?.gia);
+    setThoiGianLamViec(chonThoiLuong?.thoiGian);
+  }, [chonThoiLuong, chonDichVuThem]);
   return (
-    <context.Provider value={{test, setTest}}>
+    <formCaLeContext.Provider value={{
+      chonThoiLuong, 
+      setChonThoiLuong,
+      chonDichVuThem,
+      setChonDichVuThem,
+      vatNuoi,
+      setVatNuoi,
+      thoiGianLamViec, 
+      setThoiGianLamViec,
+      tongCong,
+      
+      }}>
       <View>
         <View style={{padding: 20}}> 
       <TouchableOpacity style={{display:'flex',flexDirection:'row',gap: 10,
@@ -68,17 +90,20 @@ export default function BookingSingle({hideModal}) {
 
       <View style={{marginHorizontal:20}}>
         <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
-        <ThoiLuong data={dichVuCaLe} childenSelected={setChonThoiLuong} parentSelected = {chonThoiLuong} />
+        <ThoiLuong data={dichVuCaLe}/>
 
         <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
-        <DichVu data={dichVuThem} onselectedDichVu={setChonDichVu} />
+        <DichVu data={dichVuThem} />
 
         <Heading text={"Tùy chọn"}/>
-        <TuyChon onselectedVatNuoi={setVatNuoi} />
+        <TuyChon />
         <TouchableOpacity 
           onPress={()=>press()}
         >
-          <Text style={styles.confirmBtn}>Tiếp theo</Text>
+          <View style={styles.container}>
+            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{chonThoiLuong?.thoiGian}h</Text>
+            <Text style={{color: 'white'}}>Tiếp theo</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -97,19 +122,20 @@ export default function BookingSingle({hideModal}) {
           <ChonThoiGianLamViec hideModal={()=>setModalThoiGianLamViec(false)}/>
         </Modal>
       </View>
-    </context.Provider>
-    
+    </formCaLeContext.Provider>
   )
 }
 
 const styles = StyleSheet.create({ 
-  confirmBtn:{
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: Colors.GREEN,
-    color: 'white',
     padding: 15,
-    textAlign: 'center',
     borderRadius: 10,
     marginTop: 20,
     fontSize: 17
-  }
+}
 })
