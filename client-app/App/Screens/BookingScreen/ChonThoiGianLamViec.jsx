@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useContext } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import Heading from './../../Compunents/Heading';
 import ChonNgayLam from './ChonNgayLam';
@@ -7,10 +7,11 @@ import GhiChuChoTasker from './GhiChuChoTasker';
 import Colors from '../../Utils/Colors';
 import numeral from 'numeral';
 import { formCaLeContext } from './BookingSingle';
+import ChiTietDonHang from './ChiTietDonHang';
 
 
 export default function ChonThoiGianLamViec({hideModal}) {
-  
+  const [modalVisible, setModalVisible] = useState(false);
   const {tongCong,chonThoiLuong}= useContext(formCaLeContext);
 
   return (
@@ -25,12 +26,20 @@ export default function ChonThoiGianLamViec({hideModal}) {
       <ChonNgayLam />
       <Heading text="Ghi chú cho tasker" description='Ghi chú này sẽ giúp Tasker làm nhanh và tốt hơn'/>
       <GhiChuChoTasker />
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>{setModalVisible(true)}}>
       <View style={styles.container}>
             <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{chonThoiLuong?.thoiGian}h</Text>
             <Text style={{color: 'white'}}>Tiếp theo</Text>
         </View>
       </TouchableOpacity>
+      <Modal
+        animationType='slide'
+        visible={modalVisible}
+        style={{top: -20}}
+        >
+          <ChiTietDonHang hideModal={()=>setModalVisible(false)}/>
+        </Modal>
+      
     </View>
   )
 }

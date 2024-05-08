@@ -20,13 +20,14 @@ export default function BookingSingle({hideModal}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
   const [chonDichVuThem, setChonDichVuThem] = useState();
-
+  const [gioLam, setGioLam] = useState(new Date());
   const [chonThoiLuong, setChonThoiLuong] = useState();
   const [vatNuoi, setVatNuoi] = useState('');
   const [dichVuThem, setDichVuThem] = useState([]);
   const [dichVuCaLe, setDichVuCaLe] = useState([]);
   const [thoiGianLamViec, setThoiGianLamViec] = useState(0);
   const [tongCong, setTongCong] = useState(0);
+  const [ngayLamViec, setNgayLamViec] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,7 +72,10 @@ export default function BookingSingle({hideModal}) {
       thoiGianLamViec, 
       setThoiGianLamViec,
       tongCong,
-      
+      gioLam, 
+      setGioLam,
+      ngayLamViec, 
+      setNgayLamViec
       }}>
       <View>
         <View style={{padding: 20}}> 

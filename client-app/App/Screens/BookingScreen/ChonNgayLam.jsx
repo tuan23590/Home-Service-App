@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Button } from 'react-native';
 import Colors from '../../Utils/Colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Switch } from '@rneui/themed';
 import { AntDesign } from '@expo/vector-icons';
+import { formCaLeContext } from './BookingSingle';
 
 
 export default function ChonNgayLam() {
-    const [selectedTime, setSelectedTime] = useState(new Date());
+    const {gioLam, setGioLam} = useContext(formCaLeContext);
     const [showPicker, setShowPicker] = useState(false);
     const [lapLaiHangTuan, setLapLaiHangTuan] = useState(false);
-    const [selectedDates, setSelectedDates] = useState([]);
+    const {ngayLamViec, setNgayLamViec} = useContext(formCaLeContext);
 
     const handleTimeChange = (event, selected) => {
-        const currentTime = selected || selectedTime;
+        const currentTime = selected || gioLam;
         setShowPicker(false);
-        setSelectedTime(currentTime);
+        setGioLam(currentTime);
     };
 
     const formatTime = (time) => {
@@ -29,19 +30,19 @@ export default function ChonNgayLam() {
     };
     const handleDayPress = (dateItem) => {
         const date = formatDate(dateItem);
-        if (selectedDates.includes(date)) {
-            setSelectedDates(selectedDates.filter((d) => d !== date));
+        if (ngayLamViec.includes(date)) {
+            setNgayLamViec(ngayLamViec.filter((d) => d !== date));
         } else {
-            setSelectedDates([...selectedDates, date]);
+            setNgayLamViec([...ngayLamViec, date]);
         }
         
     };
     useEffect(() => {
-        console.log(selectedDates);
-    }, [selectedDates]);
+        console.log(ngayLamViec);
+    }, [ngayLamViec]);
 
     const renderDayItem = ({ item }) => {
-        const isSelected = selectedDates.includes(formatDate(item.date));
+        const isSelected = ngayLamViec.includes(formatDate(item.date));
         return (
             <TouchableOpacity onPress={() => handleDayPress(item.date)}>
                 <View style={[styles.boxDay, { backgroundColor: isSelected ? Colors.ORANGE : 'transparent' }]}>
@@ -91,12 +92,12 @@ export default function ChonNgayLam() {
                         <AntDesign name="clockcircle" size={20} color={Colors.ORANGE} style={{ marginHorizontal: 10 }} />
                         <Text style={{ fontWeight: 'bold' }}>Chọn giờ làm</Text>
                     </View>
-                    <Text style={styles.dateTime}>{formatTime(selectedTime.getHours())} : {formatTime(selectedTime.getMinutes())}</Text>
+                    <Text style={styles.dateTime}>{formatTime(gioLam.getHours())} : {formatTime(gioLam.getMinutes())}</Text>
                 </View>
             </TouchableOpacity>
             {showPicker && (
                 <DateTimePicker
-                    value={selectedTime}
+                    value={gioLam}
                     mode="time"
                     is24Hour={true}
                     display="spinner"
