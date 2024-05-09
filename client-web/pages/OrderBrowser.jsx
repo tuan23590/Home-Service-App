@@ -92,7 +92,10 @@ export default function OrderAllocation() {
     setSelectedOrder(order);
     setDialogOpen(true);
   };
-
+  const formatDate = (date) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return date.toLocaleDateString('en-GB', options);
+  };
   // const handleDialogClose = () => {
   //   setDialogOpen(false);
   // };
@@ -186,16 +189,16 @@ export default function OrderAllocation() {
                       Dịch vụ đã đặt
                     </Typography>
                    <TableContainer component={Paper}>
+                   <TableContainer component={Paper}>
   <Table>
     <TableHead>
       <TableRow>
         <TableCell>Duyệt</TableCell>
         <TableCell>Mã Dịch vụ</TableCell>
         <TableCell>Tên Dịch vụ</TableCell>
-        <TableCell>Thời Lượng</TableCell>
-        <TableCell>Thứ</TableCell>
-        <TableCell>Giá</TableCell>
-        <TableCell>Ngày bắt đầu</TableCell>
+        <TableCell>Thời gian</TableCell>
+        <TableCell>Thời Gian Làm Việc</TableCell>
+        <TableCell>Giá tiền</TableCell>
         <TableCell>Cộng tác viên</TableCell>
       </TableRow>
     </TableHead>
@@ -203,41 +206,38 @@ export default function OrderAllocation() {
       {selectedOrder && Array.isArray(selectedOrder.dichVus) ? (
         selectedOrder.dichVus.map((service, index) => (
           <TableRow key={index}>
-            <TableCell>
-              
-            </TableCell>
+            <TableCell>{/* Dữ liệu cho cột "Duyệt" */}</TableCell>
             <TableCell>{service.id}</TableCell>
             <TableCell>{service.tenDichVu}</TableCell>
             <TableCell>{service.thoiGian}</TableCell>
-            <TableCell>{service.thoiGianLamViec}</TableCell>
-            {/* <TableCell>{service.gia}</TableCell>
-            <TableCell>{service.thoiGianThucHien.thoiGianBatDau}</TableCell> */}
+            <TableCell>{formatDate(new Date(service.thoiGianLamViec))}</TableCell>          
+              <TableCell>{service.tongTien}</TableCell>
             <TableCell>
-              {service.nhanVien ? (
-                <Typography>{service.nhanVien}</Typography>
+              {service.nhanVienS ? (
+                <Typography>{service.nhanVienS}</Typography>
               ) : (
-                <Button onClick={() => console.log("Thêm nhân viên")}>Thêm nhân viên</Button>
+                <Button onClick={() => console.log("Thêm nhân viên")}>Thêm CTV</Button>
               )}
             </TableCell>
           </TableRow>
         ))
       ) : (
         <TableRow>
-          <TableCell colSpan={8}>Không có dịch vụ đã đặt</TableCell>
+          <TableCell colSpan={7}>Không có dịch vụ đã đặt</TableCell>
         </TableRow>
       )}
     </TableBody>
   </Table>
 </TableContainer>
-
-                  </div>
-                )}
-              </Paper>
-            </Grid>
-          </Grid>
-        )}
-      </Container>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} message={snackbarMessage} />
-    </div>
-  );
-}
+</TableContainer>
+                                  </div>
+                                )}
+                              </Paper>
+                            </Grid>
+                          </Grid>
+                        )}
+                      </Container>
+                      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} message={snackbarMessage} />
+                    </div>
+                  );
+                }
