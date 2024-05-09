@@ -36,8 +36,9 @@ export const DonHangLoader = async () => {
       dichVus {
         id
         tenDichVu
-        thoiGian
-        thoiGianLamViec
+        giaTien
+        thoiGianBatDau
+        thoiGianKetThuc
       }
       thoiLuongLamViec
       thu
@@ -82,6 +83,7 @@ export default function OrderAllocation() {
       const data = await DonHangLoader();
       if (data && data.data && data.data.donHangs) {
         setOrders(data.data.donHangs);
+        console.log("Orders:", data.data.donHangs); 
       }
     };
     fetchData();
@@ -93,25 +95,25 @@ export default function OrderAllocation() {
     setDialogOpen(true);
   };
   const formatDate = (date) => {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
     return date.toLocaleDateString('en-GB', options);
-  };
-  // const handleDialogClose = () => {
-  //   setDialogOpen(false);
-  // };
+};
 
-  // const handleApproveOrder = () => {
-  //   setSnackbarMessage('Đã duyệt đơn hàng');
-  //   setSnackbarOpen(true);
-  //   setDialogOpen(false);
-  // };
+
 
   // Hàm xử lý khi đóng snackbar
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
-
+  const handleApproveService = (index) => {
+    const updatedServices = [...selectedOrder.dichVus];
+    updatedServices[index].isApproved = true; // hoặc false tùy thuộc vào thiết kế của bạn
+    setSelectedOrder(prevState => ({
+      ...prevState,
+      dichVus: updatedServices
+    }));
+  };
   console.log("selectedOrder", selectedOrder);
 
 
@@ -196,22 +198,29 @@ export default function OrderAllocation() {
         <TableCell>Duyệt</TableCell>
         <TableCell>Mã Dịch vụ</TableCell>
         <TableCell>Tên Dịch vụ</TableCell>
-        <TableCell>Thời gian</TableCell>
-        <TableCell>Thời Gian Làm Việc</TableCell>
+        <TableCell>Thời Gian Bắt đầu</TableCell>
+        <TableCell>Thời Gian Kết Thúc</TableCell>
         <TableCell>Giá tiền</TableCell>
         <TableCell>Cộng tác viên</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
-      {selectedOrder && Array.isArray(selectedOrder.dichVus) ? (
-        selectedOrder.dichVus.map((service, index) => (
-          <TableRow key={index}>
-            <TableCell>{/* Dữ liệu cho cột "Duyệt" */}</TableCell>
-            <TableCell>{service.id}</TableCell>
+                {selectedOrder && Array.isArray(selectedOrder.dichVus) ? (
+                  selectedOrder.dichVus.map((service, index) => (
+                    <TableRow key={index}>
+                    <TableCell>
+            {service.isApproved ? (
+              <span>Đã duyệt</span>
+            ) : (
+              <Button onClick={() => handleApproveService(index)}>Duyệt</Button>
+            )}
+          </TableCell>     
+           <TableCell>{service.id}</TableCell>
             <TableCell>{service.tenDichVu}</TableCell>
-            <TableCell>{service.thoiGian}</TableCell>
-            <TableCell>{formatDate(new Date(service.thoiGianLamViec))}</TableCell>          
-              <TableCell>{service.tongTien}</TableCell>
+            <TableCell>{formatDate(new Date(service.thoiGianBatDau))}</TableCell>          
+            <TableCell>{formatDate(new Date(service.thoiGianKetThuc))}</TableCell>          
+            <TableCell>{service.giaTien}</TableCell>
+
             <TableCell>
               {service.nhanVienS ? (
                 <Typography>{service.nhanVienS}</Typography>
