@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton,Divider, Typography, Container, Button, Menu, MenuItem, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Slide } from 'react-slideshow-image';
-import 'react-slideshow-image/dist/styles.css';
+import 'react-slideshow-image/dist/styles.css';x
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'; // Import GoogleMap, LoadScript và Marker từ react-google-maps/api
 
 export default function Home() {
