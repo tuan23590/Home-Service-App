@@ -1,21 +1,22 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Colors from './../../Utils/Colors'
+import { formCaLeContext } from './BookingSingle';
 
-export default function BookingTime({data,childenSelected,parentSelected}) {
+export default function BookingTime({data}) {
+
+  const {chonThoiLuong, setChonThoiLuong} = useContext(formCaLeContext);
+
+  useEffect(() => { 
+    handlePress(data[0]);
+   }, [data]);
+
   const [itemSelected, setItemSelected] = useState();
   const handlePress = (item) => {
+    setChonThoiLuong(item);
     setItemSelected(item);
   }
-  useEffect(() => {setItemSelected(data[0])}, [data]);
 
-  useEffect(() => {
-    childenSelected(itemSelected);
-  }, [itemSelected,childenSelected]);
-
-  useEffect(() => {
-    setItemSelected(parentSelected)
-  }, [parentSelected]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity

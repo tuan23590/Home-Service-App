@@ -1,11 +1,23 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Colors from '../../Utils/Colors'
+import { formCaLeContext } from './BookingSingle';
 
 
-export default function BookingService({data,onselectedDichVu}) {
-  const [dichVus, setDichVus] = useState([]);
+export default function BookingService({data}) {
+  const {setChonDichVuThem,thoiGianLamViec} = useContext(formCaLeContext);
   const [selectedItem, setSelectedItem] = useState([]);
+
+
+
+  const calculateTotalTime = () => {
+    let totalTime = thoiGianLamViec;
+    selectedItem.forEach(item => {
+      totalTime += item.thoiGian || 0;
+    });
+    return totalTime;
+  };
+
 
   const handlePress = (item) => {
     setSelectedItem(prevSelectedItems => {
@@ -14,15 +26,20 @@ export default function BookingService({data,onselectedDichVu}) {
         return prevSelectedItems.filter(selectedItem => selectedItem !== item);
       } 
       else {
-        return [...prevSelectedItems, item];
+        const total = calculateTotalTime() + (item.thoiGian || 0);
+        if (total <= 4) {
+          return [...prevSelectedItems, item];
+        } else {
+          alert("Tổng thời gian vượt quá 4 giờ");
+          return prevSelectedItems;
+        }
       }
     });
-  }
+  };
   
 useEffect(() => {
-  onselectedDichVu(selectedItem);
+    setChonDichVuThem(selectedItem);
 }, [selectedItem]);
- 
 
 
 const renderItem = ({ item }) => (
@@ -83,6 +100,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     padding: 10,
     borderRadius: 5,
+
     justifyContent: 'center',
     alignItems: 'center'
   },

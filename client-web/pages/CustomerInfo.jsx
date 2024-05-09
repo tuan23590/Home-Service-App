@@ -122,6 +122,38 @@ const CustomerInfo = () => {
         <Typography variant="h6">Thông tin thanh toán</Typography>
         <List>
           <ListItem>
+            <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Thời lượng được chọn: ${selectedDuration} giờ`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Lặp lại hàng tuần: ${repeatWeekly ? 'Có' : 'Không'}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Số lần trong tuần: ${repeatCount}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày bắt đầu: ${startDate}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee?.ten}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Dịch vụ thêm: ${selectedServices.join(', ')}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Vật Nuôi: ${petType}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Tổng tiền: ${totalPrice} VNĐ`} />
+=======
             <ListItemText primary="Phương thức thanh toán" />
             <FormControlLabel
               sx={{ marginLeft: 0 }}

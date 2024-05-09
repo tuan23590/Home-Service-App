@@ -9,17 +9,25 @@ import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors'
 import MapPicker from '../../Compunents/MapPicker'
 import GlobalAPI from '../../Utils/GlobalAPI'
-import { parse } from 'graphql'
+import ChonThoiGianLamViec from './ChonThoiGianLamViec';
+import numeral from 'numeral';
+import { createContext } from 'react';
+import { color } from '@rneui/themed/dist/config'
+export const formCaLeContext = createContext();
 
 export default function BookingSingle({hideModal}) {
+
   const [modalVisible, setModalVisible] = useState(false);
-
-  const [chonDichVu, setChonDichVu] = useState();
-
+  const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
+  const [chonDichVuThem, setChonDichVuThem] = useState();
+  const [gioLam, setGioLam] = useState(new Date());
   const [chonThoiLuong, setChonThoiLuong] = useState();
   const [vatNuoi, setVatNuoi] = useState('');
   const [dichVuThem, setDichVuThem] = useState([]);
   const [dichVuCaLe, setDichVuCaLe] = useState([]);
+  const [thoiGianLamViec, setThoiGianLamViec] = useState(0);
+  const [tongCong, setTongCong] = useState(0);
+  const [ngayLamViec, setNgayLamViec] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,60 +51,95 @@ export default function BookingSingle({hideModal}) {
     
   const press = () => {
     console.log('Thoi luong cong viec: ',chonThoiLuong);
-    console.log('So luong dich vu them: ',chonDichVu.length);
+    console.log('So luong dich vu them: ',chonDichVuThem.length);
     console.log('vat nuoi: ',vatNuoi);
+    setModalThoiGianLamViec(true);
   }
+  useEffect(() => { 
+   
+    const tongTienDichVuThem = chonDichVuThem?.reduce((accumulator, current) => accumulator + current.gia, 0);
+    setTongCong(tongTienDichVuThem + chonThoiLuong?.gia);
+    setThoiGianLamViec(chonThoiLuong?.thoiGian);
+  }, [chonThoiLuong, chonDichVuThem]);
   return (
-    <View>
-      <View style={{padding: 20}}> 
-     <TouchableOpacity style={{display:'flex',flexDirection:'row',gap: 10,
-    alignItems: 'center'}}
-    onPress={()=>hideModal()}
-    >
-     <Ionicons name="chevron-back-sharp" size={24} color="black" />
-      <Text style={{fontSize:17}}>Tạo đơn</Text>
-     </TouchableOpacity>
-     <TouchableOpacity onPress={()=>setModalVisible(true)}>
-      <Text>Mo Map</Text>
-     </TouchableOpacity>
-    </View>
-
-
-    <View style={{marginHorizontal:20}}>
-      <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
-      <ThoiLuong data={dichVuCaLe} childenSelected={setChonThoiLuong} parentSelected = {chonThoiLuong} />
-
-      <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
-      <DichVu data={dichVuThem} onselectedDichVu={setChonDichVu} />
-
-      <Heading text={"Tùy chọn"}/>
-      <TuyChon onselectedVatNuoi={setVatNuoi} />
-      <TouchableOpacity 
-        onPress={()=>press()}
+    <formCaLeContext.Provider value={{
+      chonThoiLuong, 
+      setChonThoiLuong,
+      chonDichVuThem,
+      setChonDichVuThem,
+      vatNuoi,
+      setVatNuoi,
+      thoiGianLamViec, 
+      setThoiGianLamViec,
+      tongCong,
+      gioLam, 
+      setGioLam,
+      ngayLamViec, 
+      setNgayLamViec
+      }}>
+      <View>
+        <View style={{padding: 20}}> 
+      <TouchableOpacity style={{display:'flex',flexDirection:'row',gap: 10,
+      alignItems: 'center'}}
+      onPress={()=>hideModal()}
       >
-        <Text style={styles.confirmBtn}>Tiếp theo</Text>
+      <Ionicons name="chevron-back-sharp" size={24} color="black" />
+        <Text style={{fontSize:17}}>Tạo đơn</Text>
       </TouchableOpacity>
-    </View>
+      <TouchableOpacity onPress={()=>setModalVisible(true)}>
+        <Text>Mo Map</Text>
+      </TouchableOpacity>
+      </View>
 
-    <Modal
-      animationType='slide'
-      visible={modalVisible}
-      style={{top: -20}}
-      >
-        <MapPicker hideModal={()=>setModalVisible(false)}/>
-      </Modal>
-    </View>
+
+      <View style={{marginHorizontal:20}}>
+        <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
+        <ThoiLuong data={dichVuCaLe}/>
+
+        <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
+        <DichVu data={dichVuThem} />
+
+        <Heading text={"Tùy chọn"}/>
+        <TuyChon />
+        <TouchableOpacity 
+          onPress={()=>press()}
+        >
+          <View style={styles.container}>
+            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{chonThoiLuong?.thoiGian}h</Text>
+            <Text style={{color: 'white'}}>Tiếp theo</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        animationType='slide'
+        visible={modalVisible}
+        style={{top: -20}}
+        >
+          <MapPicker hideModal={()=>setModalVisible(false)}/>
+        </Modal>
+        <Modal
+        animationType='slide'
+        visible={modalThoiGianLamViec}
+        style={{top: -20}}
+        >
+          <ChonThoiGianLamViec hideModal={()=>setModalThoiGianLamViec(false)}/>
+        </Modal>
+      </View>
+    </formCaLeContext.Provider>
   )
 }
 
 const styles = StyleSheet.create({ 
-  confirmBtn:{
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: Colors.GREEN,
-    color: 'white',
     padding: 15,
-    textAlign: 'center',
     borderRadius: 10,
     marginTop: 20,
     fontSize: 17
-  }
+}
 })
