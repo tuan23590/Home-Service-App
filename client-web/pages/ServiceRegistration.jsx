@@ -32,6 +32,7 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from "use-places-autocomplete";
 import "@reach/combobox/styles.css";
+import { dichVuLoader } from './../utils/DichVuUtils';
 
 
 export default function ServiceRegistration() {
@@ -90,6 +91,37 @@ export default function ServiceRegistration() {
     petPreference,
     setPetPreference,
   } = useContext(DonHangContext);
+
+
+
+
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+          const {data} = await dichVuLoader();
+          console.log("data: ", data);
+      } catch (error) {
+          console.error('Error fetching service data:', error);
+      }
+  };
+  fetchData();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     const fetchData = async () => {
