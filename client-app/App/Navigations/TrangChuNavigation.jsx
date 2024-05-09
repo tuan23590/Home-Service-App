@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BookingSingle from '../Screens/BookingScreen/BookingSingle';
 import BookingMonth from '../Screens/BookingScreen/BookingMonth';
 import TrangChu from '../Screens/TrangChu/TrangChu';
+import DonHangProvider from '../Provider/DonHangProvider';
 
 const Stack = createStackNavigator();
 

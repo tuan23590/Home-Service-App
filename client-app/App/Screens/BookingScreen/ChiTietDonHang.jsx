@@ -3,11 +3,11 @@ import React, { useContext } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import Heading from '../../Compunents/Heading';
 import Colors from '../../Utils/Colors';
-import { formCaLeContext } from './BookingSingle';
 import numeral from 'numeral';
+import { DonHangContext } from '../../Provider/DonHangProvider';
 
 export default function ChiTietDonHang({hideModal}) {
-    // const {tongCong,vatNuoi,chonDichVuThem,chonThoiLuong,gioLam,ngayLamViec} = useContext(formCaLeContext);
+    const {tongCong,vatNuoi,chonDichVuThem,chonThoiLuong,gioLam,ngayLamViec} = useContext(DonHangContext);
   return (
     <View>
          <TouchableOpacity

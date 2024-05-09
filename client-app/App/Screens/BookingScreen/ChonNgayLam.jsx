@@ -5,13 +5,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Switch } from '@rneui/themed';
 import { AntDesign } from '@expo/vector-icons';
 import { formCaLeContext } from './BookingSingle';
+import { DonHangContext } from '../../Provider/DonHangProvider';
 
 
 export default function ChonNgayLam() {
-    const {gioLam, setGioLam} = useContext(formCaLeContext);
+    const {gioLam, setGioLam} = useContext(DonHangContext);
     const [showPicker, setShowPicker] = useState(false);
     const [lapLaiHangTuan, setLapLaiHangTuan] = useState(false);
-    const {ngayLamViec, setNgayLamViec} = useContext(formCaLeContext);
+    const {ngayLamViec, setNgayLamViec} = useContext(DonHangContext);
 
     const handleTimeChange = (event, selected) => {
         const currentTime = selected || gioLam;

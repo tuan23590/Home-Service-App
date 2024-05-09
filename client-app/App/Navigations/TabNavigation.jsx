@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProfileScreen from './../Screens/ProfileScreen/ProfileScreen';
 import { Text } from 'react-native';
@@ -10,7 +10,6 @@ import NotifyScreen from './../Screens/NotifyScreen/NotifyScreen';
 import PromotionScreen from './../Screens/PromotionScreen/PromotionScreen';
 import ActivateScreen from './../Screens/ActivateScreen/ActivateScreen';
 import TrangChu from '../Screens/TrangChu/TrangChu.jsx';
-
 const Tab = createBottomTabNavigator();
 export default function TabNavigation() {
   return (
@@ -67,10 +66,6 @@ export default function TabNavigation() {
           <AntDesign name="user" size={size} color={color} />
         )
       }} />
-     
-
-   
-   
     </Tab.Navigator>
   )
 }

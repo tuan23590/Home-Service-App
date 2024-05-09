@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React,{createContext,useState} from 'react'
 
-export const DonHangContext = React.createContext()
+export const DonHangContext = createContext()
 
 // eslint-disable-next-line react/prop-types
 export default function DonHangProvider({ children }) {

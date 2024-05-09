@@ -6,13 +6,13 @@ import ChonNgayLam from './ChonNgayLam';
 import GhiChuChoTasker from './GhiChuChoTasker';
 import Colors from '../../Utils/Colors';
 import numeral from 'numeral';
-import { formCaLeContext } from './BookingSingle';
 import ChiTietDonHang from './ChiTietDonHang';
+import { DonHangContext } from '../../Provider/DonHangProvider';
 
 
 export default function ChonThoiGianLamViec({hideModal}) {
   const [modalVisible, setModalVisible] = useState(false);
-  const {tongCong,chonThoiLuong}= useContext(formCaLeContext);
+  const {tongCong,chonThoiLuong}= useContext(DonHangContext);
 
   return (
     <View style={{margin: 20}}>

@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Colors from './../../Utils/Colors'
-import { formCaLeContext } from './BookingSingle';
+import { DonHangContext } from '../../Provider/DonHangProvider';
 
-export default function BookingTime({data}) {
 
-  const {chonThoiLuong, setChonThoiLuong} = useContext(formCaLeContext);
+export default function ThoiLuong({data}) {
+
+  const {chonThoiLuong, setChonThoiLuong} = useContext(DonHangContext);
 
   useEffect(() => { 
     handlePress(data[0]);

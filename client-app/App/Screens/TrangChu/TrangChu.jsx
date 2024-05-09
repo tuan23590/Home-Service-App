@@ -7,6 +7,7 @@ import KhamPha from './KhamPha'
 import { ScrollView } from 'react-native-virtualized-view'
 
 export default function TrangChu() {
+  
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Header/>

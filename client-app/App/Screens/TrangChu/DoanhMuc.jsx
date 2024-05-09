@@ -6,6 +6,7 @@ import { Shadow } from 'react-native-shadow-2'
 import Heading from '../../Compunents/Heading'
 import { useNavigation } from '@react-navigation/native'
 import BookingSingle from './../BookingScreen/BookingSingle';
+import DonHangProvider from '../../Provider/DonHangProvider'
 export default function DoanhMuc() {
     const [categories, setCategories] = useState([]);
     
@@ -20,6 +21,7 @@ export default function DoanhMuc() {
         })
     }
   return (
+    
     <View>
       <Heading text='Doanh mục' isViewAll={true}/>
       <FlatList
@@ -45,9 +47,12 @@ export default function DoanhMuc() {
       visible={modalVisible}
       style={{top: -20}}
       >
+        <DonHangProvider>
         <BookingSingle hideModal={()=>setModalVisible(false)}/>
+        </DonHangProvider>
       </Modal>
     </View>
+    
   )
 }
 const styles = StyleSheet.create({

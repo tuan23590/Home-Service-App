@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import HeaderBooking from './HeaderBooking'
 import Heading from './../../Compunents/Heading'
 import ThoiLuong from './ThoiLuong'
@@ -11,23 +11,16 @@ import MapPicker from '../../Compunents/MapPicker'
 import GlobalAPI from '../../Utils/GlobalAPI'
 import ChonThoiGianLamViec from './ChonThoiGianLamViec';
 import numeral from 'numeral';
-import { createContext } from 'react';
-import { color } from '@rneui/themed/dist/config'
-export const formCaLeContext = createContext();
+import { DonHangContext } from '../../Provider/DonHangProvider'
 
 export default function BookingSingle({hideModal}) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
-  const [chonDichVuThem, setChonDichVuThem] = useState();
-  const [gioLam, setGioLam] = useState(new Date());
-  const [chonThoiLuong, setChonThoiLuong] = useState();
-  const [vatNuoi, setVatNuoi] = useState('');
   const [dichVuThem, setDichVuThem] = useState([]);
   const [dichVuCaLe, setDichVuCaLe] = useState([]);
-  const [thoiGianLamViec, setThoiGianLamViec] = useState(0);
-  const [tongCong, setTongCong] = useState(0);
-  const [ngayLamViec, setNgayLamViec] = useState([]);
+
+  const {tongCong,chonThoiLuong} = useContext(DonHangContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,33 +43,18 @@ export default function BookingSingle({hideModal}) {
 
     
   const press = () => {
-    console.log('Thoi luong cong viec: ',chonThoiLuong);
-    console.log('So luong dich vu them: ',chonDichVuThem.length);
-    console.log('vat nuoi: ',vatNuoi);
+    // console.log('Thoi luong cong viec: ',chonThoiLuong);
+    // console.log('So luong dich vu them: ',chonDichVuThem.length);
+    // console.log('vat nuoi: ',vatNuoi);
     setModalThoiGianLamViec(true);
   }
-  useEffect(() => { 
+  // useEffect(() => { 
    
-    const tongTienDichVuThem = chonDichVuThem?.reduce((accumulator, current) => accumulator + current.gia, 0);
-    setTongCong(tongTienDichVuThem + chonThoiLuong?.gia);
-    setThoiGianLamViec(chonThoiLuong?.thoiGian);
-  }, [chonThoiLuong, chonDichVuThem]);
+  //   const tongTienDichVuThem = chonDichVuThem?.reduce((accumulator, current) => accumulator + current.gia, 0);
+  //   setTongCong(tongTienDichVuThem + chonThoiLuong?.gia);
+  //   setThoiGianLamViec(chonThoiLuong?.thoiGian);
+  // }, [chonThoiLuong, chonDichVuThem]);
   return (
-    <formCaLeContext.Provider value={{
-      chonThoiLuong, 
-      setChonThoiLuong,
-      chonDichVuThem,
-      setChonDichVuThem,
-      vatNuoi,
-      setVatNuoi,
-      thoiGianLamViec, 
-      setThoiGianLamViec,
-      tongCong,
-      gioLam, 
-      setGioLam,
-      ngayLamViec, 
-      setNgayLamViec
-      }}>
       <View>
         <View style={{padding: 20}}> 
       <TouchableOpacity style={{display:'flex',flexDirection:'row',gap: 10,
@@ -126,7 +104,6 @@ export default function BookingSingle({hideModal}) {
           <ChonThoiGianLamViec hideModal={()=>setModalThoiGianLamViec(false)}/>
         </Modal>
       </View>
-    </formCaLeContext.Provider>
   )
 }
 

@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Colors from '../../Utils/Colors'
-import { formCaLeContext } from './BookingSingle';
+import { DonHangContext } from '../../Provider/DonHangProvider';
 
 
-export default function BookingService({data}) {
-  const {setChonDichVuThem,thoiGianLamViec} = useContext(formCaLeContext);
+
+export default function DichVu({data}) {
+  const {setChonDichVuThem,thoiGianLamViec} = useContext(DonHangContext);
   const [selectedItem, setSelectedItem] = useState([]);
 
 

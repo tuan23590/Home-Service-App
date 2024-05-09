@@ -5,13 +5,13 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors';
 import Heading from './../../Compunents/Heading';
 import { CheckBox,Input } from '@rneui/themed';
-import { formCaLeContext } from './BookingSingle';
+import { DonHangContext } from '../../Provider/DonHangProvider';
 
 export default function TuyChon() {
     const [isSwitchOn1, setIsSwitchOn1] = useState(false);
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
-    const {setVatNuoi} = useContext(formCaLeContext);
+    const {setVatNuoi} = useContext(DonHangContext);
     const [openThuCung, setOpenThuCung] = useState(false);
     const [text, onTextChange] = useState('');
 
