@@ -7,7 +7,7 @@ import { formCaLeContext } from './BookingSingle';
 import numeral from 'numeral';
 
 export default function ChiTietDonHang({hideModal}) {
-    const {tongCong,vatNuoi,chonDichVuThem,chonThoiLuong,gioLam,ngayLamViec} = useContext(formCaLeContext);
+    // const {tongCong,vatNuoi,chonDichVuThem,chonThoiLuong,gioLam,ngayLamViec} = useContext(formCaLeContext);
   return (
     <View>
          <TouchableOpacity
