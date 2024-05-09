@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect, useContext,useMemo } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -36,30 +36,10 @@ import { dichVuLoader } from './../utils/DichVuUtils';
 
 
 export default function ServiceRegistration() {
-  // const [selectedDuration, setSelectedDuration] = useState('');
-  // const [workDays, setWorkDays] = useState(Array(7).fill(false));
-  // const [repeatWeekly, setRepeatWeekly] = useState(false);
-  // const [repeatCount, setRepeatCount] = useState(1);
-  // const [startDate, setStartDate] = useState('');
-  // const [endDate, setEndDate] = useState('');
-  // const [openDialog, setOpenDialog] = useState(false);
-  // const [showSnackbar, setShowSnackbar] = useState(false);
-  // const [totalPrice, setTotalPrice] = useState(0);
-  // const [nhanViens, setNhanViens] = useState([]);
-  // const [selectedEmployee, setSelectedEmployee] = useState(null);
-  // const [employeeSelectionSuccess, setEmployeeSelectionSuccess] = useState(false);
-  // const [selectedPlace, setSelectedPlace] = useState(null);
-
-  // const [serviceOptions, setServiceOptions] = useState({
-  //   laundry: false,
-  //   cooking: false,
-  //   equipmentDelivery: false,
-  //   vacuumCleaning: false,
-  // });
-  // const [petPreference, setPetPreference] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [selected, setSelected] = useState(null);
-
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [dichVus, setDichVus] = useState([]);
   const {
     selectedDuration,
     setSelectedDuration,
@@ -92,36 +72,18 @@ export default function ServiceRegistration() {
     setPetPreference,
   } = useContext(DonHangContext);
 
-
-
-
-
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
           const {data} = await dichVuLoader();
           console.log("data: ", data);
+          setDichVus(data.dichVus);
       } catch (error) {
           console.error('Error fetching service data:', error);
       }
   };
   fetchData();
   }, []);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -165,13 +127,24 @@ export default function ServiceRegistration() {
     setEndDate(event.target.value);
   };
 
-  const handleServiceOptionChange = (event) => {
-    const { name, checked } = event.target;
+ const handleServiceOptionChange = (event) => {
+    const { id, checked } = event.target;
     setServiceOptions((prevOptions) => ({
       ...prevOptions,
-      [name]: checked,
+      [id]: checked,
     }));
-  };
+
+    // Nếu dịch vụ được chọn, thêm ID của nó vào danh sách selectedServices
+    if (checked) {
+      setSelectedServices((prevSelectedServices) => [...prevSelectedServices, id]);
+      console.log(selectedServices);
+    } else {
+      // Nếu dịch vụ bị bỏ chọn, loại bỏ ID của nó khỏi danh sách selectedServices
+      setSelectedServices((prevSelectedServices) => prevSelectedServices.filter(serviceId => serviceId !== id));
+      console.log(selectedServices);
+    }
+};
+
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -188,14 +161,6 @@ export default function ServiceRegistration() {
   const handleSnackbarClose = () => {
     setShowSnackbar(false);
   };
-
-  // eslint-disable-next-line no-unused-vars
-  const handlePlaceSelect = () => {
-    const addressObject = selectedPlace.getPlace();
-    const address = addressObject.formatted_address;
-    console.log(address);
-  };
-  
 
   const calculateTotalPrice = () => {
     let basePrice = 0;
@@ -220,11 +185,7 @@ export default function ServiceRegistration() {
     }
 
     let additionalPrice = 0;
-    if (serviceOptions.laundry) additionalPrice += 48000;
-    if (serviceOptions.cooking) additionalPrice += 48000;
-    if (serviceOptions.equipmentDelivery) additionalPrice += 30000;
-    if (serviceOptions.vacuumCleaning) additionalPrice += 30000;
-
+   
     if (selectedEmployee) additionalPrice += 20000;
 
     const totalPrice = (basePrice + additionalPrice) * repeatCount;
@@ -246,7 +207,20 @@ export default function ServiceRegistration() {
       console.error('Error searching address:', error);
     }
   };
+  const [checkedIds, setCheckedIds] = useState([]);
 
+  const handleCheckboxChange = (id) => {
+    const currentIndex = checkedIds.indexOf(id);
+    const newCheckedIds = [...checkedIds];
+
+    if (currentIndex === -1) {
+      newCheckedIds.push(id);
+    } else {
+      newCheckedIds.splice(currentIndex, 1);
+    }
+
+    setCheckedIds(newCheckedIds);
+  };
   return (
     <div>
       <AppBar position="static">
@@ -258,7 +232,7 @@ export default function ServiceRegistration() {
       </AppBar>
       <Container>
         <Typography variant="h5" gutterBottom>Đăng ký dịch vụ</Typography>
-         <LoadScript
+        <LoadScript
           googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
         >
           <GoogleMap
@@ -275,29 +249,29 @@ export default function ServiceRegistration() {
           </GoogleMap>
         </LoadScript>
         <div className="places-container">
-  <div>
-    <input
-      type="text"
-      value={searchValue}
-      onChange={(e) => setSearchValue(e.target.value)}
-      placeholder="Enter an address"
-      style={{
-        width: '300px', 
-        height: '40px',
-        fontSize: '16px' 
-      }}
-    />
-    <button
-      onClick={handleSearch}
-      style={{
-        fontSize: '16px', 
-        padding: '10px 20px' 
-      }}
-    >
-      Search
-    </button>
-  </div>
-</div>
+          <div>
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Enter an address"
+              style={{
+                width: '300px', 
+                height: '40px',
+                fontSize: '16px' 
+              }}
+            />
+            <button
+              onClick={handleSearch}
+              style={{
+                fontSize: '16px', 
+                padding: '10px 20px' 
+              }}
+            >
+              Search
+            </button>
+          </div>
+        </div>
         <Typography variant="subtitle1" gutterBottom>Dịch vụ cố định</Typography>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -354,58 +328,21 @@ export default function ServiceRegistration() {
           <Typography variant="subtitle1" gutterBottom>
             Dịch vụ thêm
           </Typography>
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Ủi đồ"
-            name="laundry"
-            checked={serviceOptions.laundry}
-            onChange={handleServiceOptionChange}
-          />
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Nấu ăn"
-            name="cooking"
-            checked={serviceOptions.cooking}
-            onChange={handleServiceOptionChange}
-          />
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Mang dụng cụ theo"
-            name="equipmentDelivery"
-            checked={serviceOptions.equipmentDelivery}
-            onChange={handleServiceOptionChange}
-          />
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Mang máy hút bụi"
-            name="vacuumCleaning"
-            checked={serviceOptions.vacuumCleaning}
-            onChange={handleServiceOptionChange}
-          />
-        </FormGroup>
-        <FormGroup sx={{ my: 1 }}>
-          <Typography variant="subtitle1" gutterBottom>
-            Nhà có vật nuôi:
-          </Typography>
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Chó"
-            checked={petPreference === 'dog'}
-            onChange={() => setPetPreference('dog')}
-          />
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Mèo"
-            checked={petPreference === 'cat'}
-            onChange={() => setPetPreference('cat')}
-          />
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Khác"
-            checked={petPreference === 'other'}
-            onChange={() => setPetPreference('other')}
-          />
-        </FormGroup>
+          <div>
+            {dichVus.map((dichVu) => (
+              <div key={dichVu.id}>
+                <input
+                  type="checkbox"
+                  id={dichVu.id}
+                  checked={checkedIds.includes(dichVu.id)}
+                  onChange={() => handleCheckboxChange(dichVu.id)}
+                />
+                <label htmlFor={dichVu.id}>{dichVu.tenDichVu}</label>
+              </div>
+            ))}
+            <p>IDs đã chọn: {checkedIds.join(', ')}</p>
+          </div>
+                  </FormGroup>
         <Grid container spacing={2}>
           <Grid item>
             <FormControlLabel
@@ -462,14 +399,4 @@ export default function ServiceRegistration() {
     </div>
     
   );
-}
-async function getAndSetAddress({ lat, lng, setSearchValue }) {
-  try {
-    const results = await getGeocode({ location: { lat, lng } });
-    if (results && results[0]) {
-      setSearchValue(results[0].formatted_address); 
-    }
-  } catch (error) {
-    console.error('Error getting address from latlng:', error);
-  }
 }
