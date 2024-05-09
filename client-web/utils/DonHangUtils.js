@@ -68,13 +68,13 @@ export const TrangThaiLoader = async ()=> {
 export const themDonHang = async (formData) => {
   const query = `mutation Mutation(
     $maDonHang: String, 
-    $khachHang: String, 
+    $makhachHang: String, 
     $trangThaiDonHang: String = "", 
     $tongTien: Int, 
     $vatNuoi: String, 
     $dichVu: String, $ghiChu: String) {
     createDonHang(
-      data: {maDonHang: $maDonHang, khachHang: $khachHang, trangThaiDonHang: $trangThaiDonHang, tongTien: $tongTien, vatNuoi: $vatNuoi, dichVu: $dichVu, ghiChu: $ghiChu}
+      data: {maDonHang: $maDonHang, makhachHang: $makhachHang, trangThaiDonHang: $trangThaiDonHang, tongTien: $tongTien, vatNuoi: $vatNuoi, dichVu: $dichVu, ghiChu: $ghiChu}
     ) {
       id
     }
@@ -91,7 +91,7 @@ export const themDonHang = async (formData) => {
       query,
       variables: {
         maDonHang: formData.maDonHang,
-        khachHang: formData.khachHang,
+        makhachHang: formData.khachHang,
         trangThaiDonHang: formData.trangThaiDonHang,
         tongTien: parseInt(formData.tongTien),
         vatNuoi: formData.vatNuoi,
