@@ -1,68 +1,31 @@
-  import { useState, useMemo } from "react";
-  import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
-  import usePlacesAutocomplete, {
-    getGeocode,
-    getLatLng,
-  } from "use-places-autocomplete";
-  import "@reach/combobox/styles.css";
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
+import './MyTable.css'; // Import file CSS
 
-  export default function Places() {
-    const center = useMemo(() => ({ lat: 10.8231, lng: 106.6297 }), []);
-    const [selected, setSelected] = useState(null);
-    const [searchValue, setSearchValue] = useState("");
+function MyTable() {
+  return (
+    <table className="my-table">
+      <thead>
+        <tr>
+          <th>Header 1</th>
+          <th>Header 2</th>
+          <th>Header 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Data 1</td>
+          <td>Data 2</td>
+          <td>Data 3</td>
+        </tr>
+        <tr>
+          <td>Data 4</td>
+          <td>Data 5</td>
+          <td>Data 6</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+}
 
-    const handleSearch = async () => {
-      try {
-        const results = await getGeocode({ address: searchValue });
-        const { lat, lng } = await getLatLng(results[0]);
-        setSelected({ lat, lng });
-        setSearchValue(results[0].formatted_address); 
-      } catch (error) {
-        console.error('Error searching address:', error);
-      }
-    };
-
-    return (
-      <div>
-        <LoadScript
-          googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
-        >
-          <GoogleMap
-            zoom={10}
-            center={center}
-            mapContainerStyle={{ height: '400px', width: '100%' }}
-            onClick={(e) => {
-              const lat = e.latLng.lat();
-              const lng = e.latLng.lng();
-              setSelected({ lat, lng });
-              getAndSetAddress({ lat, lng });
-            }}
-          >
-            {selected && <Marker position={selected} />}
-          </GoogleMap>
-        </LoadScript>
-        <div className="places-container">
-          <div>
-            <input
-              type="text"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Enter an address"
-            />
-            <button onClick={handleSearch}>Search</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  async function getAndSetAddress({ lat, lng }) {
-    try {
-      const results = await getGeocode({ location: { lat, lng } });
-      if (results && results[0]) {
-        setSearchValue(results[0].formatted_address); 
-      }
-    } catch (error) {
-      console.error('Error getting address from latlng:', error);
-    }
-  }
+export default MyTable;

@@ -56,17 +56,10 @@ export default function ServiceRegistration() {
   //   vacuumCleaning: false,
   // });
   // const [petPreference, setPetPreference] = useState('');
-  
+  const [searchValue, setSearchValue] = useState('');
   const [selected, setSelected] = useState(null);
 
-
-  
-
-
-
   const {
-    searchValue,
-    setSearchValue,
     selectedDuration,
     setSelectedDuration,
     workDays,
@@ -97,12 +90,6 @@ export default function ServiceRegistration() {
     petPreference,
     setPetPreference,
   } = useContext(DonHangContext);
-
-
-
-  
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -256,16 +243,29 @@ export default function ServiceRegistration() {
           </GoogleMap>
         </LoadScript>
         <div className="places-container">
-          <div>
-            <input
-              type="text"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Enter an address"
-            />
-            <button onClick={handleSearch}>Search</button>
-          </div>
-        </div>
+  <div>
+    <input
+      type="text"
+      value={searchValue}
+      onChange={(e) => setSearchValue(e.target.value)}
+      placeholder="Enter an address"
+      style={{
+        width: '300px', 
+        height: '40px',
+        fontSize: '16px' 
+      }}
+    />
+    <button
+      onClick={handleSearch}
+      style={{
+        fontSize: '16px', 
+        padding: '10px 20px' 
+      }}
+    >
+      Search
+    </button>
+  </div>
+</div>
         <Typography variant="subtitle1" gutterBottom>Dịch vụ cố định</Typography>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -404,11 +404,12 @@ export default function ServiceRegistration() {
                 <FormControlLabel
                   control={<Checkbox />}
                   label={employee.ten}
-                  checked={selectedEmployee === employee}
+                  checked={selectedEmployee && selectedEmployee.id === employee.id}
                   onChange={() => setSelectedEmployee(employee)}
                 />
               </div>
             ))}
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Hủy bỏ</Button>

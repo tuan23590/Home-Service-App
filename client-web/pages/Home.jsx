@@ -12,7 +12,9 @@ export default function Home() {
   const [anchorElServices, setAnchorElServices] = useState(null);
   const [anchorElBecomePartner, setAnchorElBecomePartner] = useState(null);
   const [anchorElManage, setAnchorElManage] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [currentUser, setCurrentUser] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
 
@@ -40,6 +42,7 @@ export default function Home() {
     setAnchorElManage(null);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleLogout = () => { 
     setIsLoggedIn(false);
     setCurrentUser(null);
@@ -135,7 +138,7 @@ export default function Home() {
               onClose={handleClose}
             >
               <MenuItem component={Link} to="/dv1">Giúp việc theo giờ</MenuItem>
-              <MenuItem component={Link} to="/services/service2">Tổng vệ sinh</MenuItem>
+              <MenuItem component={Link} to="/tongvesinh">Tổng vệ sinh</MenuItem>
               <MenuItem component={Link} to="/services/service3">Đi chợ</MenuItem>
               <MenuItem component={Link} to="/services/service4">Vệ sinh máy lạnh</MenuItem>
               <MenuItem component={Link} to="/services/service5">Giặt ủi</MenuItem>

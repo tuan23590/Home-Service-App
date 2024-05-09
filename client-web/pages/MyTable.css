@@ -1,0 +1,13 @@
+.my-table {
+    border-collapse: collapse; /* Hợp nhất các đường viền của ô */
+  }
+  
+  .my-table th, .my-table td {
+    border: 1px solid black; /* Thiết lập đường kẻ cho các ô */
+    padding: 8px; /* Thêm padding cho ô */
+  }
+  
+  .my-table th {
+    background-color: #f2f2f2; /* Màu nền của các ô tiêu đề */
+  }
+  

@@ -12,6 +12,8 @@ import DangKyNauAn from "../../pages/DangKyNauAn";
 import CustomerInfo from "../../pages/CustomerInfo";
 import ReactGoogleMap from "../../pages/ReactGoogleMap";
 import DonHangProvider from "../../src/context/DonHangProvider";
+import TotalCleaning from "../../pages/TotalCleaning";
+
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
@@ -75,6 +77,10 @@ export default createBrowserRouter([
             {
                 element: <ReactGoogleMap />,
                 path: '/map',
+            },
+            {
+                element: <TotalCleaning />,
+                path: '/tongvesinh',
             }
         ],
     },

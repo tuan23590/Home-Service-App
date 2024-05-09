@@ -1,8 +1,10 @@
 export const DBDataDichVu = async () => {
     const query = `query Query {
-        dichVus {
-          id
-          tenDichVu
+      dichVus {
+        id
+        tenDichVu
+        thoiGianLamViec
+        giaTien
         }
       }`;
     

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -5,30 +6,37 @@ import {
   Toolbar,
   Typography,
   Container,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
   Button,
-  CircularProgress,
-  Card,
-  CardContent,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Snackbar
+  Snackbar,
+  Paper,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
 } from '@mui/material';
 
-const DonHangLoader = async () => {
+// Hàm lấy dữ liệu đơn hàng từ API
+export const DonHangLoader = async () => {
   const query = `query MyQuery {
     donHangs {
       id
-      khachHang
       maDonHang
+      makhachHang
+      tenKhachHang
+      diaChi
+      soDienThoai
       ngayDatHang
+      maDichVu
       dichVu
+      thoiLuongLamViec
+      thu
       nhanVien
       thanhToan
       thoiGianThucHien {
@@ -48,234 +56,178 @@ const DonHangLoader = async () => {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    body: JSON.stringify({ query })
+    body: JSON.stringify({
+      query
+    })
   });
-
   const data = await res.json();
   return data;
-};
+}
 
-const NhanVienLoader = async () => {
-  const query = `query MyQuery {
-    nhanViens {
-      id
-      ten
-      hinhAnh {
-        id
-      }
-    }
-  }`;
-
-  const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({ query })
-  });
-
-  const data = await res.json();
-  return data;
-};
-
-export default function OrderBrowser() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [nhanViens, setNhanViens] = useState([]);
-  const [selectedNhanViens, setSelectedNhanViens] = useState({});
+export default function OrderAllocation() {
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const responseData = await DonHangLoader();
-        setData(responseData.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching order data:', error);
-        setLoading(false);
+      const data = await DonHangLoader();
+      if (data && data.data && data.data.donHangs) {
+        setOrders(data.data.donHangs);
       }
     };
-
     fetchData();
-
-    const fetchNhanViens = async () => {
-      try {
-        const responseData = await NhanVienLoader();
-        setNhanViens(responseData.data.nhanViens);
-      } catch (error) {
-        console.error('Error fetching employee data:', error);
-      }
-    };
-
-    fetchNhanViens();
   }, []);
 
-  const handleDuyetDonHang = async (maDonHang) => {
-    try {
-      const donHang = data.donHangs.find((donHang) => donHang.maDonHang === maDonHang);
-      if (donHang.trangThaiDonHang === 'Đã xác nhận') {
-        console.error('Đơn hàng này đã được duyệt.');
-        return;
-      }
-
-      if (!selectedNhanViens[maDonHang]) {
-        setSnackbarMessage('Vui lòng chọn nhân viên cho đơn hàng này.');
-        setSnackbarOpen(true);
-        return;
-      }
-
-      console.log('Duyệt đơn hàng với mã:', maDonHang);
-      console.log('Nhân viên được chọn:', selectedNhanViens[maDonHang]);
-
-      const updatedData = {
-        ...data,
-        donHangs: data.donHangs.map((item) => {
-          if (item.maDonHang === maDonHang) {
-            return {
-              ...item,
-              trangThaiDonHang: 'Đã xác nhận'
-            };
-          }
-          return item;
-        })
-      };
-      setData(updatedData);
-      setConfirmDialogOpen(true);
-    } catch (error) {
-      console.error('Lỗi khi duyệt đơn hàng:', error);
-    }
+  // Hàm xử lý khi chọn đơn hàng
+  const handleSelectOrder = (order) => {
+    setSelectedOrder(order);
+    setDialogOpen(true);
   };
 
-  const handleCloseConfirmDialog = () => {
-    setConfirmDialogOpen(false);
-  };
+  // const handleDialogClose = () => {
+  //   setDialogOpen(false);
+  // };
 
+  // const handleApproveOrder = () => {
+  //   setSnackbarMessage('Đã duyệt đơn hàng');
+  //   setSnackbarOpen(true);
+  //   setDialogOpen(false);
+  // };
+
+  // Hàm xử lý khi đóng snackbar
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
   return (
     <div>
       <AppBar position="static">
-        <Toolbar style={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1 }}>
-            Trang Chủ - Giúp việc nhà
+        <Toolbar>
+          <Typography variant="h6" component={Link} to="/">
+            Trang chủ
           </Typography>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+            <Button color="inherit" onClick={() => setSelectedStatus('Chờ duyệt')}>
+              Chờ duyệt
+            </Button>
+            <Button color="inherit" onClick={() => setSelectedStatus('Đã phân bổ')}>
+              Đã phân bổ
+            </Button>
+            <Button color="inherit" onClick={() => setSelectedStatus('Đang thực hiện')}>
+              Đang thực hiện
+            </Button>
+            <Button color="inherit" onClick={() => setSelectedStatus('Đã hoàn thành')}>
+              Đã hoàn thành
+            </Button>
+          </div>
         </Toolbar>
       </AppBar>
       <Container>
-        <Typography variant="h5" sx={{ my: 4 }}>Quản Lý Xét Duyệt</Typography>
-        {data && data.donHangs.map((donHang, index) => (
-          <Card key={index} style={{ marginBottom: '20px' }}>
-            <CardContent>
-              <Typography variant="body1" gutterBottom>
-                <strong>Khách hàng:</strong> {donHang.khachHang}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Mã đơn hàng:</strong> {donHang.maDonHang}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Ngày đặt hàng:</strong> {donHang.ngayDatHang}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Dịch vụ:</strong> {donHang.dichVu}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Nhân viên:</strong> {donHang.nhanVien}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Thanh toán:</strong> {donHang.thanhToan}
-              </Typography>
-              {donHang.thoiGianThucHien && (
-                <>
-                  <Typography variant="body1" gutterBottom>
-                    <strong>Thời gian thực hiện:</strong> {donHang.thoiGianThucHien.thoiGianBatDau} - {donHang.thoiGianThucHien.thoiGianKetThuc}
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    <strong>Trạng thái:</strong> {donHang.thoiGianThucHien.trangThai}
-                  </Typography>
-                </>
-              )}
-              <Typography variant="body1" gutterBottom>
-                <strong>Tổng tiền:</strong> {donHang.tongTien}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Trạng thái đơn hàng:</strong> {donHang.trangThaiDonHang}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Vật nuôi:</strong> {donHang.vatNuoi}
-              </Typography>
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id={`nhan-vien-label-${index}`}>Chọn Nhân Viên</InputLabel>
-                <Select
-                  labelId={`nhan-vien-label-${index}`}
-                  id={`nhan-vien-select-${index}`}
-                  value={selectedNhanViens[donHang.maDonHang] || ''}
-                  onChange={(e) => setSelectedNhanViens({ ...selectedNhanViens, [donHang.maDonHang]: e.target.value })}
-                >
-                  {nhanViens.map((nhanVien) => (
-                    <MenuItem key={nhanVien.id} value={nhanVien.id}>
-                      {nhanVien.ten}
-                    </MenuItem>
+        {selectedStatus === 'Chờ duyệt' && (
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={4}>
+              <div style={{ padding: 20, border: '1px solid black', height: '92vh', overflow: 'auto' }}>
+                <Typography variant="h5" gutterBottom>
+                  Danh sách đơn hàng Chờ duyệt
+                </Typography>
+                <List>
+                  {orders.map((order) => (
+                    <ListItem button key={order.id} onClick={() => handleSelectOrder(order)}>
+                      <ListItemText primary={`Đơn hàng số ${order.maDonHang}`} />
+                    </ListItem>
                   ))}
-                </Select>
-              </FormControl>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleDuyetDonHang(donHang.maDonHang)}
-                disabled={donHang.trangThaiDonHang === 'Đã xác nhận'}
-                style={{ marginTop: '10px' }}
-              >
-                Duyệt Đơn
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-        <Dialog
-          open={confirmDialogOpen}
-          onClose={handleCloseConfirmDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Đã xác nhận đơn hàng!"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Đơn hàng đã được xác nhận thành công.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseConfirmDialog} autoFocus>
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-          message={snackbarMessage}
-          action={
-            <React.Fragment>
-              <Button color="secondary" size="small" onClick={handleSnackbarClose}>
-                Đóng
-              </Button>
-            </React.Fragment>
-          }
-        />
+                </List>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Paper style={{ padding: 20, border: '1px solid black',width:'117vh', height: '92vh', overflow: 'auto' }}>
+                <Typography variant="h5" gutterBottom>
+                  Thông tin đơn hàng
+                </Typography>
+                {selectedOrder && (
+                  <div>
+                    <Typography variant="body1" gutterBottom>
+                      Số đơn hàng: {selectedOrder.maDonHang}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Ngày đặt: {selectedOrder.ngayDatHang}
+                    </Typography>
+                    <Typography variant="h5" gutterBottom>
+                      Thông tin khách hàng:
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      Mã khách hàng: {selectedOrder.makhachHang}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      Tên khách hàng: {selectedOrder.tenKhachHang}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      Số điện thoại: {selectedOrder.soDienThoai}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      Địa chỉ: {selectedOrder.diaChi}
+                    </Typography>
+                    <Divider style={{ margin: '20px 0' }} />
+                    <Typography variant="h6" gutterBottom>
+                      Dịch vụ đã đặt
+                    </Typography>
+                   <TableContainer component={Paper}>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell>Duyệt</TableCell>
+        <TableCell>Mã Dịch vụ</TableCell>
+        <TableCell>Tên Dịch vụ</TableCell>
+        <TableCell>Thời Lượng</TableCell>
+        <TableCell>Thứ</TableCell>
+        <TableCell>Giá</TableCell>
+        <TableCell>Ngày bắt đầu</TableCell>
+        <TableCell>Cộng tác viên</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {selectedOrder && Array.isArray(selectedOrder.dichVu) ? (
+        selectedOrder.dichVu.map((service, index) => (
+          <TableRow key={index}>
+            <TableCell>
+              {/* Nút hoặc chức năng để duyệt đơn hàng */}
+            </TableCell>
+            <TableCell>{service.maDichVu}</TableCell>
+            <TableCell>{service.dichVu}</TableCell>
+            <TableCell>{service.thoiLuongLamViec}</TableCell>
+            <TableCell>{service.thu}</TableCell>
+            <TableCell>{service.gia}</TableCell>
+            <TableCell>{service.thoiGianThucHien.thoiGianBatDau}</TableCell>
+            <TableCell>
+              {service.nhanVien ? (
+                <Typography>{service.nhanVien}</Typography>
+              ) : (
+                <Button onClick={() => console.log("Thêm nhân viên")}>Thêm nhân viên</Button>
+              )}
+            </TableCell>
+          </TableRow>
+        ))
+      ) : (
+        <TableRow>
+          <TableCell colSpan={8}>Không có dịch vụ đã đặt</TableCell>
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
+</TableContainer>
+
+                  </div>
+                )}
+              </Paper>
+            </Grid>
+          </Grid>
+        )}
       </Container>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} message={snackbarMessage} />
     </div>
   );
 }

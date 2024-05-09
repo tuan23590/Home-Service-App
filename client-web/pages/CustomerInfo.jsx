@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useContext, useEffect, useState } from 'react';
-import { Typography, List, ListItem, ListItemText, Box, Button, Grid, TextField, FormControlLabel, Checkbox, MenuItem } from '@mui/material';
+import { Typography, List, ListItem, ListItemText, Box, Button, Grid, TextField, FormControlLabel, MenuItem } from '@mui/material';
 import { DonHangContext } from '../src/context/DonHangProvider';
 import { DBDataDichVu } from '../utils/DichVuUtils';
 import { Link } from 'react-router-dom';
@@ -27,7 +28,7 @@ const CustomerInfo = () => {
     expirationDate: '',
     pin: '',
     saveCardInfo: false,
-    paymentMethod: 'cash', // Mặc định là thanh toán bằng tiền mặt
+    paymentMethod: 'cash', 
   });
   const [showCreditCardFields, setShowCreditCardFields] = useState(false);
 
@@ -75,11 +76,9 @@ const CustomerInfo = () => {
 
   const handlePost = async () => {
     if (paymentInfo.paymentMethod === 'cash') {
-      // Xử lý thanh toán bằng tiền mặt
       console.log('Xử lý thanh toán bằng tiền mặt');
     } else if (paymentInfo.paymentMethod === 'creditCard') {
-      // Xử lý thanh toán bằng thẻ ngân hàng
-      console.log('Xử lý thanh toán bằng thẻ ngân hàng');
+      console.log('Xử lý thanh toán chuyển ngân hàng');
     }
   };
   
@@ -109,13 +108,10 @@ const CustomerInfo = () => {
           <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
         </ListItem>
         <ListItem>
-          <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee?.ten}`} />
+          <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee ? selectedEmployee.ten : "Không chọn"}`} />
         </ListItem>
         <ListItem>
-          <ListItemText primary={`Dịch vụ thêm: ${selectedServices.join(', ')}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Vật Nuôi: ${petType}`} />
+        <ListItemText primary={`Vật Nuôi: ${petPreference ? (petPreference === 'dog' ? 'Chó' : 'Mèo') : 'Không có'}`} />
         </ListItem>
         <ListItem>
           <ListItemText primary={`Tổng tiền: ${totalPrice} VNĐ`} />
@@ -139,47 +135,11 @@ const CustomerInfo = () => {
                   }}
                 >
                   <MenuItem value="cash">Tiền mặt</MenuItem>
-                  <MenuItem value="creditCard">Thẻ ngân hàng</MenuItem>
+                  <MenuItem value="creditCard">Chuyển khoản ngân hàng</MenuItem>
                 </TextField>
               }
             />
           </ListItem>
-          {showCreditCardFields && (
-            <>
-              <ListItem>
-                <ListItemText primary="Số tài khoản ngân hàng" />
-                <TextField
-                  value={paymentInfo.bankAccountNumber}
-                  onChange={(e) => setPaymentInfo({ ...paymentInfo, bankAccountNumber: e.target.value })}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Ngày hết hạn thẻ" />
-                <TextField
-                  value={paymentInfo.expirationDate}
-                  onChange={(e) => setPaymentInfo({ ...paymentInfo, expirationDate: e.target.value })}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Mã PIN" />
-                <TextField
-                  value={paymentInfo.pin}
-                  onChange={(e) => setPaymentInfo({ ...paymentInfo, pin: e.target.value })}
-                />
-              </ListItem>
-              <ListItem>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={paymentInfo.saveCardInfo}
-                      onChange={(e) => setPaymentInfo({ ...paymentInfo, saveCardInfo: e.target.checked })}
-                    />
-                  }
-                  label="Lưu thông tin thẻ"
-                />
-              </ListItem>
-            </>
-          )}
         </List>
       </Box>
 
