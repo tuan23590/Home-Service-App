@@ -33,8 +33,12 @@ export const DonHangLoader = async () => {
       diaChi
       soDienThoai
       ngayDatHang
-      maDichVu
-      dichVu
+      dichVus {
+        id
+        tenDichVu
+        thoiGian
+        thoiGianLamViec
+      }
       thoiLuongLamViec
       thu
       nhanVien
@@ -48,7 +52,8 @@ export const DonHangLoader = async () => {
       trangThaiDonHang
       vatNuoi
     }
-  }`;
+  }
+  `;
 
   const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
     method: 'POST',
@@ -102,6 +107,11 @@ export default function OrderAllocation() {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+
+
+  console.log("selectedOrder", selectedOrder);
+
+
 
   return (
     <div>
@@ -190,18 +200,18 @@ export default function OrderAllocation() {
       </TableRow>
     </TableHead>
     <TableBody>
-      {selectedOrder && Array.isArray(selectedOrder.dichVu) ? (
-        selectedOrder.dichVu.map((service, index) => (
+      {selectedOrder && Array.isArray(selectedOrder.dichVus) ? (
+        selectedOrder.dichVus.map((service, index) => (
           <TableRow key={index}>
             <TableCell>
-              {/* Nút hoặc chức năng để duyệt đơn hàng */}
+              
             </TableCell>
-            <TableCell>{service.maDichVu}</TableCell>
-            <TableCell>{service.dichVu}</TableCell>
-            <TableCell>{service.thoiLuongLamViec}</TableCell>
-            <TableCell>{service.thu}</TableCell>
-            <TableCell>{service.gia}</TableCell>
-            <TableCell>{service.thoiGianThucHien.thoiGianBatDau}</TableCell>
+            <TableCell>{service.id}</TableCell>
+            <TableCell>{service.tenDichVu}</TableCell>
+            <TableCell>{service.thoiGian}</TableCell>
+            <TableCell>{service.thoiGianLamViec}</TableCell>
+            {/* <TableCell>{service.gia}</TableCell>
+            <TableCell>{service.thoiGianThucHien.thoiGianBatDau}</TableCell> */}
             <TableCell>
               {service.nhanVien ? (
                 <Typography>{service.nhanVien}</Typography>
