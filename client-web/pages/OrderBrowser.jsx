@@ -21,8 +21,6 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
-
-// Hàm lấy dữ liệu đơn hàng từ API
 export const DonHangLoader = async () => {
   const query = `query MyQuery {
     donHangs {
@@ -95,13 +93,10 @@ export default function OrderAllocation() {
     setDialogOpen(true);
   };
   const formatDate = (date) => {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const options = {hour: '2-digit', minute: '2-digit', year: 'numeric', month: '2-digit', day: '2-digit' };
     return date.toLocaleDateString('en-GB', options);
 };
 
-
-
-  // Hàm xử lý khi đóng snackbar
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
