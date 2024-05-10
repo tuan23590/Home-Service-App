@@ -30,7 +30,6 @@ const CustomerInfo = () => {
     saveCardInfo: false,
     paymentMethod: 'cash', 
   });
-  const [showCreditCardFields, setShowCreditCardFields] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +43,7 @@ const CustomerInfo = () => {
     fetchData();
   }, []);
 
-  const daysOfWeek = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+  const daysOfWeek = [ 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy','Chủ nhật'];
   const selectedWorkDays = workDays.reduce((acc, curr, index) => {
     if (curr) {
       acc.push(daysOfWeek[index]);
@@ -56,21 +55,13 @@ const CustomerInfo = () => {
   const selectedEmployeeDisplay = selectedEmployeeNames.length > 0 ? selectedEmployeeNames.join(', ') : 'Chưa chọn';
 
   const selectedServices = Object.entries(serviceOptions)
-    .filter(([key, value]) => value)
-    .map(([key]) => {
-      switch (key) {
-        case 'laundry':
-          return 'Giặt ủi';
-        case 'cooking':
-          return 'Nấu ăn';
-        case 'equipmentDelivery':
-          return 'Mang dụng cụ theo';
-        case 'vacuumCleaning':
-          return 'Hút bụi';
-        default:
-          return '';
-      }
-    });
+  .filter(([key, value]) => value)
+  .map(([key, value]) => {
+    const foundService = dichVus.find((dichVu) => dichVu.id === key);
+    return foundService ? foundService.tenDichVu : '';
+  });
+
+
 
   const petType = petPreference === 'dog' ? 'Chó' : 'Mèo';
 
@@ -86,8 +77,11 @@ const CustomerInfo = () => {
     <Box className="customer-info-container">
       <Typography variant="h6">Thông tin đơn hàng</Typography>
       <List>
+      <ListItem >
+      <ListItemText primary={`Tên Dịch Vụ: `} />
+        </ListItem>
         <ListItem>
-          <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
+        <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
         </ListItem>
         <ListItem>
           <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
@@ -106,6 +100,9 @@ const CustomerInfo = () => {
         </ListItem>
         <ListItem>
           <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
+          </ListItem>
+          <ListItem >
+       <ListItemText primary={`Dịch Vụ thêm : ${selectedServices.join(', ')}`} />
         </ListItem>
         <ListItem>
           <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee ? selectedEmployee.ten : "Không chọn"}`} />
