@@ -6,7 +6,7 @@ const KhachHangSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    idDiaChi:{
+    danhSachDiaChi:{
         type: [String]
     },
     soDienThoai:{

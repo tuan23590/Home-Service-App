@@ -19,16 +19,16 @@ const DonHangSchema = new mongoose.Schema({
     trangThaiDonHang: {
         type: String
     },
-    idLichThucHien:{
+    danhSachLichThucHien:{
         type: [String]
     },
-    idKhachHang:{
+    khachHang:{
         type: String
     },
-    idNhanVien:{
+    nhanVien:{
         type: String
     },
-    idDanhSachDichVu:{
+    danhSachDichVu:{
         type: [String]
     },
     vatNuoi:{

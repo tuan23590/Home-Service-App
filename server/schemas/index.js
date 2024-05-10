@@ -31,7 +31,6 @@
 //     addCategory(name: String,icon: String,level: Int, parentId: String): String,
 // }
 // `;
-
 export const typeDefs = `#graphql
     type DichVu {
         tenDichVu: String,
@@ -42,9 +41,6 @@ export const typeDefs = `#graphql
         icon: String,
         iconSelected: String,
     },
-    type ChuyenMon {
-        tenChuyenMon: String,
-    },
     type DiaChi {
         tinh: String,
         huyen: String,
@@ -53,27 +49,27 @@ export const typeDefs = `#graphql
     },
     type NhanVien {
         tenNhanVien: String,
-        gioiTinh: Boolean,
+        gioiTinh: String,
         ngaySinh: String,
         diaChi: String,
         soDienThoai: String,
         email: String,
         cccd: String,
-        idChuyenMon: [String],
+        dichVu: [String],
         ghiChu: String,
         trangThaiTaiKhoan: String,
-        danhGia: String,
+        danhGia: Float,
         trangThaiHienTai: String
     },
     type KhachHang {
         tenKhachHang: String,
-        idDiaChi: [String],
+        danhSachDiaChi: [String],
         soDienThoai: String,
         email: String
     },
     type LichThucHien {
-        thoiGianBatDauLich: String,
-        thoiGianKetThucLich: String,
+        thoiGianBatDauLich: Int,
+        thoiGianKetThucLich: Int,
         trangThaiLich: String
     },
     type DonHang {
@@ -83,17 +79,16 @@ export const typeDefs = `#graphql
         ngayKetThuc: String,
         soGioThucHien: Int,
         trangThaiDonHang: String,
-        idLichThucHien: [String],
-        idKhachHang: String,
-        idNhanVien: String,
-        idDanhSachDichVu: [DichVu],
+        danhSachLichThucHien: [LichThucHien],
+        khachHang: KhachHang,
+        nhanVien: NhanVien,
+        danhSachDichVu: [DichVu],
         vatNuoi: String,
         ghiCHu: String,
         saoDanhGia: String,
         ghiChuDanhGia: String,
     },
     type Query {
-        ChuyenMons: [ChuyenMon],
         DiaChis: [DiaChi],
         DichVus: [DichVu],
         DonHangs: [DonHang],
@@ -110,14 +105,17 @@ export const typeDefs = `#graphql
             ngayBatDau: String,
             ngayKetThuc: String,
             soGioThucHien: Int,
-            idLichThucHien: [String],
-            idKhachHang: String,
-            idNhanVien: String,
-            idDanhSachDichVu: [String],
+            danhSachLichThucHien: [String],
+            khachHang: String,
+            nhanVien: String,
+            danhSachDichVu: [String],
             vatNuoi: String,
             ghiCHu: String,
             saoDanhGia: String,
             trangThaiDonHang: String,
-            ghiChuDanhGia: String): DonHang
+            ghiChuDanhGia: String): DonHang,
+        themKhachHang(tenKhachHang: String, danhSachDiaChi: [String], soDienThoai: String, email: String): KhachHang,
+        themNhanVien(tenNhanVien: String, gioiTinh: String, ngaySinh: String, diaChi: String, soDienThoai: String, email: String, cccd: String, dichVu: [String], ghiChu: String, trangThaiTaiKhoan: String, danhGia: Float, trangThaiHienTai: String): NhanVien,
+        themLichThucHien(thoiGianBatDauLich: Int, thoiGianKetThucLich: Int, trangThaiLich: String): LichThucHien,
     }
 `

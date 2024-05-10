@@ -6,7 +6,7 @@ const NhanVienSchema = new mongoose.Schema({
         require: true
     },
     gioiTinh:{
-        type: Boolean
+        type: String
     },
     ngaySinh:{
         type: String
@@ -17,14 +17,14 @@ const NhanVienSchema = new mongoose.Schema({
     soDienThoai:{
         type: String
     },
+    dichVu:{
+        type: [String]
+    },
     email:{
         type: String
     },
     cccd:{
         type: String
-    },
-    idChuyenMon:{
-        type: [String]
     },
     ghiChu:{
         type: String
@@ -33,7 +33,7 @@ const NhanVienSchema = new mongoose.Schema({
         type: String
     },
     danhGia:{
-        type: String
+        type: Number
     },
     trangThaiHienTai:{
         type: String

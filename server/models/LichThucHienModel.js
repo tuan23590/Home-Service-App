@@ -2,10 +2,10 @@ import mongoose from 'mongoose'
 
 const LichThucHienSchema = new mongoose.Schema({
     thoiGianBatDauLich: {
-        type: String
+        type: Number
     },
     thoiGianKetThucLich: {
-        type: String
+        type: Number
     },
     trangThaiLich: {
         type: String
