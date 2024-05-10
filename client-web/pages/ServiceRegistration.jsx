@@ -40,6 +40,8 @@ export default function ServiceRegistration() {
   const [selected, setSelected] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [dichVus, setDichVus] = useState([]);
+  const [searchResult, setSearchResult] = useState('');
+
   const {
     selectedDuration,
     setSelectedDuration,
@@ -197,12 +199,13 @@ export default function ServiceRegistration() {
     console.log('Đã đăng ký dịch vụ');
   };
 
-  const handleSearch = async () => {
+ const handleSearch = async () => {
     try {
       const results = await getGeocode({ address: searchValue });
       const { lat, lng } = await getLatLng(results[0]);
       setSelected({ lat, lng });
       setSearchValue(results[0].formatted_address); 
+      setSearchResult(results[0].formatted_address); 
     } catch (error) {
       console.error('Error searching address:', error);
     }
@@ -212,14 +215,14 @@ export default function ServiceRegistration() {
   const handleCheckboxChange = (id) => {
     const currentIndex = checkedIds.indexOf(id);
     const newCheckedIds = [...checkedIds];
-
+  
     if (currentIndex === -1) {
       newCheckedIds.push(id);
     } else {
       newCheckedIds.splice(currentIndex, 1);
     }
-
     setCheckedIds(newCheckedIds);
+    console.log("ID đã chọn:", newCheckedIds);
   };
   return (
     <div>
@@ -340,7 +343,6 @@ export default function ServiceRegistration() {
                 <label htmlFor={dichVu.id}>{dichVu.tenDichVu}</label>
               </div>
             ))}
-            <p>IDs đã chọn: {checkedIds.join(', ')}</p>
           </div>
                   </FormGroup>
         <Grid container spacing={2}>

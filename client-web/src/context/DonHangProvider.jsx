@@ -5,6 +5,7 @@ export const DonHangContext = createContext()
 
 // eslint-disable-next-line react/prop-types
 export default function DonHangProvider({ children }) {
+  const [selectedAdditionalServices, setSelectedAdditionalServices] = useState([]);
   const [selectedDuration, setSelectedDuration] = useState('');
   const [workDays, setWorkDays] = useState(Array(7).fill(false));
   const [repeatWeekly, setRepeatWeekly] = useState(false);
@@ -61,6 +62,8 @@ export default function DonHangProvider({ children }) {
     setServiceOptions,
     petPreference,
     setPetPreference,
+    selectedAdditionalServices,
+  setSelectedAdditionalServices
   }}
 >
   {children}
