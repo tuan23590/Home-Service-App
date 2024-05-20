@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Checkbox, FormControlLabel, Snackbar, Menu, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -99,11 +100,11 @@ const Login = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <div style={{ width: '300px' }}>
+    <div className="login-container">
+      <div className="login-form">
         <h2>Đăng Nhập</h2>
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '10px' }}>
+          <div className="form-group">
             <TextField
               id="username"
               label="Username"
@@ -113,7 +114,7 @@ const Login = () => {
               fullWidth
             />
           </div>
-          <div style={{ marginBottom: '10px' }}>
+          <div className="form-group">
             <TextField
               id="password"
               label="Password"
@@ -124,7 +125,7 @@ const Login = () => {
               fullWidth
             />
           </div>
-          <div style={{ marginBottom: '10px' }}>
+          <div className="form-group">
             <FormControlLabel
               control={
                 <Checkbox
@@ -133,11 +134,11 @@ const Login = () => {
                   id="rememberMe"
                 />
               }
-              label="Remember me"
+              label="Nhớ mật khẩu"
             />
           </div>
-          <Button type="submit" variant="contained" fullWidth>Đăng Nhập</Button>
-          <div>
+          <Button type="submit" variant="contained" fullWidth className="login-button">Đăng Nhập</Button>
+          <div className="form-actions">
             <Button
               variant="text"
               onClick={handleForgotPasswordClick}

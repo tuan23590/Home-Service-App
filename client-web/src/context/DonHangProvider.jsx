@@ -18,15 +18,17 @@ export default function DonHangProvider({ children }) {
   const [nhanViens, setNhanViens] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employeeSelectionSuccess, setEmployeeSelectionSuccess] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState('');
+  const [petPreference, setPetPreference] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [dichVus, setDichVus] = useState([]);
+  const [searchResult, setSearchResult] = useState('');
   const [serviceOptions, setServiceOptions] = useState({
     laundry: false,
     cooking: false,
     equipmentDelivery: false,
     vacuumCleaning: false,
   });
-  const [petPreference, setPetPreference] = useState('');
   return (
     <DonHangContext.Provider
   value={{
@@ -63,7 +65,11 @@ export default function DonHangProvider({ children }) {
     petPreference,
     setPetPreference,
     selectedAdditionalServices,
-  setSelectedAdditionalServices
+  setSelectedAdditionalServices,
+  searchResult, 
+  setSearchResult,
+  dichVus, 
+  setDichVus
   }}
 >
   {children}
