@@ -30,13 +30,14 @@ import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocom
 import { dichVuLoader } from './../utils/DichVuUtils';
 
 const ServiceRegistration = () => {
-  const [searchValue, setSearchValue] = useState('');
   const [checkedIds, setCheckedIds] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
   const [loadingEmployees, setLoadingEmployees] = useState(true);
   const [error, setError] = useState(null);
 
   const {
+    searchValue, 
+    setSearchValue,
     selectedDuration,
     setSelectedDuration,
     workDays,
@@ -73,8 +74,8 @@ const ServiceRegistration = () => {
     const fetchData = async () => {
       try {
         const { data } = await dichVuLoader();
-        if (data && data.dichVus) {
-          setDichVus(data.dichVus);
+        if (data && data.DichVuThem) {
+          setDichVus(data.DichVuThem);
         } else {
           console.error('Error fetching service data: DichVus data not found');
           setError('Error fetching service data');
@@ -189,8 +190,8 @@ const ServiceRegistration = () => {
     if (checkedIds.length > 0) {
       servicePrice = checkedIds.reduce((total, id) => {
         const selectedService = dichVus.find(service => service.id === id);
-        if (selectedService && selectedService.giaTien) {
-          total += selectedService.giaTien;
+        if (selectedService && selectedService.gia) {
+          total += selectedService.gia;
         }
         return total;
       }, 0);
@@ -202,13 +203,16 @@ const ServiceRegistration = () => {
   
 
   const handleSearch = async () => {
+  
     try {
       const results = await getGeocode({ address: searchValue });
       const { lat, lng } = await getLatLng(results[0]);
       setSelectedPlace({ lat, lng });
       setSearchValue(results[0].formatted_address);
+
     } catch (error) {
       console.error('Error searching address:', error);    }
+   
   };
 
   const handlePetPreferenceChange = (event) => {
@@ -230,8 +234,8 @@ const ServiceRegistration = () => {
       const lng = event.latLng.lng();
       const results = await getGeocode({ location: { lat, lng } });
       setSelectedPlace(results[0].formatted_address);
-    } catch (error) {
-      console.error('Lỗi khi tìm địa chỉ:', error);
+          console.error('Lỗi khi tìm địa chỉ:', error);
+} catch (error) {
       setError('Error fetching location');
     }
   };

@@ -19,6 +19,7 @@ import './CustomerInfo.css';
 
 const CustomerInfo = () => {
   const {
+    searchValue,
     selectedDuration,
     workDays,
     repeatWeekly,
@@ -31,7 +32,6 @@ const CustomerInfo = () => {
     selectedEmployee,
     dichVus,
     setDichVus,
-    selectedPlace,
   } = useContext(DonHangContext);
 
   const [paymentInfo, setPaymentInfo] = useState({
@@ -43,6 +43,7 @@ const CustomerInfo = () => {
   });
 
   useEffect(() => {
+    console.log('[dichVus]: ',dichVus)
     const fetchData = async () => {
       try {
         const { data } = await DBDataDichVu();
@@ -92,7 +93,7 @@ const CustomerInfo = () => {
       <Typography variant="h6">Thông tin đơn hàng</Typography>
       <List>
         <ListItem>
-          <ListItemText primary={`Địa điểm đã chọn: ${selectedPlace ? selectedPlace.formatted_address : 'Chưa chọn địa điểm'}`} />
+          <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
         </ListItem>
         <ListItem>
           <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
@@ -113,13 +114,13 @@ const CustomerInfo = () => {
           <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
         </ListItem>
         <ListItem>
-          <ListItemText primary={`Dịch vụ thêm: ${selectedServices.join(', ')}`} />
+          <ListItemText primary={`Dịch vụ thêm: ${dichVus.map(dv => dv.tenDichVu).join(', ')}`} />
         </ListItem>
         <ListItem>
           <ListItemText primary={`Nhân viên được chọn: ${selectedEmployeeDisplay}`} />
         </ListItem>
         <ListItem>
-          <ListItemText primary={`Vật nuôi: ${petTypeDisplay}`} />
+          <ListItemText primary={`Vật nuôi: ${petPreference}`} />
         </ListItem>
         <ListItem>
           <ListItemText primary={`Tổng tiền: ${totalPrice.toLocaleString('vi-VN')} VNĐ`} />

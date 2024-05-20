@@ -33,6 +33,7 @@
 // `;
 export const typeDefs = `#graphql
     type DichVu {
+        id: String,
         tenDichVu: String,
         maDichVu: String,
         moTaDichVu: String,
@@ -40,6 +41,7 @@ export const typeDefs = `#graphql
         thoiGian: Int,
         icon: String,
         iconSelected: String,
+        loaiDichVu: String,
     },
     type DiaChi {
         tinh: String,
@@ -73,6 +75,7 @@ export const typeDefs = `#graphql
         trangThaiLich: String
     },
     type DonHang {
+        id: String,
         maDonHang:  String,
         ngayDatHang: String,
         ngayBatDau: String,

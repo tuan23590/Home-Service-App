@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -26,71 +26,57 @@ import {
   DialogActions
 } from '@mui/material';
 
-const fetchData = async (query) => {
-  const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({ query })
-  });
+// const fetchData = async (query) => {
+//   const res = await fetch('http://localhost:4000/graphql', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Accept': 'application/json'
+//     },
+//     body: JSON.stringify({ query })
+//   });
 
-  const data = await res.json();
-  if (data.errors) {
-    throw new Error('Failed to fetch data');
-  }
-  return data.data;
-};
+//   const data = await res.json();
+//   if (data.errors) {
+//     throw new Error('Failed to fetch data');
+//   }
+//   return data.data;
+// };
 
-const DonHangLoader = () => {
-  const query = `query MyQuery {
-    donHangs {
-      id
-      maDonHang
-      makhachHang
-      tenKhachHang
-      diaChi
-      soDienThoai
-      ngayDatHang
-      dichVus {
-        id
-        tenDichVu
-        giaTien
-        thoiGianBatDau
-        thoiGianKetThuc
-      }
-      thoiLuongLamViec
-      thu
-      nhanVien
-      thanhToan
-      thoiGianThucHien {
-        thoiGianBatDau
-        thoiGianKetThuc
-        trangThai
-      }
-      tongTien
-      trangThaiDonHang
-      vatNuoi
-    }
-  }`;
 
-  return fetchData(query);
-};
+// const DonHangLoader = () => {
+//   const query = `query DonHangs {
+//   DonHangs {
+//     id
+//     maDonHang
+//     ngayDatHang
+//     ngayBatDau
+//     ngayKetThuc
+//     soGioThucHien
+//     trangThaiDonHang
+//     vatNuoi
+//     ghiCHu
+//     saoDanhGia
+//     ghiChuDanhGia
+//   }
+// }`;
+//   console.log(fetchData(query))
+//   return fetchData(query);
+// };
 
-const NhanVienLoader = () => {
-  const query = `query MyQuery {
-    nhanViens {
-      id
-      ten
-      hinhAnh {
-        id
-      }
-    }
-  }`;
+// const NhanVienLoader = () => {
+//   const query = `query MyQuery {
+//     nhanViens {
+//       id
+//       ten
+//       hinhAnh {
+//         id
+//       }
+//     }
+//   }`;
 
-  return fetchData(query);
-};
+//   return fetchData(query);
+// };
 
 export default function OrderAllocation() {
   const [selectedStatus, setSelectedStatus] = useState('Chờ duyệt');
@@ -104,30 +90,29 @@ export default function OrderAllocation() {
   const [employees, setEmployees] = useState([]);
   const [selectedServiceIndex, setSelectedServiceIndex] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await DonHangLoader();
-        setOrders(data.donHangs);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-      }
-    };
-    fetchData();
-  }, []);
+
+  const {data} = useLoaderData();
 
   useEffect(() => {
-    const fetchNhanViens = async () => {
-      try {
-        const data = await NhanVienLoader();
-        setEmployees(data.nhanViens);
-      } catch (error) {
-        console.error('Error fetching employees:', error);
-      }
-    };
+    if (data && data.DonHangs) {
+      setOrders(data.DonHangs);
+    }
+  }, [data]);
 
-    fetchNhanViens();
-  }, []);
+  console.log("[data don hang: ]", orders);
+
+  // useEffect(() => {
+  //   const fetchNhanViens = async () => {
+  //     try {
+  //       const data = await NhanVienLoader();
+  //       setEmployees(data.nhanViens);
+  //     } catch (error) {
+  //       console.error('Error fetching employees:', error);
+  //     }
+  //   };
+
+  //   fetchNhanViens();
+  // }, []);
 
   const handleSelectOrder = (order) => {
     setSelectedOrder(order);
@@ -143,26 +128,26 @@ export default function OrderAllocation() {
     setSnackbarOpen(false);
   };
 
-  const handleApproveService = (index) => {
-    const updatedServices = [...selectedOrder.dichVus];
-    updatedServices[index].isApproved = true;
-    setSelectedOrder(prevState => ({
-      ...prevState,
-      dichVus: updatedServices
-    }));
-  };
+  // const handleApproveService = (index) => {
+  //   const updatedServices = [...selectedOrder.dichVus];
+  //   updatedServices[index].isApproved = true;
+  //   setSelectedOrder(prevState => ({
+  //     ...prevState,
+  //     dichVus: updatedServices
+  //   }));
+  // };
 
-  const handleAddEmployeeClick = (index) => {
-    setSelectedServiceIndex(index);
-    setAddEmployeeDialogOpen(true);
-  };
+  // const handleAddEmployeeClick = (index) => {
+  //   setSelectedServiceIndex(index);
+  //   setAddEmployeeDialogOpen(true);
+  // };
 
-  const handleEmployeeSelection = (employee) => {
-    const updatedOrder = { ...selectedOrder };
-    updatedOrder.dichVus[selectedServiceIndex].nhanVien = employee.ten;
-    setSelectedOrder(updatedOrder);
-    setAddEmployeeDialogOpen(false);
-  };
+  // const handleEmployeeSelection = (employee) => {
+  //   const updatedOrder = { ...selectedOrder };
+  //   updatedOrder.dichVus[selectedServiceIndex].nhanVien = employee.ten;
+  //   setSelectedOrder(updatedOrder);
+  //   setAddEmployeeDialogOpen(false);
+  // };
 
   const handleOrderApproval = () => {
     const updatedOrders = orders.map(order => 
@@ -175,7 +160,7 @@ export default function OrderAllocation() {
     setSnackbarOpen(true);
   };
 
-  const filteredOrders = orders.filter(order => order.trangThaiDonHang === selectedStatus);
+  const filteredOrders = orders.filter(order => order?.trangThaiDonHang === selectedStatus);
 
   return (
     <div>
@@ -209,7 +194,7 @@ export default function OrderAllocation() {
                   Danh sách đơn hàng {selectedStatus}
                 </Typography>
                 <List>
-                  {filteredOrders.map((order) => (
+                  {orders.map((order) => (
                     <ListItem button key={order.id} onClick={() => handleSelectOrder(order)}>
                       <ListItemText primary={`Đơn hàng số ${order.maDonHang}`} />
                     </ListItem>
@@ -234,13 +219,13 @@ export default function OrderAllocation() {
                       Thông tin khách hàng:
                     </Typography>
                     <Typography variant="body2" gutterBottom>
-                      Mã khách hàng: {selectedOrder.makhachHang}
+                      Mã khách hàng: {selectedOrder.khachHang.makhachHang}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
-                      Tên khách hàng: {selectedOrder.tenKhachHang}
+                      Tên khách hàng: {selectedOrder.khachHang.tenKhachHang}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
-                      Số điện thoại: {selectedOrder.soDienThoai}
+                      Số điện thoại: {selectedOrder.khachHang.soDienThoai}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
                       Địa chỉ: {selectedOrder.diaChi}
@@ -256,15 +241,14 @@ export default function OrderAllocation() {
                             <TableCell>Duyệt</TableCell>
                             <TableCell>Mã Dịch vụ</TableCell>
                             <TableCell>Tên Dịch vụ</TableCell>
-                            <TableCell>Thời Gian Bắt đầu</TableCell>
-                            <TableCell>Thời Gian Kết Thúc</TableCell>
+                            <TableCell>Loại Dịch Vụ</TableCell>
                             <TableCell>Giá tiền</TableCell>
                             <TableCell>Cộng tác viên</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {selectedOrder && Array.isArray(selectedOrder.dichVus) ? (
-                            selectedOrder.dichVus.map((service, index) => (
+                          {selectedOrder && Array.isArray(selectedOrder.danhSachDichVu) ? (
+                            selectedOrder.danhSachDichVu.map((service, index) => (
                               <TableRow key={index}>
                                 <TableCell>
                                   {service.isApproved ? (
@@ -275,9 +259,8 @@ export default function OrderAllocation() {
                                 </TableCell>
                                 <TableCell>{service.id}</TableCell>
                                 <TableCell>{service.tenDichVu}</TableCell>
-                                <TableCell>{formatDate(service.thoiGianBatDau)}</TableCell>
-                                <TableCell>{formatDate(service.thoiGianKetThuc)}</TableCell>
-                                <TableCell>{service.giaTien}</TableCell>
+                                <TableCell>{service.loaiDichVu}</TableCell>
+                                <TableCell>{service.gia}</TableCell>
                                 <TableCell>
                                   {service.nhanVien ? (
                                     <Typography>{service.nhanVien}</Typography>
