@@ -41,6 +41,7 @@ export const typeDefs = `#graphql
         thoiGian: Int,
         icon: String,
         iconSelected: String,
+        loaiDichVu: String,
     },
     type DiaChi {
         id: String,

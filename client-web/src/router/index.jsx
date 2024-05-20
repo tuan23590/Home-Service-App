@@ -52,7 +52,6 @@ export default createBrowserRouter([
                 element: <OrderBrowser />,
                 path: '/order',
                 loader: DonHangLoader,
-                children: [],
             },
             {
                 element:   <ServiceRegistration />,

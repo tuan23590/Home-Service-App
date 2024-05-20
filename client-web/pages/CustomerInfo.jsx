@@ -1,6 +1,17 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useContext, useEffect, useState } from 'react';
-import { Typography, List, ListItem, ListItemText, Box, Button, Grid, TextField, FormControlLabel, MenuItem } from '@mui/material';
+import {
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+  Button,
+  Grid,
+  TextField,
+  FormControlLabel,
+  MenuItem,
+} from '@mui/material';
 import { DonHangContext } from '../src/context/DonHangProvider';
 import { DBDataDichVu } from '../utils/DichVuUtils';
 import { Link } from 'react-router-dom';
@@ -16,34 +27,36 @@ const CustomerInfo = () => {
     startDate,
     endDate,
     totalPrice,
-    nhanViens,
     serviceOptions,
     petPreference,
     selectedEmployee,
+    dichVus,
+    setDichVus,
   } = useContext(DonHangContext);
 
-  const [dichVus, setDichVus] = useState([]);
   const [paymentInfo, setPaymentInfo] = useState({
     bankAccountNumber: '',
     expirationDate: '',
     pin: '',
     saveCardInfo: false,
-    paymentMethod: 'cash', 
+    paymentMethod: 'cash',
   });
 
   useEffect(() => {
+    console.log('[dichVus]: ',dichVus)
     const fetchData = async () => {
       try {
         const { data } = await DBDataDichVu();
+        console.log('Fetched dichVus:', data.dichVus); // Log dữ liệu dịch vụ lấy được
         setDichVus(data.dichVus);
       } catch (error) {
         console.error('Error fetching service data:', error);
       }
     };
     fetchData();
-  }, []);
+  }, [setDichVus]);
 
-  const daysOfWeek = [ 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy','Chủ nhật'];
+  const daysOfWeek = ['Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Chủ nhật'];
   const selectedWorkDays = workDays.reduce((acc, curr, index) => {
     if (curr) {
       acc.push(daysOfWeek[index]);
@@ -51,19 +64,21 @@ const CustomerInfo = () => {
     return acc;
   }, []);
 
-  const selectedEmployeeNames = nhanViens.map((nhanVien) => nhanVien.ten);
-  const selectedEmployeeDisplay = selectedEmployeeNames.length > 0 ? selectedEmployeeNames.join(', ') : 'Chưa chọn';
+  const selectedEmployeeDisplay = selectedEmployee ? selectedEmployee.ten : 'Không chọn';
+
+  console.log('serviceOptions:', serviceOptions); 
 
   const selectedServices = Object.entries(serviceOptions)
-  .filter(([key, value]) => value)
-  .map(([key, value]) => {
-    const foundService = dichVus.find((dichVu) => dichVu.id === key);
-    return foundService ? foundService.tenDichVu : '';
-  });
+    .filter(([, value]) => value)
+    .map(([key]) => {
+      const foundService = dichVus.find((dichVu) => dichVu.id === key);
+      console.log('Matching service for ID', key, ':', foundService); 
+      return foundService ? foundService.tenDichVu : '';
+    });
 
-
-
-  const petType = petPreference === 'dog' ? 'Chó' : 'Mèo';
+  const petTypeDisplay = petPreference && petPreference.length > 0
+    ? petPreference.map(pet => (pet === 'dog' ? 'Chó' : 'Mèo')).join(', ')
+    : 'Không có';
 
   const handlePost = async () => {
     if (paymentInfo.paymentMethod === 'cash') {
@@ -72,16 +87,13 @@ const CustomerInfo = () => {
       console.log('Xử lý thanh toán chuyển ngân hàng');
     }
   };
-  
+
   return (
     <Box className="customer-info-container">
       <Typography variant="h6">Thông tin đơn hàng</Typography>
       <List>
-      <ListItem >
-      <ListItemText primary={`Tên Dịch Vụ: `} />
-        </ListItem>
         <ListItem>
-        <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
+          <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
         </ListItem>
         <ListItem>
           <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
@@ -100,37 +112,36 @@ const CustomerInfo = () => {
         </ListItem>
         <ListItem>
           <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
-          </ListItem>
-          <ListItem >
-       <ListItemText primary={`Dịch Vụ thêm : ${selectedServices.join(', ')}`} />
         </ListItem>
         <ListItem>
-          <ListItemText primary={`Nhân Viên được chọn: ${selectedEmployee ? selectedEmployee.ten : "Không chọn"}`} />
+          <ListItemText primary={`Dịch vụ thêm: ${dichVus.map(dv => dv.tenDichVu).join(', ')}`} />
         </ListItem>
         <ListItem>
-        <ListItemText primary={`Vật Nuôi: ${petPreference ? (petPreference === 'dog' ? 'Chó' : 'Mèo') : 'Không có'}`} />
+          <ListItemText primary={`Nhân viên được chọn: ${selectedEmployeeDisplay}`} />
         </ListItem>
         <ListItem>
-          <ListItemText primary={`Tổng tiền: ${totalPrice} VNĐ`} />
+          <ListItemText primary={`Vật nuôi: ${petPreference}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={`Tổng tiền: ${totalPrice.toLocaleString('vi-VN')} VNĐ`} />
         </ListItem>
       </List>
-            <ListItemText primary="Phương thức thanh toán" />
-            <FormControlLabel
-              sx={{ marginLeft: 0 }}
-              control={
-                <TextField
-                  select
-                  value={paymentInfo.paymentMethod}
-                  onChange={(e) => {
-                    setPaymentInfo({ ...paymentInfo, paymentMethod: e.target.value });
-                    setShowCreditCardFields(e.target.value === 'creditCard');
-                  }}
-                >
-                  <MenuItem value="cash">Tiền mặt</MenuItem>
-                  <MenuItem value="creditCard">Chuyển khoản ngân hàng</MenuItem>
-                </TextField>
-              }
-            />
+      <ListItemText primary="Phương thức thanh toán" />
+      <FormControlLabel
+        sx={{ marginLeft: 0 }}
+        control={
+          <TextField
+            select
+            value={paymentInfo.paymentMethod}
+            onChange={(e) => {
+              setPaymentInfo({ ...paymentInfo, paymentMethod: e.target.value });
+            }}
+          >
+            <MenuItem value="cash">Tiền mặt</MenuItem>
+            <MenuItem value="creditCard">Chuyển khoản ngân hàng</MenuItem>
+          </TextField>
+        }
+      />
       <Grid container spacing={2}>
         <Grid item>
           <Button variant="contained" color="primary" onClick={handlePost}>
