@@ -2,62 +2,61 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import React, { useContext, useEffect, useState } from 'react'
 import Colors from '../../Utils/Colors'
 import { DonHangContext } from '../../Provider/DonHangProvider';
+import GlobalAPI from '../../Utils/GlobalAPI';
 
 
 
-export default function DichVu({data}) {
-  const {setChonDichVuThem,thoiGianLamViec} = useContext(DonHangContext);
+export default function DichVuThem() {
+  const {setDichVuThem,thoiLuong} = useContext(DonHangContext);
   const [selectedItem, setSelectedItem] = useState([]);
+  const [dataDichVuThem, setDataDichVuThem] = useState([]);
+  
 
-
-
-  const calculateTotalTime = () => {
-    let totalTime = thoiGianLamViec;
-    selectedItem.forEach(item => {
-      totalTime += item.thoiGian || 0;
-    });
-    return totalTime;
-  };
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await GlobalAPI.getDichVuThem();
+        if (data?.DichVuThem) {
+          setDataDichVuThem(data.DichVuThem);
+        }
+      } catch (error) {
+        console.error("Error fetching:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handlePress = (item) => {
-    setSelectedItem(prevSelectedItems => {
-      const isExist = prevSelectedItems.includes(item);
-      if (isExist) {
-        return prevSelectedItems.filter(selectedItem => selectedItem !== item);
-      } 
-      else {
-        const total = calculateTotalTime() + (item.thoiGian || 0);
-        if (total <= 4) {
-          return [...prevSelectedItems, item];
-        } else {
-          alert("Tổng thời gian vượt quá 4 giờ");
-          return prevSelectedItems;
-        }
+    if (item.thoiGian === null) {
+      setSelectedItem(selectedItem.includes(item) ? selectedItem.filter((i) => i !== item) : [...selectedItem, item]);
+      return;
+    }
+    const totalThoiGian = selectedItem.reduce((total, selectedItem) => {
+      return total + (selectedItem.thoiGian || 0);
+    }, 0);
+    if (!selectedItem.includes(item)) {
+      if (totalThoiGian + thoiLuong.thoiGian === 4) {
+        alert("Không thể thêm dịch vụ vì đã đạt tối đa thời gian.");
+        return;
       }
-    });
+    }
+    setSelectedItem(selectedItem.includes(item) ? selectedItem.filter((i) => i !== item) : [...selectedItem, item]);
   };
   
+
+
 useEffect(() => {
-    setChonDichVuThem(selectedItem);
+  setDichVuThem(selectedItem);
 }, [selectedItem]);
 
-
-const renderItem = ({ item }) => (
-  <TouchableOpacity
-    style={[selected === item.label ? styles.itemSelect : styles.item]}
-    onPress={() => { setSelected(item.label); onTimeSelect(item.label) }}
-  >
-    <Text style={styles.text}>{item.label} giờ</Text>
-    <Text>{item.size}</Text>
-    <Text>{item.rooms}</Text>
-  </TouchableOpacity>
-);
+useEffect(() => {
+  setSelectedItem([]);
+}, [thoiLuong]);
 
 return (
   <>
     <FlatList
-      data={data}
+      data={dataDichVuThem}
       numColumns={3}
       renderItem={({ item, index }) => (
         <View style={{ flexDirection: 'row', marginTop: 20, flex: 1 }}>

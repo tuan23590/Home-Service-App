@@ -2,21 +2,55 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native
 import React, { useContext, useEffect, useState } from 'react'
 import Colors from './../../Utils/Colors'
 import { DonHangContext } from '../../Provider/DonHangProvider';
+import GlobalAPI from '../../Utils/GlobalAPI';
 
+export default function ThoiLuong() {
 
-export default function ThoiLuong({data}) {
+  const [thoiLuongChinh, setThoiLuongChinh] = useState();
+  const [dataDichVuCaLe, setDataDichVuCaLe] = useState([]);
+  const {setThoiLuong,dichVuThem, setDichVuChinh} = useContext(DonHangContext);
+  const [itemSelected, setItemSelected] = useState();
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await GlobalAPI.getDichVuCaLe();
+        if (data?.DichVuCaLe) {
+          setDataDichVuCaLe(data.DichVuCaLe);
+        }
+      } catch (error) {
+        console.error("Error fetching:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const {chonThoiLuong, setChonThoiLuong} = useContext(DonHangContext);
+  useEffect(() => {
+    if(thoiLuongChinh === undefined)
+      setThoiLuongChinh(itemSelected);
+    const tongThoiGianDichVuThem = dichVuThem?.reduce((total, dichVu) => total + (dichVu.thoiGian || 0), 0);
+    const selectedElement = dataDichVuCaLe.find(element => element?.thoiGian === tongThoiGianDichVuThem+thoiLuongChinh?.thoiGian);
+    setItemSelected(selectedElement);
+    setDichVuChinh(selectedElement);
+  }, [dichVuThem]);
+  
+  
 
   useEffect(() => { 
-    handlePress(data[0]);
-   }, [data]);
+    handlePress(dataDichVuCaLe[0]);
+   }, [dataDichVuCaLe]);
 
-  const [itemSelected, setItemSelected] = useState();
+  
+
   const handlePress = (item) => {
-    setChonThoiLuong(item);
+    setThoiLuong(item);
+    setDichVuChinh(item);
+    setThoiLuongChinh(item);
     setItemSelected(item);
   }
+
+
+
 
 
   const renderItem = ({ item }) => (
@@ -32,7 +66,7 @@ export default function ThoiLuong({data}) {
 
   return (
     <FlatList
-      data={data}
+      data={dataDichVuCaLe}
       numColumns={4}
       renderItem={renderItem}
       keyExtractor={(item, index) => index.toString()}
