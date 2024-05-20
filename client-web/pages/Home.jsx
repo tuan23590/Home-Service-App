@@ -139,7 +139,7 @@ export default function Home() {
             >
               <MenuItem component={Link} to="/dv1">Giúp việc theo giờ</MenuItem>
               <MenuItem component={Link} to="/tongvesinh">Tổng vệ sinh</MenuItem>
-              <MenuItem component={Link} to="/services/service3">Đi chợ</MenuItem>
+              <MenuItem component={Link} to="/dicho">Đi chợ</MenuItem>
               <MenuItem component={Link} to="/services/service4">Vệ sinh máy lạnh</MenuItem>
               <MenuItem component={Link} to="/services/service5">Giặt ủi</MenuItem>
               <MenuItem component={Link} to="/services/service6">Vệ sinh rèm nệm</MenuItem>

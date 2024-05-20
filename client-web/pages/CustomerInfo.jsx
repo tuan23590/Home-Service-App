@@ -47,7 +47,7 @@ const CustomerInfo = () => {
     const fetchData = async () => {
       try {
         const { data } = await DBDataDichVu();
-        console.log('Fetched dichVus:', data.dichVus); // Log dữ liệu dịch vụ lấy được
+        console.log('Fetched dichVus:', data.dichVus);
         setDichVus(data.dichVus);
       } catch (error) {
         console.error('Error fetching service data:', error);
