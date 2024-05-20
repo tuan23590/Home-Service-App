@@ -7,6 +7,9 @@ const DonHangSchema = new mongoose.Schema({
     ngayDatHang:{
         type: String
     },
+    tongTien:{
+        type: Number
+    },
     ngayBatDau:{
         type: String
     },
@@ -42,6 +45,9 @@ const DonHangSchema = new mongoose.Schema({
     },
     ghiChuDanhGia:{
         type: String
+    },
+    uuTienTasker:{
+        type: Boolean
     },
     
 },{timestamps: true});

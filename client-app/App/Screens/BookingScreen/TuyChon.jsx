@@ -8,10 +8,9 @@ import { CheckBox,Input } from '@rneui/themed';
 import { DonHangContext } from '../../Provider/DonHangProvider';
 
 export default function TuyChon() {
-    const [isSwitchOn1, setIsSwitchOn1] = useState(false);
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
-    const {setVatNuoi} = useContext(DonHangContext);
+    const {setVatNuoi,uuTienTasker, setUuTienTasker} = useContext(DonHangContext);
     const [openThuCung, setOpenThuCung] = useState(false);
     const [text, onTextChange] = useState('');
 
@@ -38,10 +37,10 @@ export default function TuyChon() {
                 <AntDesign name="questioncircleo" size={15} color="black" />
                 <Switch
                     style={{ position: 'absolute', right: 0}}
-                    value={isSwitchOn1}
-                    onValueChange={setIsSwitchOn1}
+                    value={uuTienTasker}
+                    onValueChange={setUuTienTasker}
                     trackColor={{true: Colors.GREEN}}
-                    thumbColor={isSwitchOn1 ? Colors.GREEN : 'gray'}
+                    thumbColor={uuTienTasker ? Colors.GREEN : 'gray'}
                 />
             </View>
             <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>

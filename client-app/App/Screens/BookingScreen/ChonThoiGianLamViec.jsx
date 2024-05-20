@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import Heading from './../../Compunents/Heading';
@@ -9,18 +9,20 @@ import numeral from 'numeral';
 import ChiTietDonHang from './ChiTietDonHang';
 import { DonHangContext } from '../../Provider/DonHangProvider';
 
+import { ScrollView } from 'react-native-virtualized-view'
 
 export default function ChonThoiGianLamViec({hideModal}) {
   const [modalVisible, setModalVisible] = useState(false);
-  const {tongCong,chonThoiLuong}= useContext(DonHangContext);
+  const {tongTien,dichVuChinh}= useContext(DonHangContext);
 
   return (
+    
     <View style={{margin: 20}}>
       <TouchableOpacity
       onPress={()=>hideModal()}
       >
         <Ionicons name="chevron-back-sharp" size={24} color="black" />
-        <Text>thoi giam lam viec</Text>
+      <Text>ChonThoiGianLamViec</Text>
       </TouchableOpacity>
       <Heading text="Thời gian làm việc" />
       <ChonNgayLam />
@@ -28,7 +30,7 @@ export default function ChonThoiGianLamViec({hideModal}) {
       <GhiChuChoTasker />
       <TouchableOpacity onPress={()=>{setModalVisible(true)}}>
       <View style={styles.container}>
-            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{chonThoiLuong?.thoiGian}h</Text>
+            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongTien).format('0,0')} VND/{dichVuChinh?.thoiGian}h</Text>
             <Text style={{color: 'white'}}>Tiếp theo</Text>
         </View>
       </TouchableOpacity>
@@ -37,10 +39,13 @@ export default function ChonThoiGianLamViec({hideModal}) {
         visible={modalVisible}
         style={{top: -20}}
         >
+          <ScrollView>
           <ChiTietDonHang hideModal={()=>setModalVisible(false)}/>
+          </ScrollView>
         </Modal>
       
     </View>
+    
   )
 }
 const styles = StyleSheet.create({ 

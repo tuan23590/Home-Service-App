@@ -11,8 +11,8 @@ import { DonHangContext } from '../../Provider/DonHangProvider';
 export default function ChonNgayLam() {
     const {gioLam, setGioLam} = useContext(DonHangContext);
     const [showPicker, setShowPicker] = useState(false);
-    const [lapLaiHangTuan, setLapLaiHangTuan] = useState(false);
-    const {ngayLamViec, setNgayLamViec} = useContext(DonHangContext);
+    const {lichLamViec, setLichLamViec,dichVuChinh} = useContext(DonHangContext);
+    const [ngayLamViec, setNgayLamViec] = useState([]);
 
     const handleTimeChange = (event, selected) => {
         const currentTime = selected || gioLam;
@@ -29,17 +29,46 @@ export default function ChonNgayLam() {
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
-    const handleDayPress = (dateItem) => {
-        const date = formatDate(dateItem);
-        if (ngayLamViec.includes(date)) {
-            setNgayLamViec(ngayLamViec.filter((d) => d !== date));
+    const formatDateWithTime = (dateString,boundHuor = 0) => {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hour = date.getHours() + boundHuor;
+        const minute = date.getMinutes();
+        return `${hour}:${minute} - ${day}/${month} `;
+      };
+      const handleDayPress = (dateItem) => {
+        const year = dateItem.getFullYear();
+        const month = dateItem.getMonth() + 1; // Tháng bắt đầu từ 0, nên cần cộng thêm 1
+        const day = dateItem.getDate();
+    
+        // Lấy giờ, phút từ gioLam
+        const hour = gioLam.getHours();
+        const minute = gioLam.getMinutes();
+    
+        // Ghép ngày tháng năm với giờ phút
+        const date = new Date(year, month - 1, day, hour, minute);
+        const dateString = formatDate(date);
+    
+        // Chuyển mảng Date thành mảng string
+        const lichLamViecStrings = lichLamViec.map(formatDate);
+    
+        // Kiểm tra xem date có tồn tại trong mảng không
+        const dateIndex = lichLamViecStrings.indexOf(dateString);
+    
+        if (dateIndex !== -1) {
+            const newLichLamViec = [...lichLamViec];
+            newLichLamViec.splice(dateIndex, 1);
+            setLichLamViec(newLichLamViec);
+            setNgayLamViec(ngayLamViec.filter((d) => d !== dateString));
         } else {
-            setNgayLamViec([...ngayLamViec, date]);
+            setLichLamViec([...lichLamViec, date]);
+            setNgayLamViec([...ngayLamViec, dateString]);
         }
-        
     };
     useEffect(() => {
-        console.log(ngayLamViec);
+        console.log("lichLamViec ",lichLamViec);
     }, [ngayLamViec]);
 
     const renderDayItem = ({ item }) => {
@@ -72,7 +101,11 @@ export default function ChonNgayLam() {
         }
         return days;
     };
-
+    const renderItem = ({ item }) => (
+        <View style={{ padding: 10 }}>
+          <Text>{item}</Text>
+        </View>
+      );
     return (
         <View>
             <View style={styles.container}>
@@ -106,13 +139,14 @@ export default function ChonNgayLam() {
                 />
             )}
             <View style={styles.container}>
-                <Text style={{ color: 'gray' }}>LẬP LẠI HÀNG TUẦN</Text>
-                <Switch
-                    style={{ position: 'absolute', right: 0 }}
-                    value={lapLaiHangTuan}
-                    onValueChange={setLapLaiHangTuan}
-                    trackColor={{ true: Colors.GREEN }}
-                    thumbColor={lapLaiHangTuan ? Colors.GREEN : 'gray'}
+            <FlatList
+                data={lichLamViec}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <View style={{ padding: 10 }}>
+                    <Text>Ngày Bắt đầu: {formatDateWithTime(item)} đến {formatDateWithTime(item,boundHuor=dichVuChinh.thoiGian)} </Text> 
+                  </View>
+                )}
                 />
             </View>
         </View>

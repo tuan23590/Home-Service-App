@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import HeaderBooking from './HeaderBooking'
 import Heading from './../../Compunents/Heading'
 import ThoiLuong from './ThoiLuong'
-import DichVu from './DichVu';
+import DichVuThem from './DichVuThem';
 import TuyChon from './TuyChon'
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors'
@@ -17,43 +17,13 @@ export default function BookingSingle({hideModal}) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
-  const [dichVuThem, setDichVuThem] = useState([]);
-  const [dichVuCaLe, setDichVuCaLe] = useState([]);
-
-  const {tongCong,chonThoiLuong} = useContext(DonHangContext);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const dataDichVuCaLe = await GlobalAPI.getDichVuCaLe();
-        const dataDichVuThem = await GlobalAPI.getDichVuThem();
-        if (dataDichVuCaLe?.DichVuCaLe) {
-          setDichVuCaLe(dataDichVuCaLe.DichVuCaLe);
-        }
-        if (dataDichVuThem?.DichVuThem) {
-          setDichVuThem(dataDichVuThem.DichVuThem);
-        }
-      } catch (error) {
-        console.error("Error fetching:", error);
-      }
-    };
-    fetchData();
-  }, []);
 
 
-    
+
+  const {tongCong,chonThoiLuong,dichVuChinh} = useContext(DonHangContext);
   const press = () => {
-    // console.log('Thoi luong cong viec: ',chonThoiLuong);
-    // console.log('So luong dich vu them: ',chonDichVuThem.length);
-    // console.log('vat nuoi: ',vatNuoi);
     setModalThoiGianLamViec(true);
   }
-  // useEffect(() => { 
-   
-  //   const tongTienDichVuThem = chonDichVuThem?.reduce((accumulator, current) => accumulator + current.gia, 0);
-  //   setTongCong(tongTienDichVuThem + chonThoiLuong?.gia);
-  //   setThoiGianLamViec(chonThoiLuong?.thoiGian);
-  // }, [chonThoiLuong, chonDichVuThem]);
   return (
       <View>
         <View style={{padding: 20}}> 
@@ -72,10 +42,10 @@ export default function BookingSingle({hideModal}) {
 
       <View style={{marginHorizontal:20}}>
         <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
-        <ThoiLuong data={dichVuCaLe}/>
+        <ThoiLuong />
 
         <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
-        <DichVu data={dichVuThem} />
+        <DichVuThem />
 
         <Heading text={"Tùy chọn"}/>
         <TuyChon />
@@ -83,7 +53,7 @@ export default function BookingSingle({hideModal}) {
           onPress={()=>press()}
         >
           <View style={styles.container}>
-            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{chonThoiLuong?.thoiGian}h</Text>
+            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{dichVuChinh?.thoiGian}h</Text>
             <Text style={{color: 'white'}}>Tiếp theo</Text>
           </View>
         </TouchableOpacity>
