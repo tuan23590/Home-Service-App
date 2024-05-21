@@ -4,10 +4,6 @@ function epochToText(epoch){
     const dateObject = new Date(epoch * 1000);
     const formattedDate = dateObject.toLocaleString();
 }
-async function kiemTraLichLamViec(danhSachLich,thoiGianBatDau) {
-    const lichLamViec =  LichThucHienModel.find({ _id: {$in: danhSachLich} });
-    console.log("lichLamViec: ",lichLamViec)
-}
 export const resolvers = {
     Query:{
         DichVus: async ()=>{
@@ -54,13 +50,32 @@ export const resolvers = {
             const data = await DonHangModel.findOne({_id: args.idDonHang});
             return data;
         },
-        DanhSachNhanVienTrongViec: async (parent, args)=>{
+        DanhSachNhanVienTrongViec: async (parent, args) => {
             const data = await DonHangModel.findOne({_id: args.idDonHang});
-            const ngayBatDau = data.ngayBatDau;
+            const thoiGianBatDauDonHang = data.ngayBatDau;
             const danhSachNhanVien = await NhanVienModel.find();
-            console.log(danhSachNhanVien);
-
-        },
+            const nhanVienKhongTrungLich = [];
+        
+            for (let i = 0; i < danhSachNhanVien.length; i++) {
+                const lichLamViecCuaNhanVien = await LichThucHienModel.find({ _id: {$in: danhSachNhanVien[i].lichLamViec} });
+                let coTrungLich = false;
+        
+                for (let j = 0; j < lichLamViecCuaNhanVien.length; j++) {
+                    const lich = lichLamViecCuaNhanVien[j];
+                    if (thoiGianBatDauDonHang >= lich.thoiGianBatDauLich && thoiGianBatDauDonHang <= lich.thoiGianKetThucLich) {
+                        coTrungLich = true;
+                        break;
+                    }
+                }
+        
+                if (!coTrungLich) {
+                    nhanVienKhongTrungLich.push(danhSachNhanVien[i]);
+                }
+            }
+        
+            console.log('nhanVienKhongTrungLich: ', nhanVienKhongTrungLich);
+            return nhanVienKhongTrungLich;
+        }                
     },
     DonHang: {
         danhSachDichVu:  async (parent)=>{

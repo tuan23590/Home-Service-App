@@ -29,7 +29,7 @@ const DonHangSchema = new mongoose.Schema({
         type: String
     },
     nhanVien:{
-        type: String
+        type: [String]
     },
     danhSachDichVu:{
         type: [String]

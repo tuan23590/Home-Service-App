@@ -56,7 +56,7 @@ export const typeDefs = `#graphql
         trangThaiDonHang: String,
         danhSachLichThucHien: [LichThucHien],
         khachHang: KhachHang,
-        nhanVien: NhanVien,
+        nhanVien: [NhanVien],
         danhSachDichVu: [DichVu],
         vatNuoi: String,
         ghiCHu: String,
