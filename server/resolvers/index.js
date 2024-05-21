@@ -69,7 +69,6 @@ export const resolvers = {
                         break;
                     }
                 }
-        
                 if (!coTrungLich) {
                     nhanVienKhongTrungLich.push(danhSachNhanVien[i]);
                 }
@@ -79,7 +78,6 @@ export const resolvers = {
             return nhanVienKhongTrungLich;
         },
         DanhSachTinhTp: (parent,args) => {
-            
             try {
                 const tinhData = fs.readFileSync('addressData/tinh_tp.json', 'utf8');
                 const tinhObject = JSON.parse(tinhData);
@@ -177,7 +175,13 @@ export const resolvers = {
             await lichThucHien.save();
             return lichThucHien;
         },
-        ThemNhanVienVaoDonHang: async (parent,args) =>{
+        themDiaChi: async (parent,args)=>{
+            const diaChiMoi = args;
+            const diaChi = new DiaChiModel(diaChiMoi);
+            await diaChi.save();
+            return diaChi;
+        },
+        themNhanVienVaoDonHang: async (parent,args) =>{
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
                 donHang.nhanVien.push(args.idNhanVien);

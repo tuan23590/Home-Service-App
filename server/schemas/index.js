@@ -12,9 +12,9 @@ export const typeDefs = `#graphql
     },
     type DiaChi {
         id: String,
-        tinh: String,
-        huyen: String,
-        xa: String,
+        tinhTP: String,
+        quanHuyen: String,
+        xaPhuong: String,
         soNhaTenDuong: String
     },
     type NhanVien {
@@ -36,7 +36,7 @@ export const typeDefs = `#graphql
     type KhachHang {
         id: String,
         tenKhachHang: String,
-        danhSachDiaChi: [String],
+        danhSachDiaChi: [DiaChi],
         soDienThoai: String,
         email: String
     },
@@ -142,6 +142,7 @@ export const typeDefs = `#graphql
             lichLamViec: [String],
             trangThaiHienTai: String): NhanVien,
         themLichThucHien(thoiGianBatDauLich: Int, thoiGianKetThucLich: Int, trangThaiLich: String): LichThucHien,
-        ThemNhanVienVaoDonHang(idNhanVien: String, idDonHang: String): String
+        themNhanVienVaoDonHang(idNhanVien: String, idDonHang: String): String,
+        themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String): DiaChi,
     }
 `
