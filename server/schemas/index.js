@@ -1,36 +1,3 @@
-// export const typeDefs = `#graphql
-
-// type Product {
-//     id: String,
-//     description: String,
-//     quantity: Int,
-//     name: String,
-//     price: Float,
-//     image: String,
-//     category: [Category]
-// },
-// type Category{
-//     id: String,
-//     name: String,
-//     icon: String,
-//     level: Int,
-//     category: [Category]
-// },
-// type Customer{
-//     id: String,
-//     name: String,
-// },
-// type Query {
-//     products: [Product],
-//     categorys:[Category],
-//     productByProductId(productId: String): Product
-//     productsByCategoryId(categoryId: String): [Product]
-// },
-// type Mutation {
-//     addProduct(name: String!, description: String, quantity: Int,price: Float,image: String, categoryId: String): String,
-//     addCategory(name: String,icon: String,level: Int, parentId: String): String,
-// }
-// `;
 export const typeDefs = `#graphql
     type DichVu {
         tenDichVu: String,
@@ -59,7 +26,8 @@ export const typeDefs = `#graphql
         ghiChu: String,
         trangThaiTaiKhoan: String,
         danhGia: Float,
-        trangThaiHienTai: String
+        trangThaiHienTai: String,
+        lichLamViec: [LichThucHien]
     },
     type KhachHang {
         tenKhachHang: String,
@@ -96,11 +64,14 @@ export const typeDefs = `#graphql
         LichThucHiens: [LichThucHien],
         NhanViens: [NhanVien],
         DichVuCaLe: [DichVu],
+        DonHangTheoId(idDonHang: String): DonHang
         DichVuThem: [DichVu],
+        DanhSachNhanVienTrongViec(idDonHang: String): [NhanVien],
     },
     type Mutation {
         themDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
-        themDonHang(maDonHang:  String,
+        themDonHang(
+            maDonHang:  String,
             ngayDatHang: String,
             ngayBatDau: String,
             ngayKetThuc: String,
@@ -115,7 +86,20 @@ export const typeDefs = `#graphql
             trangThaiDonHang: String,
             ghiChuDanhGia: String): DonHang,
         themKhachHang(tenKhachHang: String, danhSachDiaChi: [String], soDienThoai: String, email: String): KhachHang,
-        themNhanVien(tenNhanVien: String, gioiTinh: String, ngaySinh: String, diaChi: String, soDienThoai: String, email: String, cccd: String, dichVu: [String], ghiChu: String, trangThaiTaiKhoan: String, danhGia: Float, trangThaiHienTai: String): NhanVien,
+        themNhanVien(
+            tenNhanVien: String, 
+            gioiTinh: String, 
+            ngaySinh: String, 
+            diaChi: String, 
+            soDienThoai: String, 
+            email: String, 
+            cccd: String, 
+            dichVu: [String], 
+            ghiChu: String, 
+            trangThaiTaiKhoan: String, 
+            danhGia: Float, 
+            lichLamViec: [String],
+            trangThaiHienTai: String): NhanVien,
         themLichThucHien(thoiGianBatDauLich: Int, thoiGianKetThucLich: Int, trangThaiLich: String): LichThucHien,
     }
 `

@@ -3,7 +3,10 @@ import {DiaChiModel, DichVuModel, DonHangModel, KhachHangModel, LichThucHienMode
 function epochToText(epoch){
     const dateObject = new Date(epoch * 1000);
     const formattedDate = dateObject.toLocaleString();
-    console.log(formattedDate);
+}
+async function kiemTraLichLamViec(danhSachLich,thoiGianBatDau) {
+    const lichLamViec =  LichThucHienModel.find({ _id: {$in: danhSachLich} });
+    console.log("lichLamViec: ",lichLamViec)
 }
 export const resolvers = {
     Query:{
@@ -46,7 +49,18 @@ export const resolvers = {
         DichVuThem: async ()=>{
             const data = await DichVuModel.find({ loaiDichVu: "DichVuThem" });
             return data;
-        }
+        },
+        DonHangTheoId: async (parent,args) =>{
+            const data = await DonHangModel.findOne({_id: args.idDonHang});
+            return data;
+        },
+        DanhSachNhanVienTrongViec: async (parent, args)=>{
+            const data = await DonHangModel.findOne({_id: args.idDonHang});
+            const ngayBatDau = data.ngayBatDau;
+            const danhSachNhanVien = await NhanVienModel.find();
+            console.log(danhSachNhanVien);
+
+        },
     },
     DonHang: {
         danhSachDichVu:  async (parent)=>{
@@ -54,7 +68,6 @@ export const resolvers = {
             return data;
         },
         khachHang: async (parent)=>{
-            console.log(parent);
             const data = await KhachHangModel.findOne({ _id: parent.khachHang });
             return data;
         },
@@ -70,6 +83,12 @@ export const resolvers = {
     KhachHang:{
         danhSachDiaChi: async (parent)=>{
             const data = await DiaChiModel.find({ _id: { $in: parent.danhSachDiaChi } });
+            return data;
+        }
+    },
+    NhanVien:{
+        lichLamViec: async (parent)=>{
+            const data = await LichThucHienModel.find({ _id: { $in: parent.lichLamViec } });
             return data;
         }
     },

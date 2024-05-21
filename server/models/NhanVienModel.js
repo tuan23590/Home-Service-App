@@ -5,6 +5,10 @@ const NhanVienSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    lichLamViec:
+    {
+        type: [String]
+    },
     gioiTinh:{
         type: String
     },
