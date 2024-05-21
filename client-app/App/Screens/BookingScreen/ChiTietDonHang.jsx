@@ -1,15 +1,37 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import Heading from '../../Compunents/Heading';
 import Colors from '../../Utils/Colors';
 import numeral from 'numeral';
 import { DonHangContext } from '../../Provider/DonHangProvider';
+import GlobalAPI from '../../Utils/GlobalAPI';
 
 export default function ChiTietDonHang({hideModal}) {
-    const {tongCong,vatNuoi,chonDichVuThem,chonThoiLuong,gioLam,ngayLamViec} = useContext(DonHangContext);
+    const {vatNuoi,dichVuThem,dichVuChinh,gioLam,lichLamViec,tongTien,uuTienTasker,ghiChu} = useContext(DonHangContext);
+    const formatDateWithTime = (dateString,boundHuor = 0) => {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const hour = date.getHours() + boundHuor;
+      const minute = date.getMinutes();
+      return `${hour}:${minute} - ${day}/${month} `;
+    };
+    const press = () => {
+      const fetchData = async () => {
+        try {
+          const data = await GlobalAPI.themDonHang(vatNuoi,dichVuThem,dichVuChinh,gioLam,lichLamViec,tongTien,uuTienTasker,ghiChu);
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching:", error);
+        }
+      };
+      fetchData();
+    };
+
   return (
-    <View>
+    <View style={{marginHorizontal: 20}}>
          <TouchableOpacity
       onPress={()=>hideModal()}
       >
@@ -27,20 +49,24 @@ export default function ChiTietDonHang({hideModal}) {
         <Heading text='Thông tin công việc'/>
         <View style={styles.box}>
             <Text style={styles.boldText}>Thời gian làm việc</Text>
-            <Text>Ngày Làm Việc: {ngayLamViec.join(', ')}</Text>
-            <Text>Làm trong: {chonThoiLuong.thoiGian} giờ, bắt đầu lúc {`${gioLam.getHours().toString().padStart(2, '0')}:${gioLam.getMinutes().toString().padStart(2, '0')}`} </Text>
+            <Text>Làm trong: {dichVuChinh.thoiGian} giờ, bắt đầu lúc {`${gioLam.getHours().toString().padStart(2, '0')}:${gioLam.getMinutes().toString().padStart(2, '0')}`} </Text>
+            <Text>Ngày Làm Việc:</Text>
+            {lichLamViec?.map((ngay, index) => (
+              <Text key={index}>Ngày Bắt đầu: {formatDateWithTime(ngay)} đến {formatDateWithTime(ngay,boundHuor=dichVuChinh.thoiGian)}</Text>
+            ))}
+            
             <Text style={styles.boldText}>Chi tiết công việc</Text>
-            <Text>Khối lượng công việc: {chonThoiLuong.moTaDichVu}m² / {parseInt(parseInt(chonThoiLuong.moTaDichVu) / 25)} Phòng</Text>
-            <Text>Dịch vụ thêm: {chonDichVuThem.map(item => item?.tenDichVu).join(', ')}</Text>
+            <Text>Khối lượng công việc: {dichVuChinh.moTaDichVu}m² / {parseInt(parseInt(dichVuChinh.moTaDichVu) / 25)} Phòng</Text>
+            <Text>Dịch vụ thêm: {dichVuThem.map(item => item?.tenDichVu).join(', ')}</Text>
             <Text>Nhà có vật nuôi: {vatNuoi}</Text>
         </View>
         <Heading text='Phương thức thanh toán'/>
         <View style={styles.box}>
             <Text>tiền mặt {'>'}  |  Khuyến mãi {'>'}</Text> 
         </View>
-        <Text style={styles.boldText}>Tổng cộng: {numeral(tongCong).format('0,0')} VND</Text>
+        <Text style={styles.boldText}>Tổng cộng: {numeral(tongTien).format('0,0')} VND</Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={press}>
             <Text style={styles.confirmBtn}>Đăng việc</Text>   
         </TouchableOpacity>
     </View>

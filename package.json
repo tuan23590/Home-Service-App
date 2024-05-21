@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@mui/icons-material": "^5.15.18",
+    "@reach/combobox": "^0.18.0"
+  }
+}

@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect, useContext } from 'react';
+import './ServiceRegistration.css'; 
 import {
   AppBar,
   Toolbar,
@@ -25,24 +26,18 @@ import { Link } from 'react-router-dom';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { DonHangContext } from '../src/context/DonHangProvider';
 import { NhanVienLoader } from '../utils/NhanVienUtils';
-import "@reach/combobox/styles.css";
-// eslint-disable-next-line no-unused-vars
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
-import "@reach/combobox/styles.css";
+import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import { dichVuLoader } from './../utils/DichVuUtils';
 
-
-export default function ServiceRegistration() {
-  const [searchValue, setSearchValue] = useState('');
-  const [selected, setSelected] = useState(null);
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [dichVus, setDichVus] = useState([]);
-  const [searchResult, setSearchResult] = useState('');
+const ServiceRegistration = () => {
+  const [checkedIds, setCheckedIds] = useState([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+  const [loadingEmployees, setLoadingEmployees] = useState(true);
+  const [error, setError] = useState(null);
 
   const {
+    searchValue, 
+    setSearchValue,
     selectedDuration,
     setSelectedDuration,
     workDays,
@@ -67,41 +62,53 @@ export default function ServiceRegistration() {
     setSelectedEmployee,
     employeeSelectionSuccess,
     setEmployeeSelectionSuccess,
-    selectedPlace,
-    serviceOptions,
-    setServiceOptions,
     petPreference,
     setPetPreference,
+    selectedPlace, 
+    setSelectedPlace,
+    dichVus,
+    setDichVus,
   } = useContext(DonHangContext);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-          const {data} = await dichVuLoader();
-          console.log("data: ", data);
-          setDichVus(data.dichVus);
+        const { data } = await dichVuLoader();
+        if (data && data.DichVuThem) {
+          setDichVus(data.DichVuThem);
+        } else {
+          console.error('Error fetching service data: DichVus data not found');
+          setError('Error fetching service data');
+        }
       } catch (error) {
-          console.error('Error fetching service data:', error);
+        console.error('Error fetching service data:', error);
+        setError('Error fetching service data');
+      } finally {
+        setLoadingServices(false);
       }
-  };
-  fetchData();
+    };
+    fetchData();
   }, []);
+  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-          const {data} = await NhanVienLoader();
-          setNhanViens(data.nhanViens);
+        const { data } = await NhanVienLoader();
+        setNhanViens(data.nhanViens);
       } catch (error) {
-          console.error('Error fetching service data:', error);
+        console.error('Error fetching employee data:', error);
+        setError('Error fetching employee data');
+      } finally {
+        setLoadingEmployees(false);
       }
-  };
-  fetchData();
-  }, []);
+    };
+    fetchData();
+  }, [setNhanViens]);
 
   useEffect(() => {
     calculateTotalPrice();
-  }, [selectedDuration, repeatCount, serviceOptions]);
+  }, [selectedDuration, repeatCount, checkedIds, petPreference, selectedEmployee]);
 
   const handleDurationChange = (event) => {
     setSelectedDuration(event.target.value);
@@ -129,24 +136,13 @@ export default function ServiceRegistration() {
     setEndDate(event.target.value);
   };
 
- const handleServiceOptionChange = (event) => {
-    const { id, checked } = event.target;
-    setServiceOptions((prevOptions) => ({
-      ...prevOptions,
-      [id]: checked,
-    }));
-
-    // Nếu dịch vụ được chọn, thêm ID của nó vào danh sách selectedServices
-    if (checked) {
-      setSelectedServices((prevSelectedServices) => [...prevSelectedServices, id]);
-      console.log(selectedServices);
-    } else {
-      // Nếu dịch vụ bị bỏ chọn, loại bỏ ID của nó khỏi danh sách selectedServices
-      setSelectedServices((prevSelectedServices) => prevSelectedServices.filter(serviceId => serviceId !== id));
-      console.log(selectedServices);
-    }
-};
-
+  const handleCheckboxChange = (id) => {
+    setCheckedIds((prevIds) =>
+      prevIds.includes(id)
+        ? prevIds.filter((prevId) => prevId !== id)
+        : [...prevIds, id]
+    );
+  };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -156,7 +152,6 @@ export default function ServiceRegistration() {
     setShowSnackbar(true);
     setOpenDialog(false);
     setEmployeeSelectionSuccess(true);
-
     calculateTotalPrice();
   };
 
@@ -185,45 +180,66 @@ export default function ServiceRegistration() {
       default:
         break;
     }
-
+  
     let additionalPrice = 0;
-   
-    if (selectedEmployee) additionalPrice += 20000;
-
-    const totalPrice = (basePrice + additionalPrice) * repeatCount;
+    if (selectedEmployee && selectedEmployee.id) {
+      additionalPrice += 20000;
+    }
+  
+    let servicePrice = 0;
+    if (checkedIds.length > 0) {
+      servicePrice = checkedIds.reduce((total, id) => {
+        const selectedService = dichVus.find(service => service.id === id);
+        if (selectedService && selectedService.gia) {
+          total += selectedService.gia;
+        }
+        return total;
+      }, 0);
+    }
+  
+    const totalPrice = (basePrice + additionalPrice + servicePrice) * repeatCount || 0;
     setTotalPrice(totalPrice);
+  };
+  
 
+  const handleSearch = async () => {
+  
+    try {
+      const results = await getGeocode({ address: searchValue });
+      const { lat, lng } = await getLatLng(results[0]);
+      setSelectedPlace({ lat, lng });
+      setSearchValue(results[0].formatted_address);
+
+    } catch (error) {
+      console.error('Error searching address:', error);    }
+   
+  };
+
+  const handlePetPreferenceChange = (event) => {
+    const { value, checked } = event.target;
+    setPetPreference((prevPreferences) =>
+      checked
+        ? [...prevPreferences, value]
+        : prevPreferences.filter((preference) => preference !== value)
+    );
   };
 
   const handleSubmit = () => {
     console.log('Đã đăng ký dịch vụ');
   };
 
- const handleSearch = async () => {
+  const handleClick = async (event) => {
     try {
-      const results = await getGeocode({ address: searchValue });
-      const { lat, lng } = await getLatLng(results[0]);
-      setSelected({ lat, lng });
-      setSearchValue(results[0].formatted_address); 
-      setSearchResult(results[0].formatted_address); 
-    } catch (error) {
-      console.error('Error searching address:', error);
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      const results = await getGeocode({ location: { lat, lng } });
+      setSelectedPlace(results[0].formatted_address);
+          console.error('Lỗi khi tìm địa chỉ:', error);
+} catch (error) {
+      setError('Error fetching location');
     }
   };
-  const [checkedIds, setCheckedIds] = useState([]);
 
-  const handleCheckboxChange = (id) => {
-    const currentIndex = checkedIds.indexOf(id);
-    const newCheckedIds = [...checkedIds];
-  
-    if (currentIndex === -1) {
-      newCheckedIds.push(id);
-    } else {
-      newCheckedIds.splice(currentIndex, 1);
-    }
-    setCheckedIds(newCheckedIds);
-    console.log("ID đã chọn:", newCheckedIds);
-  };
   return (
     <div>
       <AppBar position="static">
@@ -235,20 +251,14 @@ export default function ServiceRegistration() {
       </AppBar>
       <Container>
         <Typography variant="h5" gutterBottom>Đăng ký dịch vụ</Typography>
-        <LoadScript
-          googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc"
-        >
+        <LoadScript googleMapsApiKey="AIzaSyBWugvX95LUjtIpZif_CGjwKzOCFufBJtc">
           <GoogleMap
             zoom={10}
-            center={selected ? selected : { lat: 10.8231, lng: 106.6297 }} 
+            center={selectedPlace || { lat: 10.8231, lng: 106.6297 }}
             mapContainerStyle={{ height: '400px', width: '100%' }}
-            onClick={(e) => {
-              const lat = e.latLng.lat();
-              const lng = e.latLng.lng();
-              setSelected({ lat, lng });
-            }}
+            onClick={handleClick}
           >
-            {selected && <Marker position={selected} />}
+            {selectedPlace && <Marker position={selectedPlace} />}
           </GoogleMap>
         </LoadScript>
         <div className="places-container">
@@ -258,18 +268,11 @@ export default function ServiceRegistration() {
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Enter an address"
-              style={{
-                width: '300px', 
-                height: '40px',
-                fontSize: '16px' 
-              }}
+              style={{ width: '300px', height: '40px', fontSize: '16px' }}
             />
             <button
               onClick={handleSearch}
-              style={{
-                fontSize: '16px', 
-                padding: '10px 20px' 
-              }}
+              style={{ fontSize: '16px', padding: '10px 20px' }}
             >
               Search
             </button>
@@ -311,11 +314,11 @@ export default function ServiceRegistration() {
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1" gutterBottom>Ngày bắt đầu</Typography>
-            <TextField fullWidth label="" type="date" value={startDate} onChange={handleStartDateChange} />
+            <TextField fullWidth type="date" value={startDate} onChange={handleStartDateChange} />
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1" gutterBottom>Ngày kết thúc</Typography>
-            <TextField fullWidth label="" type="date" value={endDate} onChange={handleEndDateChange} />
+            <TextField fullWidth type="date" value={endDate} onChange={handleEndDateChange} />
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1" gutterBottom>Số lần trong tuần</Typography>
@@ -331,20 +334,44 @@ export default function ServiceRegistration() {
           <Typography variant="subtitle1" gutterBottom>
             Dịch vụ thêm
           </Typography>
-          <div>
-            {dichVus.map((dichVu) => (
-              <div key={dichVu.id}>
-                <input
-                  type="checkbox"
-                  id={dichVu.id}
-                  checked={checkedIds.includes(dichVu.id)}
-                  onChange={() => handleCheckboxChange(dichVu.id)}
-                />
-                <label htmlFor={dichVu.id}>{dichVu.tenDichVu}</label>
-              </div>
-            ))}
-          </div>
-                  </FormGroup>
+          {loadingServices ? (
+            <Typography>Loading services...</Typography>
+          ) : (
+            <div>
+              {dichVus.map((dichVu) => (
+                <div key={dichVu.id}>
+                  <input
+                    type="checkbox"
+                    id={dichVu.id}
+                    checked={checkedIds.includes(dichVu.id)}
+                    onChange={() => handleCheckboxChange(dichVu.id)}
+                  />
+                  <label htmlFor={dichVu.id}>{dichVu.tenDichVu}</label>
+                </div>
+              ))}
+            </div>
+          )}
+        </FormGroup>
+        <FormGroup sx={{ my: 1 }}>
+  <Typography variant="subtitle1" gutterBottom>
+    Chọn vật nuôi
+  </Typography>
+  <div>
+    {['Không có vật nuôi', 'Chó', 'Mèo', 'Khác'].map((pet) => (
+      <FormControlLabel
+        key={pet}
+        control={
+          <Checkbox
+            value={pet}
+            checked={petPreference.includes(pet)}
+            onChange={handlePetPreferenceChange}
+          />
+        }
+        label={pet}
+      />
+    ))}
+  </div>
+</FormGroup>
         <Grid container spacing={2}>
           <Grid item>
             <FormControlLabel
@@ -370,17 +397,20 @@ export default function ServiceRegistration() {
             <Typography variant="caption" color="textSecondary">
               Lưu ý: Chọn người giúp việc sẽ tăng phí dịch vụ thêm 20,000 VND.
             </Typography>
-            {nhanViens.map((employee) => (
-              <div key={employee.id}>
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label={employee.ten}
-                  checked={selectedEmployee && selectedEmployee.id === employee.id}
-                  onChange={() => setSelectedEmployee(employee)}
-                />
-              </div>
-            ))}
-
+            {loadingEmployees ? (
+              <Typography>Loading employees...</Typography>
+            ) : (
+              nhanViens.map((employee) => (
+                <div key={employee.id}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label={employee.ten}
+                    checked={selectedEmployee && selectedEmployee.id === employee.id}
+                    onChange={() => setSelectedEmployee(employee)}
+                  />
+                </div>
+              ))
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Hủy bỏ</Button>
@@ -397,8 +427,10 @@ export default function ServiceRegistration() {
           onClose={handleSnackbarClose}
           message="Đã chọn nhân viên thành công"
         />
+        {error && <Typography color="error">{error}</Typography>}
       </Container>
     </div>
-    
   );
 }
+
+export default ServiceRegistration;

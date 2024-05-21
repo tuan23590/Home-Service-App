@@ -13,6 +13,7 @@ import CustomerInfo from "../../pages/CustomerInfo";
 import ReactGoogleMap from "../../pages/ReactGoogleMap";
 import DonHangProvider from "../../src/context/DonHangProvider";
 import TotalCleaning from "../../pages/TotalCleaning";
+import GroceryShopping from "../../pages/GroceryShopping";
 
 const AuthLayout = () => {
    return  <DonHangProvider>
@@ -52,7 +53,6 @@ export default createBrowserRouter([
                 element: <OrderBrowser />,
                 path: '/order',
                 loader: DonHangLoader,
-                children: [],
             },
             {
                 element:   <ServiceRegistration />,
@@ -81,6 +81,10 @@ export default createBrowserRouter([
             {
                 element: <TotalCleaning />,
                 path: '/tongvesinh',
+            },
+            {
+                element: <GroceryShopping />,
+                path: '/dicho',
             }
         ],
     },

@@ -1,15 +1,16 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Colors from '../../Utils/Colors';
+import { DonHangContext } from '../../Provider/DonHangProvider';
 
 export default function GhiChuChoTasker() {
-    const [text, onChangeText] = useState('');
+    const {ghiChu,setGhiChu} = useContext(DonHangContext);
   return (
     <View>
        <TextInput
         style={styles.input}
-        onChangeText={onChangeText}
-        value={text}
+        onChangeText={setGhiChu}
+        value={ghiChu}
         multiline={true}
         placeholder="Bạn có yêu cầu gì thêm, hãy nhập ở đây nhé"
       />

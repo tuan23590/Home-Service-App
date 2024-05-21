@@ -1,32 +1,37 @@
 // eslint-disable-next-line no-unused-vars
 import { GraphQLrequest } from './request';
-
-
+const API_URL = 'http://localhost:4000/graphql'
 
 export const DonHangLoader = async ()=> {
-    const query = `query MyQuery {
-      donHangs {
+    const query = `query DonHangs {
+      DonHangs {
         id
         maDonHang
-        khachHang
         ngayDatHang
-        dichVu
-        nhanVien
-        thanhToan
-        thoiGianThucHien {
-          thoiGianBatDau
-          thoiGianKetThuc
-          trangThai
-        }
-        tongTien
+        ngayBatDau
+        ngayKetThuc
+        soGioThucHien
         trangThaiDonHang
         vatNuoi
-      
+        ghiCHu
+        saoDanhGia
+        ghiChuDanhGia
+        khachHang {
+          tenKhachHang
+          danhSachDiaChi
+          soDienThoai
+          email
+        }
+        danhSachDichVu {
+          tenDichVu
+          gia
+          maDichVu
+          loaiDichVu
+        }
       }
-    }
-          
+    }  
       `;
-    const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master',{
+    const res = await fetch(API_URL,{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -50,7 +55,7 @@ export const TrangThaiLoader = async ()=> {
         }
       }              
       `;
-    const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master',{
+    const res = await fetch(API_URL,{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
