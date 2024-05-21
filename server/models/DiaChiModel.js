@@ -1,13 +1,13 @@
 import mongoose from 'mongoose'
 
 const DiaChiSchema = new mongoose.Schema({
-    tinh: {
+    tinhTP: {
         type: String
     },
-    huyen:{
+    quanHuyen:{
         type: String
     },
-    xa:{
+    xaPhuong:{
         type: String
     },
     soNhaTenDuong:{

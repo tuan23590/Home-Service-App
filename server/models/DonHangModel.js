@@ -25,11 +25,14 @@ const DonHangSchema = new mongoose.Schema({
     danhSachLichThucHien:{
         type: [String]
     },
+    diaChi: {
+        type: String
+    },
     khachHang:{
         type: String
     },
     nhanVien:{
-        type: String
+        type: [String]
     },
     danhSachDichVu:{
         type: [String]
