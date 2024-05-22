@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton,Divider, Typography, Container, Button, Menu, MenuItem, Card, CardContent, CardMedia, Grid } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'; // Import GoogleMap, LoadScript và Marker từ react-google-maps/api
+import './Home.css';
 
 export default function Home() {
   const [anchorElAboutUs, setAnchorElAboutUs] = useState(null);
@@ -18,6 +18,12 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
 
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
 
   const handleAboutUsClick = (event) => {
     setAnchorElAboutUs(event.currentTarget);
@@ -42,12 +48,7 @@ export default function Home() {
     setAnchorElManage(null);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const handleLogout = () => { 
-    setIsLoggedIn(false);
-    setCurrentUser(null);
-  };
-
+ 
   const renderCard = (index, image, title, description) => (
     <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
       <Card
@@ -80,7 +81,6 @@ export default function Home() {
       <AppBar position="static">
         <Toolbar style={{ justifyContent: 'space-between', display: 'flex'}}>
           <IconButton component={Link} to="/" color="inherit">
-            <HomeIcon /> 
           </IconButton>
           <div>
             <Button
@@ -118,9 +118,8 @@ export default function Home() {
               open={Boolean(anchorElAboutUs)}
               onClose={handleClose}
             >
-              <MenuItem component={Link} to="/about">Giới thiệu</MenuItem>
-              <MenuItem component={Link} to="/press">Thông tin báo chí</MenuItem>
-              <MenuItem component={Link} to="/contact">Liên hệ</MenuItem>
+              <MenuItem component={Link} to="/gioithieu">Giới thiệu</MenuItem>
+              <MenuItem component={Link} to="/lh">Liên hệ</MenuItem>
             </Menu>
             <Button
               aria-controls="menu-services"
@@ -168,11 +167,16 @@ export default function Home() {
             </Menu>
           </div>
           <div>
-              <div>
+            {isLoggedIn ? (
+              <Button onClick={handleLogout} color="inherit">Đăng Xuất</Button>
+            ) : (
+              <>
                 <Button component={Link} to="/login" color="inherit">Đăng Nhập</Button>
                 <Button component={Link} to="/" color="inherit">Đăng Ký</Button>
-              </div>
+              </>
+            )}
           </div>
+
         </Toolbar>
       </AppBar>
       <Container>
@@ -188,6 +192,9 @@ export default function Home() {
           </div>
           <div className="each-slide">
             <img src="/Image/giupviecnha1.jpg" alt="Image 2" style={{ width: '100%' }} />
+          </div>
+          <div className="each-slide">
+            <img src="/Image/22.jpg" alt="Image 3" style={{ width: '100%' }} />
           </div>
         </Slide>
         <Typography variant="h5" sx={{ fontFamily: 'Tahoma', fontWeight: 'bold', fontSize: 24, my: 4 }}>

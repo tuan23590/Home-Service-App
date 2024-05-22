@@ -26,58 +26,6 @@ import {
   DialogActions
 } from '@mui/material';
 
-// const fetchData = async (query) => {
-//   const res = await fetch('http://localhost:4000/graphql', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Accept': 'application/json'
-//     },
-//     body: JSON.stringify({ query })
-//   });
-
-//   const data = await res.json();
-//   if (data.errors) {
-//     throw new Error('Failed to fetch data');
-//   }
-//   return data.data;
-// };
-
-
-// const DonHangLoader = () => {
-//   const query = `query DonHangs {
-//   DonHangs {
-//     id
-//     maDonHang
-//     ngayDatHang
-//     ngayBatDau
-//     ngayKetThuc
-//     soGioThucHien
-//     trangThaiDonHang
-//     vatNuoi
-//     ghiCHu
-//     saoDanhGia
-//     ghiChuDanhGia
-//   }
-// }`;
-//   console.log(fetchData(query))
-//   return fetchData(query);
-// };
-
-// const NhanVienLoader = () => {
-//   const query = `query MyQuery {
-//     nhanViens {
-//       id
-//       ten
-//       hinhAnh {
-//         id
-//       }
-//     }
-//   }`;
-
-//   return fetchData(query);
-// };
-
 export default function OrderAllocation() {
   const [selectedStatus, setSelectedStatus] = useState('Chờ duyệt');
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -87,7 +35,7 @@ export default function OrderAllocation() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [orders, setOrders] = useState([]);
   const [addEmployeeDialogOpen, setAddEmployeeDialogOpen] = useState(false);
-  const [employees, setEmployees] = useState([]);
+  // const [employees, setEmployees] = useState([]);
   const [selectedServiceIndex, setSelectedServiceIndex] = useState(null);
 
 
@@ -100,19 +48,6 @@ export default function OrderAllocation() {
   }, [data]);
 
   console.log("[data don hang: ]", orders);
-
-  // useEffect(() => {
-  //   const fetchNhanViens = async () => {
-  //     try {
-  //       const data = await NhanVienLoader();
-  //       setEmployees(data.nhanViens);
-  //     } catch (error) {
-  //       console.error('Error fetching employees:', error);
-  //     }
-  //   };
-
-  //   fetchNhanViens();
-  // }, []);
 
   const handleSelectOrder = (order) => {
     setSelectedOrder(order);
@@ -128,27 +63,7 @@ export default function OrderAllocation() {
     setSnackbarOpen(false);
   };
 
-  // const handleApproveService = (index) => {
-  //   const updatedServices = [...selectedOrder.dichVus];
-  //   updatedServices[index].isApproved = true;
-  //   setSelectedOrder(prevState => ({
-  //     ...prevState,
-  //     dichVus: updatedServices
-  //   }));
-  // };
-
-  // const handleAddEmployeeClick = (index) => {
-  //   setSelectedServiceIndex(index);
-  //   setAddEmployeeDialogOpen(true);
-  // };
-
-  // const handleEmployeeSelection = (employee) => {
-  //   const updatedOrder = { ...selectedOrder };
-  //   updatedOrder.dichVus[selectedServiceIndex].nhanVien = employee.ten;
-  //   setSelectedOrder(updatedOrder);
-  //   setAddEmployeeDialogOpen(false);
-  // };
-
+ 
   const handleOrderApproval = () => {
     const updatedOrders = orders.map(order => 
       order.id === selectedOrder.id ? { ...order, trangThaiDonHang: 'Đã phân bổ' } : order
@@ -262,11 +177,11 @@ export default function OrderAllocation() {
                                 <TableCell>{service.loaiDichVu}</TableCell>
                                 <TableCell>{service.gia}</TableCell>
                                 <TableCell>
-                                  {service.nhanVien ? (
+                                  {/* {service.nhanVien ? (
                                     <Typography>{service.nhanVien}</Typography>
                                   ) : (
                                     <Button onClick={() => handleAddEmployeeClick(index)}>Thêm CTV</Button>
-                                  )}
+                                  )} */}
                                 </TableCell>
                               </TableRow>
                             ))
@@ -291,11 +206,11 @@ export default function OrderAllocation() {
         <DialogTitle>Chọn Cộng Tác Viên</DialogTitle>
         <DialogContent>
           <List>
-            {employees.map((employee) => (
+            {/* {employees.map((employee) => (
               <ListItem key={employee.id} button onClick={() => handleEmployeeSelection(employee)}>
                 <ListItemText primary={employee.ten} />
               </ListItem>
-            ))}
+            ))} */}
           </List>
         </DialogContent>
         <DialogActions>

@@ -1,0 +1,46 @@
+
+.contact-container {
+    padding: 40px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-heading {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-info {
+    margin-top: 40px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .contact-container {
+        padding: 20px;
+    }
+
+    .contact-heading {
+        font-size: 1.5rem;
+    }
+}
+
+/* Adjust primary color to orange */
+.MuiButton-containedPrimary {
+    color: #ffffff; /* Text color */
+    background-color: #ff5722 !important; /* Orange background color */
+}
+
+.MuiButton-containedPrimary:hover {
+    background-color: #f4511e !important; /* Darker orange on hover */
+}

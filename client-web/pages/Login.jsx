@@ -13,7 +13,7 @@ const Login = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [userRole, setUserRole] = useState('');
-  const [anchorElManage, setAnchorElManage] = useState(null); // State for management menu
+  const [anchorElManage, setAnchorElManage] = useState(null);
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -78,12 +78,12 @@ const Login = () => {
       const role = await authenticateUser();
       setUserRole(role);
       setSnackbarOpen(true);
-      setSnackbarMessage('Đăng nhập thành công!');
+      console.log('Đăng nhập thành công!');
       navigate('/');
     } catch (error) {
       console.error('Error logging in:', error);
       setSnackbarOpen(true);
-      setSnackbarMessage('Đăng nhập thất bại. Vui lòng thử lại.');
+      console.log('Đăng nhập thất bại. Vui lòng thử lại.'); 
     }
   };
 

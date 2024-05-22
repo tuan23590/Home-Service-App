@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -19,7 +18,10 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { getGeocode, getLatLng } from 'use-places-autocomplete'; // Thêm import
+import { getGeocode, getLatLng } from 'use-places-autocomplete';
+import './TotalCleaning.css';
+import { DonHangContext } from '../src/context/DonHangProvider';
+import { NhanVienLoader } from '../utils/NhanVienUtils';
 
 export default function TotalCleaning() {
   const [selectedArea, setSelectedArea] = useState('');
@@ -33,10 +35,26 @@ export default function TotalCleaning() {
   const [repeatWeekly, setRepeatWeekly] = useState(false);
   const [petPreference, setPetPreference] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [nhanViens, setNhanViens] = useState([]);
+  const { donHangs } = useContext(DonHangContext);
+  const [selectedNhanVien, setSelectedNhanVien] = useState('');
+
 
   useEffect(() => {
+    loadNhanViens();
     calculateTotalPrice();
   }, [selectedArea, repeatCount, repeatWeekly, petPreference]);
+
+  const handleNhanVienChange = (event) => {
+    setSelectedNhanVien(event.target.value);
+  };
+
+  
+  const loadNhanViens = async () => {
+    const nhanViensData = await NhanVienLoader();
+    setNhanViens(nhanViensData);
+    console.log(["data : ", nhanViensData ]);
+  };
 
   const handleAreaChange = (event) => {
     setSelectedArea(event.target.value);
@@ -148,18 +166,11 @@ export default function TotalCleaning() {
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Enter an address"
-              style={{
-                width: '300px',
-                height: '40px',
-                fontSize: '16px',
-              }}
+              className="search-input"
             />
             <button
               onClick={handleSearch}
-              style={{
-                fontSize: '16px',
-                padding: '10px 20px',
-              }}
+              className="search-button"
             >
               Tìm kiếm
             </button>
@@ -173,7 +184,7 @@ export default function TotalCleaning() {
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel id="area-label">Diện tích</InputLabel>
+            <InputLabel id="area-label">Diện tích</InputLabel>
               <Select
                 labelId="area-label"
                 value={selectedArea}
@@ -231,8 +242,24 @@ export default function TotalCleaning() {
               </Select>
             </FormControl>
           </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id="nhanvien-label">Chọn nhân viên</InputLabel>
+              <Select
+                labelId="nhanvien-label"
+                value={selectedNhanVien}
+                onChange={handleNhanVienChange}
+              >
+                  {Array.isArray(nhanViens) && nhanViens.map((nhanVien) => (
+                  <MenuItem key={nhanVien.id} value={nhanVien.id}>
+                    {nhanVien.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
-        <Button color="primary" onClick={handleSubmit} sx={{ mt: 2 }}>
+        <Button component={Link} to="/hienthithongtin2" variant="contained" color="primary" onClick={handleSubmit}>
           Tiếp Theo
         </Button>
         <Typography variant="h6" sx={{ mt: 2 }}>
@@ -242,7 +269,6 @@ export default function TotalCleaning() {
           open={showSnackbar}
           autoHideDuration={6000}
           onClose={handleSnackbarClose}
-          message={`Đã đăng ký dịch vụ với tổng giá ${totalPrice.toLocaleString('vi-VN')} VND`}
         />
       </Container>
     </div>

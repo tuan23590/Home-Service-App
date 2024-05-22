@@ -5,9 +5,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Box,
-  Button,
   Grid,
+  Button,
   TextField,
   FormControlLabel,
   MenuItem,
@@ -43,7 +42,7 @@ const CustomerInfo = () => {
   });
 
   useEffect(() => {
-    console.log('[dichVus]: ',dichVus)
+    console.log('[dichVus]: ', dichVus);
     const fetchData = async () => {
       try {
         const { data } = await DBDataDichVu();
@@ -66,19 +65,20 @@ const CustomerInfo = () => {
 
   const selectedEmployeeDisplay = selectedEmployee ? selectedEmployee.ten : 'Không chọn';
 
-  console.log('serviceOptions:', serviceOptions); 
+  console.log('serviceOptions:', serviceOptions);
 
   const selectedServices = Object.entries(serviceOptions)
     .filter(([, value]) => value)
     .map(([key]) => {
       const foundService = dichVus.find((dichVu) => dichVu.id === key);
-      console.log('Matching service for ID', key, ':', foundService); 
+      console.log('Matching service for ID', key, ':', foundService);
       return foundService ? foundService.tenDichVu : '';
     });
 
-  const petTypeDisplay = petPreference && petPreference.length > 0
-    ? petPreference.map(pet => (pet === 'dog' ? 'Chó' : 'Mèo')).join(', ')
-    : 'Không có';
+  const petTypeDisplay =
+    petPreference && petPreference.length > 0
+      ? petPreference.map((pet) => (pet === 'dog' ? 'Chó' : 'Mèo')).join(', ')
+      : 'Không có';
 
   const handlePost = async () => {
     if (paymentInfo.paymentMethod === 'cash') {
@@ -89,72 +89,80 @@ const CustomerInfo = () => {
   };
 
   return (
-    <Box className="customer-info-container">
-      <Typography variant="h6">Thông tin đơn hàng</Typography>
-      <List>
-        <ListItem>
-          <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Thời lượng được chọn: ${selectedDuration} giờ`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Lặp lại hàng tuần: ${repeatWeekly ? 'Có' : 'Không'}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Số lần trong tuần: ${repeatCount}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Ngày bắt đầu: ${startDate}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Dịch vụ thêm: ${dichVus.map(dv => dv.tenDichVu).join(', ')}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Nhân viên được chọn: ${selectedEmployeeDisplay}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Vật nuôi: ${petPreference}`} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={`Tổng tiền: ${totalPrice.toLocaleString('vi-VN')} VNĐ`} />
-        </ListItem>
-      </List>
-      <ListItemText primary="Phương thức thanh toán" />
-      <FormControlLabel
-        sx={{ marginLeft: 0 }}
-        control={
-          <TextField
-            select
-            value={paymentInfo.paymentMethod}
-            onChange={(e) => {
-              setPaymentInfo({ ...paymentInfo, paymentMethod: e.target.value });
-            }}
-          >
-            <MenuItem value="cash">Tiền mặt</MenuItem>
-            <MenuItem value="creditCard">Chuyển khoản ngân hàng</MenuItem>
-          </TextField>
-        }
-      />
-      <Grid container spacing={2}>
-        <Grid item>
-          <Button variant="contained" color="primary" onClick={handlePost}>
-            Đăng tin
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary" component={Link} to="/dv1">
-            Trở về
-          </Button>
+    <Grid container spacing={2} className="customer-info-container">
+      <Grid item xs={12}>
+        <Typography variant="h6">Thông tin đơn hàng</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <List>
+          <ListItem>
+            <ListItemText primary={`Địa điểm đã chọn: ${searchValue}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày làm việc: ${selectedWorkDays.join(', ')}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Thời lượng được chọn: ${selectedDuration} giờ`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Lặp lại hàng tuần: ${repeatWeekly ? 'Có' : 'Không'}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Số lần trong tuần: ${repeatCount}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày bắt đầu: ${startDate}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Ngày kết thúc: ${endDate}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Dịch vụ thêm: ${dichVus.map((dv) => dv.tenDichVu).join(', ')}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Nhân viên được chọn: ${selectedEmployeeDisplay}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Vật nuôi: ${petPreference}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Tổng tiền: ${totalPrice.toLocaleString('vi-VN')} VNĐ`} />
+          </ListItem>
+        </List>
+      </Grid>
+      <Grid item xs={12}>
+        <ListItemText primary="Phương thức thanh toán" />
+        <FormControlLabel
+          sx={{ marginLeft: 0 }}
+          control={
+            <TextField
+              select
+              value={paymentInfo.paymentMethod}
+              onChange={(e) => {
+                setPaymentInfo({ ...paymentInfo, paymentMethod: e.target.value });
+              }}
+            >
+              <MenuItem value="cash">Tiền mặt</MenuItem>
+              <MenuItem value="creditCard">Chuyển khoản ngân hàng</MenuItem>
+            </TextField>
+          }
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
+          <Grid item>
+            <Button variant="contained" color="primary" onClick={handlePost}>
+              Đăng tin
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" component={Link} to="/dv1">
+              Trở về
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
-    </Box>
+    </Grid>
   );
 };
 

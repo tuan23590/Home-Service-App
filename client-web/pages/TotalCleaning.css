@@ -1,0 +1,35 @@
+/* TotalCleaning.css */
+
+.places-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .places-container input[type="text"] {
+    width: 300px;
+    height: 40px;
+    font-size: 16px;
+    margin-right: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .places-container button {
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #FFA500;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .places-container button:hover {
+    background-color: #FF8C00;
+  }
+  
+  .full-width-select {
+    width: 100%;
+  }
+  

@@ -10,10 +10,13 @@ import ThemDonHang from "../../pages/ThemDonHang";
 import DangKyNhanViec from "../../pages/DangKyNhanViec";
 import DangKyNauAn from "../../pages/DangKyNauAn";
 import CustomerInfo from "../../pages/CustomerInfo";
+import CustomerInfo2 from "../../pages/CustomerInfo2";
 import ReactGoogleMap from "../../pages/ReactGoogleMap";
 import DonHangProvider from "../../src/context/DonHangProvider";
 import TotalCleaning from "../../pages/TotalCleaning";
 import GroceryShopping from "../../pages/GroceryShopping";
+import GioiThieu from "../../pages/GioiThieu";
+import LienHe from "../../pages/LienHe";
 
 const AuthLayout = () => {
    return  <DonHangProvider>
@@ -85,7 +88,20 @@ export default createBrowserRouter([
             {
                 element: <GroceryShopping />,
                 path: '/dicho',
-            }
+            },
+
+            {
+                element: <GioiThieu />,
+                path: '/gioithieu',
+            },
+            {
+                element: <LienHe />,
+                path: '/lh',
+            },
+            {
+                element: <CustomerInfo2 />,
+                path: '/hienthithongtin2',
+            },
         ],
     },
 ]);

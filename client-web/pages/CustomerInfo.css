@@ -1,49 +1,45 @@
-.CustomerInfo-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Heading style */
-  .CustomerInfo-heading {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  /* List style */
-  .CustomerInfo-list {
-    padding: 0;
-    list-style-type: none;
-  }
-  
-  /* List item style */
-  .CustomerInfo-listItem {
-    margin-bottom: 10px;
-  }
-  
-  /* Button style */
-  .CustomerInfo-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  .CustomerInfo-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .CustomerInfo-button:focus {
-    outline: none;
-  }
+.customer-info-container {
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.customer-info-container h6 {
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.customer-info-container .MuiList-root {
+  width: 100%;
+}
+
+.customer-info-container .MuiListItem-root {
+  margin-bottom: 10px;
+}
+
+.customer-info-container .MuiListItemText-primary {
+  color: #333333;
+}
+
+.customer-info-container .MuiTextField-root {
+  margin-top: 10px;
+}
+
+.customer-info-container .MuiFormControlLabel-root {
+  margin-top: 10px;
+}
+
+.customer-info-container .MuiButton-root {
+  margin-top: 20px;
+}
+
+.customer-info-container .MuiButton-containedPrimary {
+  background-color: #FFA500;
+}
+
+.customer-info-container .MuiButton-containedPrimary:hover {
+  background-color: #FF8C00;
+}

@@ -3,8 +3,6 @@ export const NhanVienLoader = async () => {
       nhanViens {
         id
         ten
-        hinhAnh {
-          id
         }
       }
     }`;
