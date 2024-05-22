@@ -152,7 +152,20 @@ export const resolvers = {
             return DichVu;
         },
         themDonHang: async (parent,args)=>{
-            const donHangMoi = args;
+            const lastDonHang = await DonHangModel.findOne().sort({ maDonHang: -1 }).exec();
+            let newMaDonHang;
+            if (lastDonHang) {
+                const lastMaDonHang = lastDonHang.maDonHang;
+                const lastNumber = parseInt(lastMaDonHang.replace("DH", ""), 10);
+                newMaDonHang = "DH" + (lastNumber + 1);
+            } else {
+    
+                newMaDonHang = "DH1";
+            }
+            const donHangMoi = {
+                ...args,
+                maDonHang: newMaDonHang
+            };
             const DonHang = new DonHangModel(donHangMoi);
             await DonHang.save();
             return DonHang;

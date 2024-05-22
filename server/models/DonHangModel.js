@@ -40,7 +40,7 @@ const DonHangSchema = new mongoose.Schema({
     vatNuoi:{
         type: String
     },
-    ghiCHu:{
+    ghiChu:{
         type: String
     },
     saoDanhGia:{
