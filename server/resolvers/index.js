@@ -73,7 +73,6 @@ export const resolvers = {
                     nhanVienKhongTrungLich.push(danhSachNhanVien[i]);
                 }
             }
-        
             console.log('nhanVienKhongTrungLich: ', nhanVienKhongTrungLich);
             return nhanVienKhongTrungLich;
         },
@@ -112,7 +111,6 @@ export const resolvers = {
                 return [];
             }
         },
-                     
     },
     DonHang: {
         danhSachDichVu:  async (parent)=>{
@@ -129,6 +127,11 @@ export const resolvers = {
         },
         danhSachLichThucHien: async (parent)=>{
             const data = await LichThucHienModel.find({ _id: { $in: parent.danhSachLichThucHien } });
+            return data;
+        },
+        diaChi: async (parent) =>{
+            console.log(parent)
+            const data = await DiaChiModel.findById({ _id: parent.diaChi  });
             return data;
         }
     },
@@ -198,15 +201,13 @@ export const resolvers = {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
                 donHang.nhanVien.push(args.idNhanVien);
-
                 const nhanVien = await NhanVienModel.findById(args.idNhanVien);
                 nhanVien.lichLamViec = nhanVien.lichLamViec.concat(donHang.danhSachLichThucHien);
-
                 await donHang.save();
                 await nhanVien.save();
-                return 'success';
+                return donHang;
             } catch (err) {
-                return err;
+                return {"message": 'err'};
             }
         },
     }

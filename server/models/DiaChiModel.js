@@ -12,6 +12,9 @@ const DiaChiSchema = new mongoose.Schema({
     },
     soNhaTenDuong:{
         type: String
+    },
+    ghiChu: {
+        type: String
     }
 },{timestamps: true});
 

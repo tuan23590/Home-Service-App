@@ -5,16 +5,16 @@ const DonHangSchema = new mongoose.Schema({
         type: String
     },
     ngayDatHang:{
-        type: String
+        type: Number
     },
     tongTien:{
         type: Number
     },
     ngayBatDau:{
-        type: String
+        type: Number
     },
     ngayKetThuc:{
-        type: String
+        type: Number
     },
     soGioThucHien:{
         type: Number
