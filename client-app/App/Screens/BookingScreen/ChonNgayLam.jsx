@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Button } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Colors from '../../Utils/Colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Switch } from '@rneui/themed';
 import { AntDesign } from '@expo/vector-icons';
-import { formCaLeContext } from './BookingSingle';
 import { DonHangContext } from '../../Provider/DonHangProvider';
 
 

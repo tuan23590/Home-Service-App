@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import HeaderBooking from './HeaderBooking'
 import Heading from './../../Compunents/Heading'
 import ThoiLuong from './ThoiLuong'
 import DichVuThem from './DichVuThem';
@@ -8,7 +7,6 @@ import TuyChon from './TuyChon'
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors'
 import MapPicker from '../../Compunents/MapPicker'
-import GlobalAPI from '../../Utils/GlobalAPI'
 import ChonThoiGianLamViec from './ChonThoiGianLamViec';
 import numeral from 'numeral';
 import { DonHangContext } from '../../Provider/DonHangProvider'
@@ -17,10 +15,7 @@ export default function BookingSingle({hideModal}) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
-
-
-
-  const {tongCong,chonThoiLuong,dichVuChinh} = useContext(DonHangContext);
+  const {tongCong,dichVuChinh} = useContext(DonHangContext);
   const press = () => {
     setModalThoiGianLamViec(true);
   }
@@ -38,8 +33,6 @@ export default function BookingSingle({hideModal}) {
         <Text>Mo Map</Text>
       </TouchableOpacity>
       </View>
-
-
       <View style={{marginHorizontal:20}}>
         <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
         <ThoiLuong />
@@ -58,7 +51,6 @@ export default function BookingSingle({hideModal}) {
           </View>
         </TouchableOpacity>
       </View>
-
       <Modal
         animationType='slide'
         visible={modalVisible}

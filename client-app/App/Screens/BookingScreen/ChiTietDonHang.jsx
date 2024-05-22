@@ -21,8 +21,7 @@ export default function ChiTietDonHang({hideModal}) {
     const press = () => {
       const fetchData = async () => {
         try {
-          const data = await GlobalAPI.themDonHang(vatNuoi,dichVuThem,dichVuChinh,gioLam,lichLamViec,tongTien,uuTienTasker,ghiChu);
-          console.log(data);
+          const data = await GlobalAPI.themDonHang(lichLamViec,dichVuChinh,dichVuThem,vatNuoi,ghiChu,uuTienTasker,tongTien);
         } catch (error) {
           console.error("Error fetching:", error);
         }
@@ -56,7 +55,7 @@ export default function ChiTietDonHang({hideModal}) {
             ))}
             
             <Text style={styles.boldText}>Chi tiết công việc</Text>
-            <Text>Khối lượng công việc: {dichVuChinh.moTaDichVu}m² / {parseInt(parseInt(dichVuChinh.moTaDichVu) / 25)} Phòng</Text>
+            <Text>Khối lượng công việc: {dichVuChinh.moTaDichVu}</Text>
             <Text>Dịch vụ thêm: {dichVuThem.map(item => item?.tenDichVu).join(', ')}</Text>
             <Text>Nhà có vật nuôi: {vatNuoi}</Text>
         </View>
@@ -74,10 +73,6 @@ export default function ChiTietDonHang({hideModal}) {
 }
 const styles = StyleSheet.create({
     box: {
-        // display: 'flex',
-        // flexDirection: 'row',
-        // justifyContent: 'space-between',
-        // alignItems: 'center',
         padding: 20,
         backgroundColor: Colors.LIGHT_GRAY,
         borderRadius: 10,

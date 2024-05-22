@@ -5,6 +5,7 @@ import Slider from './Slider'
 import DoanhMuc from './DoanhMuc'
 import KhamPha from './KhamPha'
 import { ScrollView } from 'react-native-virtualized-view'
+import ModalProvider from '../../Provider/ModalProvider'
 
 export default function TrangChu() {
   
@@ -13,7 +14,9 @@ export default function TrangChu() {
       <Header/>
       <View style={{marginHorizontal: 20}}>
       <Slider/>
-      <DoanhMuc/>
+      <ModalProvider>
+        <DoanhMuc/>
+      </ModalProvider>
       <KhamPha/>
       </View>
     </ScrollView> 

@@ -83,7 +83,6 @@ export const resolvers = {
                 const danhSachTinh = Object.values(tinhObject);
                 return danhSachTinh;
             } catch (err) {
-                console.error('Lỗi khi đọc file tinh_tp.json:', err);
                 return [];
             }
         },
@@ -95,7 +94,6 @@ export const resolvers = {
                 const danhSachQuanHuyen = Object.values(quanHuyenObject).filter(quanHuyen => quanHuyen.parent_code === idTinhTP);
                 return danhSachQuanHuyen;
             } catch (err) {
-                console.error('Lỗi khi đọc file quan_huyen.json:', err);
                 return [];
             }
         },
@@ -107,10 +105,12 @@ export const resolvers = {
                 const danhSachXaPhuong = Object.values(xaPhuongObject).filter(xaPhuong => xaPhuong.parent_code === idQuanHuyen);
                 return danhSachXaPhuong;
             } catch (err) {
-                console.error('Lỗi khi đọc file quan_huyen.json:', err);
                 return [];
             }
         },
+        TrangThaiDonHang: (parent, args) =>{
+            return ['Đã tạo đơn','Đang chờ duyệt','Đã duyệt đơn','Đang thực hiện','Đã hoàn thành']
+        }
     },
     DonHang: {
         danhSachDichVu:  async (parent)=>{
@@ -154,25 +154,32 @@ export const resolvers = {
             await DichVu.save();
             return DichVu;
         },
-        themDonHang: async (parent,args)=>{
+        themDonHang: async (parent, args) => {
             const lastDonHang = await DonHangModel.findOne().sort({ maDonHang: -1 }).exec();
+            const ngayBatDauMoi = await LichThucHienModel.findById(args.danhSachLichThucHien[0]);
+            const ngayKetThucMoi = await LichThucHienModel.findById(args.danhSachLichThucHien[args.danhSachLichThucHien.length - 1]);
+            
             let newMaDonHang;
             if (lastDonHang) {
                 const lastMaDonHang = lastDonHang.maDonHang;
                 const lastNumber = parseInt(lastMaDonHang.replace("DH", ""), 10);
                 newMaDonHang = "DH" + (lastNumber + 1);
             } else {
-    
                 newMaDonHang = "DH1";
             }
+        
             const donHangMoi = {
                 ...args,
-                maDonHang: newMaDonHang
+                maDonHang: newMaDonHang,
+                ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
+                ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
+                ngayDatHang: Math.floor(Date.now() / 1000)
             };
+        
             const DonHang = new DonHangModel(donHangMoi);
             await DonHang.save();
             return DonHang;
-        },
+        },        
         themKhachHang: async (parent,args)=>{
             const khachHangMoi = args;
             const khachHang = new KhachHangModel(khachHangMoi);
@@ -210,5 +217,11 @@ export const resolvers = {
                 return {"message": 'err'};
             }
         },
+        capNhatTrangThaiDonHang: async (parent, args)=>{
+            const donHang = await DonHangModel.findById(args.idDonHang);
+            donHang.trangThaiDonHang = args.trangThaiDonHang;
+            donHang.save();
+            return donHang;
+        }
     }
 };

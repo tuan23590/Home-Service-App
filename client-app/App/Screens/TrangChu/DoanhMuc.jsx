@@ -7,6 +7,8 @@ import Heading from '../../Compunents/Heading'
 import { useNavigation } from '@react-navigation/native'
 import BookingSingle from './../BookingScreen/BookingSingle';
 import DonHangProvider from '../../Provider/DonHangProvider'
+import { ScrollView } from 'react-native-virtualized-view'
+
 export default function DoanhMuc() {
     const [categories, setCategories] = useState([]);
     
@@ -48,7 +50,9 @@ export default function DoanhMuc() {
       style={{top: -20}}
       >
         <DonHangProvider>
+        <ScrollView>
         <BookingSingle hideModal={()=>setModalVisible(false)}/>
+        </ScrollView>
         </DonHangProvider>
       </Modal>
     </View>

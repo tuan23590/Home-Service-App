@@ -59,15 +59,13 @@ export default function ThoiLuong() {
       onPress={() => handlePress(item) }
     >
       <Text style={styles.text}>{item.thoiGian} giờ</Text>
-      <Text>{item.moTaDichVu}m²</Text>
-      <Text>{parseInt(parseInt(item.moTaDichVu) / 25)} Phòng</Text>
+      <Text>{item.moTaDichVu} Phòng</Text>
     </TouchableOpacity>
   );
 
   return (
     <FlatList
       data={dataDichVuCaLe}
-      numColumns={4}
       renderItem={renderItem}
       keyExtractor={(item, index) => index.toString()}
       contentContainerStyle={{ marginTop: 10 }}
@@ -83,9 +81,8 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    width: 95,
-    height: 95,
-    marginHorizontal: 10,
+    height: 70,
+    marginVertical: 10,
     borderWidth: 1,
     borderRadius: 10,
     alignItems: 'center',
@@ -93,9 +90,8 @@ const styles = StyleSheet.create({
   },
   itemSelect: {
     flex: 1,
-    width: 95,
-    height: 95,
-    marginHorizontal: 10,
+    height: 70,
+    marginVertical: 10,
     borderWidth: 1,
     borderColor: Colors.ORANGE,
     borderRadius: 10,
