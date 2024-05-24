@@ -145,6 +145,10 @@ export const resolvers = {
         lichLamViec: async (parent)=>{
             const data = await LichThucHienModel.find({ _id: { $in: parent.lichLamViec } });
             return data;
+        },
+        dichVu: async (parent)=>{
+            const data = await DichVuModel.find({ _id: { $in: parent.dichVu } });
+            return data;
         }
     },
     Mutation: {
@@ -204,19 +208,28 @@ export const resolvers = {
             await diaChi.save();
             return diaChi;
         },
-        themNhanVienVaoDonHang: async (parent,args) =>{
+        themNhanVienVaoDonHang: async (parent, args) => {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
-                donHang.nhanVien.push(args.idNhanVien);
+                // Thêm từng nhân viên vào mảng donHang.nhanVien
+                args.idNhanVien.forEach(id => {
+                    donHang.nhanVien.push(id);
+                });
+        
                 const nhanVien = await NhanVienModel.findById(args.idNhanVien);
-                nhanVien.lichLamViec = nhanVien.lichLamViec.concat(donHang.danhSachLichThucHien);
+                // Concat danh sách lịch làm việc từ donHang vào lịch làm việc của nhân viên
+                args.idNhanVien.forEach(async (id) => {
+                    const nv = await NhanVienModel.findById(id);
+                    nv.lichLamViec = nv.lichLamViec.concat(donHang.danhSachLichThucHien);
+                    await nv.save();
+                });
+        
                 await donHang.save();
-                await nhanVien.save();
                 return donHang;
             } catch (err) {
                 return {"message": 'err'};
             }
-        },
+        },        
         capNhatTrangThaiDonHang: async (parent, args)=>{
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.trangThaiDonHang = args.trangThaiDonHang;

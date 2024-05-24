@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
-import { GraphQLrequest } from './request';
-const API_URL = 'http://localhost:4000/graphql'
+
+import { GRAPHQL_SERVER } from "./constants";
 
 export const DonHangLoader = async ()=> {
     const query = `query DonHangs {
@@ -13,12 +13,11 @@ export const DonHangLoader = async ()=> {
         soGioThucHien
         trangThaiDonHang
         vatNuoi
-        ghiCHu
+        ghiChu
         saoDanhGia
         ghiChuDanhGia
         khachHang {
           tenKhachHang
-          danhSachDiaChi
           soDienThoai
           email
         }
@@ -27,11 +26,27 @@ export const DonHangLoader = async ()=> {
           gia
           maDichVu
           loaiDichVu
+          thoiGian
+        }
+        uuTienTasker
+        tongTien
+        diaChi {
+          id
+          tinhTP
+          quanHuyen
+          xaPhuong
+          soNhaTenDuong
+          ghiChu
+        }
+        danhSachLichThucHien {
+          thoiGianBatDauLich
+          thoiGianKetThucLich
+          trangThaiLich
         }
       }
     }  
       `;
-    const res = await fetch(API_URL,{
+    const res = await fetch(GRAPHQL_SERVER,{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -55,7 +70,7 @@ export const TrangThaiLoader = async ()=> {
         }
       }              
       `;
-    const res = await fetch(API_URL,{
+    const res = await fetch(GRAPHQL_SERVER,{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -133,5 +148,33 @@ export const pushingDonHang = async (ID) => {
   
   const data = await res.json();
   console.log(data);
+  return data;
+};
+
+
+
+export const themNhanVienVaoDonHang = async (idDonHang,idNhanVien) => {
+  const query = `mutation ThemNhanVienVaoDonHang($idNhanVien: [String], $idDonHang: String) {
+    themNhanVienVaoDonHang(idNhanVien: $idNhanVien, idDonHang: $idDonHang) {
+      maDonHang
+    }
+  }
+  `;
+  const res = await fetch(GRAPHQL_SERVER, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        idNhanVien,
+        idDonHang
+      }
+    })
+  });
+  
+  const data = await res.json();
   return data;
 };

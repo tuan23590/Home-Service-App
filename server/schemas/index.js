@@ -27,7 +27,7 @@ export const typeDefs = `#graphql
         soDienThoai: String,
         email: String,
         cccd: String,
-        dichVu: [String],
+        dichVu: [DichVu],
         ghiChu: String,
         trangThaiTaiKhoan: String,
         danhGia: Float,
@@ -121,6 +121,7 @@ export const typeDefs = `#graphql
             vatNuoi: String,
             ghiChu: String,
             uuTienTasker: Boolean,
+            diaChi: String,
             tongTien: Float): DonHang,
         themKhachHang(tenKhachHang: String, danhSachDiaChi: [String], soDienThoai: String, email: String): KhachHang,
         themNhanVien(
@@ -138,7 +139,7 @@ export const typeDefs = `#graphql
             lichLamViec: [String],
             trangThaiHienTai: String): NhanVien,
         themLichThucHien(thoiGianBatDauLich: Int, thoiGianKetThucLich: Int, trangThaiLich: String): LichThucHien,
-        themNhanVienVaoDonHang(idNhanVien: String, idDonHang: String): DonHang,
+        themNhanVienVaoDonHang(idNhanVien: [String], idDonHang: String): DonHang,
         themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String): DiaChi,
         capNhatTrangThaiDonHang(idDonHang: String, trangThaiDonHang: String): DonHang
     }

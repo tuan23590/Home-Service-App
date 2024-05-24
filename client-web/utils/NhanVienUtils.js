@@ -28,4 +28,40 @@ export const NhanVienLoader = async () => {
       console.error('Error fetching employee data:', error);
     }
   };
+  import { GRAPHQL_SERVER } from "./constants";
+
+export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
+    const query = `query DanhSachNhanVienTrongViec($idDonHang: String) {
+      DanhSachNhanVienTrongViec(idDonHang: $idDonHang) {
+        id
+        tenNhanVien
+        gioiTinh
+        ngaySinh
+        diaChi
+        soDienThoai
+        email
+        cccd
+        dichVu {
+          tenDichVu
+          moTaDichVu
+          maDichVu
+        }
+        ghiChu
+        trangThaiTaiKhoan
+        danhGia
+        trangThaiHienTai
+      }
+    }`;
+    const res = await fetch(GRAPHQL_SERVER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ query,variables:{ idDonHang }})
+    });
+    
+    const data = await res.json();
+    return data;
+  };
   
