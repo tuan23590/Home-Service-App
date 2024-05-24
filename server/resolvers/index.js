@@ -222,6 +222,7 @@ export const resolvers = {
         },
         themNhanVienVaoDonHang: async (parent, args) => {
             try {
+                if(args.idNhanVien.length === 0){
                 const donHang = await DonHangModel.findById(args.idDonHang);
                 donHang.trangThaiDonHang = "Đã duyệt đơn";
                 args.idNhanVien.forEach(id => {
@@ -237,6 +238,7 @@ export const resolvers = {
         
                 await donHang.save();
                 return donHang;
+                }
             } catch (err) {
                 return {"message": 'err'};
             }

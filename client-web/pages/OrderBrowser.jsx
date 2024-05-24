@@ -16,7 +16,7 @@ export default function OrderAllocation() {
     navigate(`./${selectedStatus}`);
   }, [selectedStatus]);
   return (
-    <div>
+    <>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component={Link} to="/">
@@ -42,6 +42,6 @@ export default function OrderAllocation() {
         </Toolbar>
       </AppBar>
       <Outlet />
-    </div>
+    </>
   );
 }

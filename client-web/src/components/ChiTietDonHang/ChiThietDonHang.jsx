@@ -83,10 +83,12 @@ const ChiTietDonHang = () => {
       };
     
       const duyetDonHang = async () => {
-        const data = await themNhanVienVaoDonHang(selectedOrder.id, [nhanVienDaChon]);
-        if (data !== null) {
+        const {data} = await themNhanVienVaoDonHang(selectedOrder.id, [nhanVienDaChon]);
+        if (data.themNhanVienVaoDonHang !== null) {
           alert('Duyệt đơn hàng thành công');
           window.location.reload();
+        }else{
+          alert('Duyệt đơn hàng thất bại');
         }
       };
       const TuChoiDonHang = async () => {
@@ -99,6 +101,7 @@ const ChiTietDonHang = () => {
           }
         }
       };
+      console.log(selectedOrder);
     return (
         <div>
              <Grid item xs={12} sm={8}>
@@ -170,6 +173,9 @@ const ChiTietDonHang = () => {
                             <TableCell>Tên Dịch vụ</TableCell>
                             <TableCell>Loại Dịch Vụ</TableCell>
                             <TableCell>Giá tiền</TableCell>
+                            <TableCell>Số lần lập lại</TableCell>
+                            <TableCell>Thành tiền</TableCell>
+                            <TableCell>Ghi chú</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -177,7 +183,8 @@ const ChiTietDonHang = () => {
                             selectedOrder.danhSachDichVu.map((service, index) => (
                               <TableRow key={index}>
                                 <TableCell>
-                                  {service.tenDichVu} {service.loaiDichVu !== "DichVuThem" && "(Dịch vụ chính)"}
+                                  {service.tenDichVu} 
+                                 
                                 </TableCell>
                                 <TableCell>
                                   {service.loaiDichVu === "DichVuThem" ? "Dịch vụ thêm" : 
@@ -187,7 +194,20 @@ const ChiTietDonHang = () => {
                                   {service.loaiDichVu === "DichVuThem" && " + "}
                                   {service.gia === null ? `${service.thoiGian} Giờ` : `${service.gia.toLocaleString('vi-VN')} VNĐ`}
                                 </TableCell>
-
+                                <TableCell>
+                                  {selectedOrder && selectedOrder.danhSachLichThucHien ? selectedOrder.danhSachLichThucHien.length : 0} lần
+                                </TableCell>
+                                <TableCell>
+                                  {service.loaiDichVu === "DichVuThem" && " + "}
+                                  {selectedOrder && selectedOrder.danhSachLichThucHien ? 
+                                    (selectedOrder.danhSachLichThucHien.length * (service.gia === null ? service.thoiGian : service.gia)).toLocaleString('vi-VN') + 
+                                      (service.gia === null ? " giờ" : " VNĐ") 
+                                    : "0"}
+                                </TableCell>
+                                <TableCell>
+                                  {service.loaiDichVu !== "DichVuThem" && "(Dịch vụ chính)"}
+                                  {service.loaiDichVu === "DichVuThem" && service.thoiGian && " (Đã cộng vào dịch vụ chính)"}
+                                </TableCell>
                               </TableRow>
                             ))
                           ) : (

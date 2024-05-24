@@ -73,34 +73,6 @@ const getDichVuThem=async()=>{
   const result = await request(API_URL, query)
   return result;
 }
-
-// const themLichThucHien = async (lichLamViec, thoiLuongDonHang) => {
-//   const lichLamViecEpoch = lichLamViec.map(date => Math.floor(date.getTime() / 1000));
-//   const lichLamViecEpochCongThoiLuongDonHang = lichLamViecEpoch.map(epoch => epoch + thoiLuongDonHang * 3600);
-
-//   // Khai báo mảng các biến tham số cho số lượng phần tử trong danh sách lichLamViecEpoch
-//   const variablesList = lichLamViecEpochCongThoiLuongDonHang.map((epoch, index) => ({
-//     thoiGianBatDauLich: lichLamViecEpoch[index],
-//     thoiGianKetThucLich: lichLamViecEpochCongThoiLuongDonHang[index], 
-//     trangThaiLich: "Chưa hoàn thành"
-//   }));
-
-//   // Tạo mảng các câu truy vấn GraphQL dựa trên số lượng phần tử trong danh sách lichLamViecEpoch
-//   const queries = variablesList.map((variables, index) => gql`
-//     mutation ThemLichThucHien${index}($thoiGianBatDauLich: Int, $thoiGianKetThucLich: Int, $trangThaiLich: String) {
-//       themLichThucHien(thoiGianBatDauLich: $thoiGianBatDauLich, thoiGianKetThucLich: $thoiGianKetThucLich, trangThaiLich: $trangThaiLich) {
-//         id
-//       }
-//     }
-//   `);
-//   const results = await Promise.all(queries.map((query, index) => request(API_URL, query, variablesList[index])));
-//   // Tạo mảng các kết quả từ các câu truy vấn GraphQL
-//   // Trích xuất danh sách ID từ kết quả của mỗi câu truy vấn GraphQL
- 
-
-//   return results;
-// }
-
 const themLichThucHien = async (lichLamViec, thoiLuongDonHang) => {
   const lichLamViecEpoch = lichLamViec.map(date => Math.floor(date.getTime() / 1000));
   const lichLamViecEpochCongThoiLuongDonHang = lichLamViecEpoch.map(epoch => epoch + thoiLuongDonHang * 3600);
@@ -137,19 +109,20 @@ const themDonHang=async(lichLamViec,dichVuChinh,dichVuThem,vatNuoi,ghiChu,uuTien
     ngayKetThuc: 3492394892038,
     soGioThucHien: dichVuChinh.thoiGian,
     danhSachLichThucHien: resultIDs,
-    khachHang: "123",
+    khachHang: "663e5bc32b0d073597bbf0d3",
     danhSachDichVu: [...dichVuThem.map(item => item.id), dichVuChinh.id],
     vatNuoi: vatNuoi,
     ghiChu: ghiChu,
     uuTienTasker: uuTienTasker,
-    tongTien: tongTien
+    tongTien: tongTien,
+    diaChi: "664c3c36de267a6cf527557e"
   };
   const query = gql`
-  mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $uuTienTasker: Boolean, $tongTien: Float) {
-    themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, uuTienTasker: $uuTienTasker, tongTien: $tongTien) {
+  mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $uuTienTasker: Boolean, $tongTien: Float, $diaChi: String) {
+    themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, uuTienTasker: $uuTienTasker, tongTien: $tongTien, diaChi: $diaChi) {
       maDonHang
     }
-  }      
+  }           
   `
   const result = await request(API_URL, query,variables)
   return result;
