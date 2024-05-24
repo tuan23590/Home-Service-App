@@ -27,7 +27,7 @@ export const typeDefs = `#graphql
         soDienThoai: String,
         email: String,
         cccd: String,
-        dichVu: [String],
+        dichVu: [DichVu],
         ghiChu: String,
         trangThaiTaiKhoan: String,
         danhGia: Float,
@@ -109,7 +109,10 @@ export const typeDefs = `#graphql
         DanhSachTinhTp: [TinhTp],
         DanhSachQuanHuyen(idTinhTP: String): [QuanHuyen],
         DanhSachXaPhuong(idQuanHuyen: String): [XaPhuong],
-        TrangThaiDonHang: [String]
+        TrangThaiDonHang: [String],
+        DonHangDangChoDuyet: [DonHang],
+        DonHangDaDuyet: [DonHang],
+        DonHangDaTuChoi: [DonHang],
     },
     type Mutation {
         themDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
@@ -121,6 +124,7 @@ export const typeDefs = `#graphql
             vatNuoi: String,
             ghiChu: String,
             uuTienTasker: Boolean,
+            diaChi: String,
             tongTien: Float): DonHang,
         themKhachHang(tenKhachHang: String, danhSachDiaChi: [String], soDienThoai: String, email: String): KhachHang,
         themNhanVien(
@@ -138,8 +142,9 @@ export const typeDefs = `#graphql
             lichLamViec: [String],
             trangThaiHienTai: String): NhanVien,
         themLichThucHien(thoiGianBatDauLich: Int, thoiGianKetThucLich: Int, trangThaiLich: String): LichThucHien,
-        themNhanVienVaoDonHang(idNhanVien: String, idDonHang: String): DonHang,
+        themNhanVienVaoDonHang(idNhanVien: [String], idDonHang: String): DonHang,
         themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String): DiaChi,
-        capNhatTrangThaiDonHang(idDonHang: String, trangThaiDonHang: String): DonHang
+        capNhatTrangThaiDonHang(idDonHang: String, trangThaiDonHang: String): DonHang,
+        tuChoiDonHang(idDonHang: String): DonHang,
     }
 `

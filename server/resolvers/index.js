@@ -109,7 +109,19 @@ export const resolvers = {
             }
         },
         TrangThaiDonHang: (parent, args) =>{
-            return ['Đã tạo đơn','Đang chờ duyệt','Đã duyệt đơn','Đang thực hiện','Đã hoàn thành']
+            return ['Đang chờ duyệt','Đã duyệt đơn','Đang thực hiện','Đã hoàn thành',"Đã từ chối"];
+        },
+        DonHangDangChoDuyet: async (parent, args) => {
+            const data = await DonHangModel.find({ trangThaiDonHang: "Đang chờ duyệt" });
+            return data;
+        },
+        DonHangDaDuyet: async (parent, args) => {
+            const data = await DonHangModel.find({ trangThaiDonHang: "Đã duyệt đơn" });
+            return data;
+        },
+        DonHangDaTuChoi: async (parent, args) => {
+            const data = await DonHangModel.find({ trangThaiDonHang: "Đã từ chối" });
+            return data;
         }
     },
     DonHang: {
@@ -145,6 +157,10 @@ export const resolvers = {
         lichLamViec: async (parent)=>{
             const data = await LichThucHienModel.find({ _id: { $in: parent.lichLamViec } });
             return data;
+        },
+        dichVu: async (parent)=>{
+            const data = await DichVuModel.find({ _id: { $in: parent.dichVu } });
+            return data;
         }
     },
     Mutation: {
@@ -173,7 +189,8 @@ export const resolvers = {
                 maDonHang: newMaDonHang,
                 ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
                 ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
-                ngayDatHang: Math.floor(Date.now() / 1000)
+                ngayDatHang: Math.floor(Date.now() / 1000),
+                trangThaiDonHang: "Đang chờ duyệt"
             };
         
             const DonHang = new DonHangModel(donHangMoi);
@@ -204,22 +221,36 @@ export const resolvers = {
             await diaChi.save();
             return diaChi;
         },
-        themNhanVienVaoDonHang: async (parent,args) =>{
+        themNhanVienVaoDonHang: async (parent, args) => {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
-                donHang.nhanVien.push(args.idNhanVien);
+                donHang.trangThaiDonHang = "Đã duyệt đơn";
+                args.idNhanVien.forEach(id => {
+                    donHang.nhanVien.push(id);
+                });
+        
                 const nhanVien = await NhanVienModel.findById(args.idNhanVien);
-                nhanVien.lichLamViec = nhanVien.lichLamViec.concat(donHang.danhSachLichThucHien);
+                args.idNhanVien.forEach(async (id) => {
+                    const nv = await NhanVienModel.findById(id);
+                    nv.lichLamViec = nv.lichLamViec.concat(donHang.danhSachLichThucHien);
+                    await nv.save();
+                });
+        
                 await donHang.save();
-                await nhanVien.save();
                 return donHang;
             } catch (err) {
                 return {"message": 'err'};
             }
-        },
+        },        
         capNhatTrangThaiDonHang: async (parent, args)=>{
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.trangThaiDonHang = args.trangThaiDonHang;
+            donHang.save();
+            return donHang;
+        },
+        tuChoiDonHang: async (parent, args) => {
+            const donHang = await DonHangModel.findById(args.idDonHang);
+            donHang.trangThaiDonHang = "Đã từ chối";
             donHang.save();
             return donHang;
         }

@@ -1,37 +1,52 @@
 // eslint-disable-next-line no-unused-vars
-import { GraphQLrequest } from './request';
-const API_URL = 'http://localhost:4000/graphql'
+
+import { GRAPHQL_SERVER } from "./constants";
 
 export const DonHangLoader = async ()=> {
-    const query = `query DonHangs {
-      DonHangs {
-        id
-        maDonHang
-        ngayDatHang
-        ngayBatDau
-        ngayKetThuc
-        soGioThucHien
-        trangThaiDonHang
-        vatNuoi
-        ghiCHu
-        saoDanhGia
-        ghiChuDanhGia
-        khachHang {
-          tenKhachHang
-          danhSachDiaChi
-          soDienThoai
-          email
-        }
-        danhSachDichVu {
-          tenDichVu
-          gia
-          maDichVu
-          loaiDichVu
-        }
-      }
+    const query = `query DonHangDangChoDuyet {
+      DonHangDangChoDuyet {
+            id
+            maDonHang
+            ngayDatHang
+            ngayBatDau
+            ngayKetThuc
+            soGioThucHien
+            trangThaiDonHang
+            vatNuoi
+            ghiChu
+            saoDanhGia
+            ghiChuDanhGia
+            khachHang {
+              tenKhachHang
+              soDienThoai
+              email
+            }
+            danhSachDichVu {
+              tenDichVu
+              gia
+              maDichVu
+              loaiDichVu
+              thoiGian
+            }
+            uuTienTasker
+            tongTien
+            diaChi {
+              id
+              tinhTP
+              quanHuyen
+              xaPhuong
+              soNhaTenDuong
+              ghiChu
+            }
+            danhSachLichThucHien {
+              thoiGianBatDauLich
+              thoiGianKetThucLich
+              trangThaiLich
+            }
+          }
     }  
       `;
-    const res = await fetch(API_URL,{
+    const res = await fetch(GRAPHQL_SERVER,{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -45,6 +60,178 @@ export const DonHangLoader = async ()=> {
     return data;
 }
 
+export const APIDanhSachDonHangDaDuyet = async ()=> {
+  const query = `query DonHangDaDuyet {
+    DonHangDaDuyet {
+          id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+          vatNuoi
+          ghiChu
+          saoDanhGia
+          ghiChuDanhGia
+          khachHang {
+            tenKhachHang
+            soDienThoai
+            email
+          }
+          danhSachDichVu {
+            tenDichVu
+            gia
+            maDichVu
+            loaiDichVu
+            thoiGian
+          }
+          uuTienTasker
+          tongTien
+          diaChi {
+            id
+            tinhTP
+            quanHuyen
+            xaPhuong
+            soNhaTenDuong
+            ghiChu
+          }
+          danhSachLichThucHien {
+            thoiGianBatDauLich
+            thoiGianKetThucLich
+            trangThaiLich
+          }
+        }
+  }  
+    `;
+  const res = await fetch(GRAPHQL_SERVER,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+          query
+      })
+  });
+  const data = await res.json();
+  return data;
+}
+export const APIDanhSachDonHangDaTuChoi = async ()=> {
+  const query = `query DonHangDaTuChoi {
+    DonHangDaTuChoi {
+          id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+          vatNuoi
+          ghiChu
+          saoDanhGia
+          ghiChuDanhGia
+          khachHang {
+            tenKhachHang
+            soDienThoai
+            email
+          }
+          danhSachDichVu {
+            tenDichVu
+            gia
+            maDichVu
+            loaiDichVu
+            thoiGian
+          }
+          uuTienTasker
+          tongTien
+          diaChi {
+            id
+            tinhTP
+            quanHuyen
+            xaPhuong
+            soNhaTenDuong
+            ghiChu
+          }
+          danhSachLichThucHien {
+            thoiGianBatDauLich
+            thoiGianKetThucLich
+            trangThaiLich
+          }
+        }
+  }  
+    `;
+  const res = await fetch(GRAPHQL_SERVER,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+          query
+      })
+  });
+  const data = await res.json();
+  return data;
+}
+
+export const APIDanhSachDonHangChoDuyet = async ()=> {
+  const query = `query DonHangDangChoDuyet {
+    DonHangDangChoDuyet {
+          id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+          vatNuoi
+          ghiChu
+          saoDanhGia
+          ghiChuDanhGia
+          khachHang {
+            tenKhachHang
+            soDienThoai
+            email
+          }
+          danhSachDichVu {
+            tenDichVu
+            gia
+            maDichVu
+            loaiDichVu
+            thoiGian
+          }
+          uuTienTasker
+          tongTien
+          diaChi {
+            id
+            tinhTP
+            quanHuyen
+            xaPhuong
+            soNhaTenDuong
+            ghiChu
+          }
+          danhSachLichThucHien {
+            thoiGianBatDauLich
+            thoiGianKetThucLich
+            trangThaiLich
+          }
+        }
+  }  
+    `;
+  const res = await fetch(GRAPHQL_SERVER,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+          query
+      })
+  });
+  const data = await res.json();
+  return data;
+}
 
 export const TrangThaiLoader = async ()=> {
     const query = `{
@@ -55,7 +242,7 @@ export const TrangThaiLoader = async ()=> {
         }
       }              
       `;
-    const res = await fetch(API_URL,{
+    const res = await fetch(GRAPHQL_SERVER,{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -133,5 +320,58 @@ export const pushingDonHang = async (ID) => {
   
   const data = await res.json();
   console.log(data);
+  return data;
+};
+
+
+
+export const themNhanVienVaoDonHang = async (idDonHang,idNhanVien) => {
+  const query = `mutation ThemNhanVienVaoDonHang($idNhanVien: [String], $idDonHang: String) {
+    themNhanVienVaoDonHang(idNhanVien: $idNhanVien, idDonHang: $idDonHang) {
+      maDonHang
+    }
+  }
+  `;
+  const res = await fetch(GRAPHQL_SERVER, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        idNhanVien,
+        idDonHang
+      }
+    })
+  });
+  
+  const data = await res.json();
+  return data;
+};
+
+export const apiTuChoiDonHang = async (idDonHang) => {
+  const query = `mutation TuChoiDonHang($idDonHang: String) {
+    tuChoiDonHang(idDonHang: $idDonHang) {
+      maDonHang
+    }
+  }
+  `;
+  const res = await fetch(GRAPHQL_SERVER, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        idDonHang
+      }
+    })
+  });
+  
+  const data = await res.json();
   return data;
 };
