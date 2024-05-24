@@ -17,30 +17,43 @@ import TotalCleaning from "../../pages/TotalCleaning";
 import GroceryShopping from "../../pages/GroceryShopping";
 import GioiThieu from "../../pages/GioiThieu";
 import LienHe from "../../pages/LienHe";
+import AuthProvider from "../context/AuthProvider";
+import ProtectedRoute from "./ProtectedRoute";
+import ErrorPage from "../../pages/ErrorPage";
+import SignUp from "../../pages/SignUp";
+
 
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
-     </DonHangProvider>
+     <ServiceRegistration />
+     </DonHangProvider>,
+     
+     <AuthProvider>
+        <Outlet />
+     </AuthProvider>
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
 export default createBrowserRouter([
     {
         element: <AuthLayout />,
+        errorElement:<ErrorPage />,
         children: [
             {
                 element: <Login />,
                 path: '/login',
             },
             {
-                element: (
-                    <> 
-                        <Home /> 
-                    </>
-                ),
-                path: '/',
+                    element: <ProtectedRoute />,
+                    children:[
+                        {
+                        element: <Home /> ,
+                                path: '/',
+                        },
+                    ]
             },
+
             {
                 element: <Test />,
                 path: '/test',
@@ -101,6 +114,10 @@ export default createBrowserRouter([
             {
                 element: <CustomerInfo2 />,
                 path: '/hienthithongtin2',
+            },
+            {
+                element: <SignUp />,
+                path: '/dktk',
             },
         ],
     },

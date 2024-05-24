@@ -78,4 +78,8 @@
   .footer-toolbar button {
     color: #ffffff;
   }
+  .logout-button,
+  .login-button {
+    color: white;
+  }
   

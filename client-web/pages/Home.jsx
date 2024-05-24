@@ -1,9 +1,10 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton,Divider, Typography, Container, Button, Menu, MenuItem, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
+import { getAuth } from 'firebase/auth';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'; // Import GoogleMap, LoadScript và Marker từ react-google-maps/api
 import './Home.css';
 
@@ -18,12 +19,6 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
 
   const handleAboutUsClick = (event) => {
     setAnchorElAboutUs(event.currentTarget);
@@ -75,7 +70,30 @@ export default function Home() {
       </Card>
     </Grid>
   );
+      useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = auth.onAuthStateChanged(user => {
+          if (user) {
+            setIsLoggedIn(true);
+            setCurrentUser(user);
+          } else {
+            setIsLoggedIn(false);
+            setCurrentUser(null);
+          }
+        });
 
+        return unsubscribe;
+      }, []);
+
+      const handleLogout = () => {
+        const auth = getAuth();
+        auth.signOut().then(() => {
+          setIsLoggedIn(false);
+          setCurrentUser(null);
+        }).catch(error => {
+          console.error('Error signing out:', error);
+        });
+      };
   return (
     <div>
       <AppBar position="static">
@@ -165,15 +183,18 @@ export default function Home() {
               <MenuItem component={Link} to="/">Cộng tác viên dọn dẹp buồng phòng</MenuItem>
               <MenuItem component={Link} to="/">Cộng tác viên giặt ủi</MenuItem>
             </Menu>
+
           </div>
-          <div>
+                <div>
             {isLoggedIn ? (
-              <Button onClick={handleLogout} color="inherit">Đăng Xuất</Button>
+              <div>
+                <Typography variant="body1" style={{ color: 'white' }}>Xin chào, {currentUser.displayName}</Typography>
+                <Button onClick={handleLogout} className="logout-button">Đăng xuất</Button>
+              </div>
             ) : (
-              <>
-                <Button component={Link} to="/login" color="inherit">Đăng Nhập</Button>
-                <Button component={Link} to="/" color="inherit">Đăng Ký</Button>
-              </>
+              <div>
+                <Button component={Link} to="/login" className="login-button">Đăng Nhập</Button>
+              </div>
             )}
           </div>
 
