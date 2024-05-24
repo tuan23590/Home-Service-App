@@ -60,6 +60,178 @@ export const DonHangLoader = async ()=> {
     return data;
 }
 
+export const APIDanhSachDonHangDaDuyet = async ()=> {
+  const query = `query DonHangDaDuyet {
+    DonHangDaDuyet {
+          id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+          vatNuoi
+          ghiChu
+          saoDanhGia
+          ghiChuDanhGia
+          khachHang {
+            tenKhachHang
+            soDienThoai
+            email
+          }
+          danhSachDichVu {
+            tenDichVu
+            gia
+            maDichVu
+            loaiDichVu
+            thoiGian
+          }
+          uuTienTasker
+          tongTien
+          diaChi {
+            id
+            tinhTP
+            quanHuyen
+            xaPhuong
+            soNhaTenDuong
+            ghiChu
+          }
+          danhSachLichThucHien {
+            thoiGianBatDauLich
+            thoiGianKetThucLich
+            trangThaiLich
+          }
+        }
+  }  
+    `;
+  const res = await fetch(GRAPHQL_SERVER,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+          query
+      })
+  });
+  const data = await res.json();
+  return data;
+}
+export const APIDanhSachDonHangDaTuChoi = async ()=> {
+  const query = `query DonHangDaTuChoi {
+    DonHangDaTuChoi {
+          id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+          vatNuoi
+          ghiChu
+          saoDanhGia
+          ghiChuDanhGia
+          khachHang {
+            tenKhachHang
+            soDienThoai
+            email
+          }
+          danhSachDichVu {
+            tenDichVu
+            gia
+            maDichVu
+            loaiDichVu
+            thoiGian
+          }
+          uuTienTasker
+          tongTien
+          diaChi {
+            id
+            tinhTP
+            quanHuyen
+            xaPhuong
+            soNhaTenDuong
+            ghiChu
+          }
+          danhSachLichThucHien {
+            thoiGianBatDauLich
+            thoiGianKetThucLich
+            trangThaiLich
+          }
+        }
+  }  
+    `;
+  const res = await fetch(GRAPHQL_SERVER,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+          query
+      })
+  });
+  const data = await res.json();
+  return data;
+}
+
+export const APIDanhSachDonHangChoDuyet = async ()=> {
+  const query = `query DonHangDangChoDuyet {
+    DonHangDangChoDuyet {
+          id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+          vatNuoi
+          ghiChu
+          saoDanhGia
+          ghiChuDanhGia
+          khachHang {
+            tenKhachHang
+            soDienThoai
+            email
+          }
+          danhSachDichVu {
+            tenDichVu
+            gia
+            maDichVu
+            loaiDichVu
+            thoiGian
+          }
+          uuTienTasker
+          tongTien
+          diaChi {
+            id
+            tinhTP
+            quanHuyen
+            xaPhuong
+            soNhaTenDuong
+            ghiChu
+          }
+          danhSachLichThucHien {
+            thoiGianBatDauLich
+            thoiGianKetThucLich
+            trangThaiLich
+          }
+        }
+  }  
+    `;
+  const res = await fetch(GRAPHQL_SERVER,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+          query
+      })
+  });
+  const data = await res.json();
+  return data;
+}
 
 export const TrangThaiLoader = async ()=> {
     const query = `{

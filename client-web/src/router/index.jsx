@@ -2,7 +2,7 @@ import { Outlet, createBrowserRouter } from "react-router-dom";
 import Login from "../../pages/Login";
 import Home from "../../pages/Home";
 import Test from "../../pages/Test";
-import { DonHangLoader } from "../../utils/DonHangUtils";
+import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHangDaTuChoi, DonHangLoader } from "../../utils/DonHangUtils";
 import Detal from "../../pages/Detal";
 import OrderBrowser from "../../pages/OrderBrowser";
 import ServiceRegistration from "../../pages/ServiceRegistration"; 
@@ -17,8 +17,10 @@ import TotalCleaning from "../../pages/TotalCleaning";
 import GroceryShopping from "../../pages/GroceryShopping";
 import GioiThieu from "../../pages/GioiThieu";
 import LienHe from "../../pages/LienHe";
-import ChiTietDonHang from "../components/ChiThietDonHang";
-import DanhSachDonHang from "../components/DanhSachDonHang";
+import ChiTietDonHang from "../components/ChiTietDonHang/ChiThietDonHang";
+import DanhSachDonHangChoDuyet from "../components/DanhSachDonHang/DanhSachDonHangChoDuyet";
+import DanhSachDonHangDaDuyet from "../components/DanhSachDonHang/DanhSachDonHangDaDuyet";
+import DanhSachDonHangDaTuChoi from "../components/DanhSachDonHang/DanhSachDonHangDaTuChoi";
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
@@ -56,18 +58,40 @@ export default createBrowserRouter([
             {
                 element: <OrderBrowser />,
                 path: '/order',
-                loader: DonHangLoader,
                 children: [
                     {
-                        element: <DanhSachDonHang />,
-                        path: `/order/DanhSachDonHang`,
+                        element: <DanhSachDonHangChoDuyet />,
+                        path: `/order/DanhSachDonHangChoDuyet`,
+                        loader: APIDanhSachDonHangChoDuyet,
                         children: [
                             {
                                 element: <ChiTietDonHang />,
-                                path: `/order/DanhSachDonHang/ChiTietDonHang`,
+                                path: `/order/DanhSachDonHangChoDuyet/ChiTietDonHang`,
+                            },
+                        ]
+                    },
+                    {
+                        element: <DanhSachDonHangDaDuyet />,
+                        path: `/order/DanhSachDonHangDaDuyet`,
+                        loader: APIDanhSachDonHangDaDuyet,
+                        children: [
+                            {
+                                element: <ChiTietDonHang />,
+                                path: `/order/DanhSachDonHangDaDuyet/ChiTietDonHang`,
                             },
                         ],
                     },
+                    {
+                        element: <DanhSachDonHangDaTuChoi />,
+                        path: `/order/DanhSachDonHangDaTuChoi`,
+                        loader: APIDanhSachDonHangDaTuChoi,
+                        children: [
+                            {
+                                element: <ChiTietDonHang />,
+                                path: `/order/DanhSachDonHangDaTuChoi/ChiTietDonHang`,
+                            },
+                        ],
+                    }
                 ],
             },
             {

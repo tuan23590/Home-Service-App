@@ -111,6 +111,8 @@ export const typeDefs = `#graphql
         DanhSachXaPhuong(idQuanHuyen: String): [XaPhuong],
         TrangThaiDonHang: [String],
         DonHangDangChoDuyet: [DonHang],
+        DonHangDaDuyet: [DonHang],
+        DonHangDaTuChoi: [DonHang],
     },
     type Mutation {
         themDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,

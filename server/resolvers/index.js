@@ -114,6 +114,14 @@ export const resolvers = {
         DonHangDangChoDuyet: async (parent, args) => {
             const data = await DonHangModel.find({ trangThaiDonHang: "Đang chờ duyệt" });
             return data;
+        },
+        DonHangDaDuyet: async (parent, args) => {
+            const data = await DonHangModel.find({ trangThaiDonHang: "Đã duyệt đơn" });
+            return data;
+        },
+        DonHangDaTuChoi: async (parent, args) => {
+            const data = await DonHangModel.find({ trangThaiDonHang: "Đã từ chối" });
+            return data;
         }
     },
     DonHang: {
