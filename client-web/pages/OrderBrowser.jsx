@@ -40,7 +40,6 @@ export default function OrderAllocation() {
   const [orders, setOrders] = useState([]);
   const [addEmployeeDialogOpen, setAddEmployeeDialogOpen] = useState(false);
   const [danhSachNhanVienNhanDonHang, setDanhSachNhanVienNhanDonHang] = useState([]);
-  const [selectedServiceIndex, setSelectedServiceIndex] = useState(null);
   const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
 
 
@@ -52,7 +51,6 @@ export default function OrderAllocation() {
     }
   }, [data]);
 
-
   const handleSelectOrder = async (order) => {
     setSelectedOrder(order);
     setDialogOpen(true);
@@ -60,10 +58,23 @@ export default function OrderAllocation() {
     setDanhSachNhanVienNhanDonHang(data.DanhSachNhanVienTrongViec);
   };
 
-  const formatDate = (date) => {
-    const options = { hour: '2-digit', minute: '2-digit', year: 'numeric', month: '2-digit', day: '2-digit' };
-    return new Date(date).toLocaleDateString('en-GB', options);
+  const formatDate = (epochTime) => {
+    // Tạo một đối tượng Date từ thời gian Epoch (milliseconds)
+    const date = new Date(epochTime * 1000);
+  
+    // Lấy thông tin về giờ, phút, ngày, tháng và năm từ đối tượng Date
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0 nên cần cộng thêm 1
+    const year = date.getFullYear();
+  
+    // Tạo chuỗi định dạng ngày giờ
+    const formattedDateTime = `${hours}:${minutes} ${day}/${month}/${year}`;
+  
+    return formattedDateTime;
   };
+  
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -87,10 +98,10 @@ export default function OrderAllocation() {
           <Typography variant="body2">Ngày sinh: {employee.ngaySinh}</Typography>
           <Typography variant="body2">Số điện thoại: {employee.soDienThoai}</Typography>
           <Typography variant="body2">Email: {employee.email}</Typography>
-          <Typography variant="body2">Dịch vụ có thể thực hiện: {employee.dichVu.map(dv => dv.tenDichVu).join(', ')}</Typography>
+          <Typography variant="body2">Chuyên môn: {employee.dichVu.map(dv => dv.tenDichVu).join(', ')}</Typography>
           <Typography variant="body2">Ghi chú: {employee.ghiChu}</Typography>
           <Typography variant="body2">Đánh giá: {employee.danhGia}</Typography>
-          <Typography variant="body2">Trạng thái hiện tại: {employee.trangThaiHienTai}</Typography>
+          <Typography variant="body2">Trạng thái: {employee.trangThaiHienTai}</Typography>
         </CardContent>
       </StyledCard>
     );
@@ -197,8 +208,20 @@ export default function OrderAllocation() {
                       Mã đơn hàng: {selectedOrder.maDonHang}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                      Ngày đặt: {formatDate(selectedOrder.ngayDatHang)}
+                      Thời gian tạo đơn: {formatDate(selectedOrder.ngayDatHang)}
                     </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Số giờ thực hiện: {selectedOrder.soGioThucHien} giờ
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Thời gian bắt đầu: {formatDate(selectedOrder.ngayBatDau)}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Thời gian kết thúc: {formatDate(selectedOrder.ngayKetThuc)}
+                    </Typography>
+                   
+                   
+                    
                     <Typography variant="body1" gutterBottom>
                       Địa chỉ: {[
                         selectedOrder.diaChi.soNhaTenDuong,
@@ -210,6 +233,15 @@ export default function OrderAllocation() {
                     <Typography variant="body1" gutterBottom>
                       Ghi chú địa chỉ: {selectedOrder.diaChi.ghiChu}
                     </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Vật nuôi: {selectedOrder.vatNuoi}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Ghi chú đon hàng: {selectedOrder.ghiChu}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Trạng thái đơn hàng: {selectedOrder.trangThaiDonHang}
+                    </Typography>
                     <Typography variant="h5" gutterBottom>
                       Thông tin khách hàng:
                     </Typography>
@@ -218,6 +250,9 @@ export default function OrderAllocation() {
                     </Typography>
                     <Typography variant="body2" gutterBottom>
                       Số điện thoại: {selectedOrder.khachHang.soDienThoai}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      Email: {selectedOrder.khachHang.email}
                     </Typography>
                    
                     <Divider style={{ margin: '20px 0' }} />
