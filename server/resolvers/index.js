@@ -73,7 +73,6 @@ export const resolvers = {
                     nhanVienKhongTrungLich.push(danhSachNhanVien[i]);
                 }
             }
-            console.log('nhanVienKhongTrungLich: ', nhanVienKhongTrungLich);
             return nhanVienKhongTrungLich;
         },
         DanhSachTinhTp: (parent,args) => {
@@ -142,7 +141,6 @@ export const resolvers = {
             return data;
         },
         diaChi: async (parent) =>{
-            console.log(parent)
             const data = await DiaChiModel.findById({ _id: parent.diaChi  });
             return data;
         }
@@ -163,6 +161,7 @@ export const resolvers = {
             return data;
         }
     },
+    
     Mutation: {
         themDichVu: async (parent,args)=>{
             const dichVuMoi = args;

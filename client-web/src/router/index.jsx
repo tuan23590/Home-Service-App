@@ -17,19 +17,16 @@ import TotalCleaning from "../../pages/TotalCleaning";
 import GroceryShopping from "../../pages/GroceryShopping";
 import GioiThieu from "../../pages/GioiThieu";
 import LienHe from "../../pages/LienHe";
-<<<<<<< HEAD
 import AuthProvider from "../context/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorPage from "../../pages/ErrorPage";
 import SignUp from "../../pages/SignUp";
 
 
-=======
 import ChiTietDonHang from "../components/ChiTietDonHang/ChiThietDonHang";
 import DanhSachDonHangChoDuyet from "../components/DanhSachDonHang/DanhSachDonHangChoDuyet";
 import DanhSachDonHangDaDuyet from "../components/DanhSachDonHang/DanhSachDonHangDaDuyet";
 import DanhSachDonHangDaTuChoi from "../components/DanhSachDonHang/DanhSachDonHangDaTuChoi";
->>>>>>> 31f1aa6dbfa834f807a57c6d70a7ca7407bfd0c8
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />

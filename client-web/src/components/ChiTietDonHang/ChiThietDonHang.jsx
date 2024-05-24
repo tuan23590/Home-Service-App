@@ -26,7 +26,6 @@ const ChiTietDonHang = () => {
       
         return formattedDateTime;
       };
-
       useEffect(() => {
         const fetchData = async () => {
           if (selectedOrder && selectedOrder.id) {
