@@ -109,7 +109,11 @@ export const resolvers = {
             }
         },
         TrangThaiDonHang: (parent, args) =>{
-            return ['Đã tạo đơn','Đang chờ duyệt','Đã duyệt đơn','Đang thực hiện','Đã hoàn thành']
+            return ['Đang chờ duyệt','Đã duyệt đơn','Đang thực hiện','Đã hoàn thành',"Đã từ chối"];
+        },
+        DonHangDangChoDuyet: async (parent, args) => {
+            const data = await DonHangModel.find({ trangThaiDonHang: "Đang chờ duyệt" });
+            return data;
         }
     },
     DonHang: {
@@ -177,7 +181,8 @@ export const resolvers = {
                 maDonHang: newMaDonHang,
                 ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
                 ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
-                ngayDatHang: Math.floor(Date.now() / 1000)
+                ngayDatHang: Math.floor(Date.now() / 1000),
+                trangThaiDonHang: "Đang chờ duyệt"
             };
         
             const DonHang = new DonHangModel(donHangMoi);
@@ -211,13 +216,12 @@ export const resolvers = {
         themNhanVienVaoDonHang: async (parent, args) => {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
-                // Thêm từng nhân viên vào mảng donHang.nhanVien
+                donHang.trangThaiDonHang = "Đã duyệt đơn";
                 args.idNhanVien.forEach(id => {
                     donHang.nhanVien.push(id);
                 });
         
                 const nhanVien = await NhanVienModel.findById(args.idNhanVien);
-                // Concat danh sách lịch làm việc từ donHang vào lịch làm việc của nhân viên
                 args.idNhanVien.forEach(async (id) => {
                     const nv = await NhanVienModel.findById(id);
                     nv.lichLamViec = nv.lichLamViec.concat(donHang.danhSachLichThucHien);
@@ -233,6 +237,12 @@ export const resolvers = {
         capNhatTrangThaiDonHang: async (parent, args)=>{
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.trangThaiDonHang = args.trangThaiDonHang;
+            donHang.save();
+            return donHang;
+        },
+        tuChoiDonHang: async (parent, args) => {
+            const donHang = await DonHangModel.findById(args.idDonHang);
+            donHang.trangThaiDonHang = "Đã từ chối";
             donHang.save();
             return donHang;
         }

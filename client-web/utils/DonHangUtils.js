@@ -3,47 +3,47 @@
 import { GRAPHQL_SERVER } from "./constants";
 
 export const DonHangLoader = async ()=> {
-    const query = `query DonHangs {
-      DonHangs {
-        id
-        maDonHang
-        ngayDatHang
-        ngayBatDau
-        ngayKetThuc
-        soGioThucHien
-        trangThaiDonHang
-        vatNuoi
-        ghiChu
-        saoDanhGia
-        ghiChuDanhGia
-        khachHang {
-          tenKhachHang
-          soDienThoai
-          email
-        }
-        danhSachDichVu {
-          tenDichVu
-          gia
-          maDichVu
-          loaiDichVu
-          thoiGian
-        }
-        uuTienTasker
-        tongTien
-        diaChi {
-          id
-          tinhTP
-          quanHuyen
-          xaPhuong
-          soNhaTenDuong
-          ghiChu
-        }
-        danhSachLichThucHien {
-          thoiGianBatDauLich
-          thoiGianKetThucLich
-          trangThaiLich
-        }
-      }
+    const query = `query DonHangDangChoDuyet {
+      DonHangDangChoDuyet {
+            id
+            maDonHang
+            ngayDatHang
+            ngayBatDau
+            ngayKetThuc
+            soGioThucHien
+            trangThaiDonHang
+            vatNuoi
+            ghiChu
+            saoDanhGia
+            ghiChuDanhGia
+            khachHang {
+              tenKhachHang
+              soDienThoai
+              email
+            }
+            danhSachDichVu {
+              tenDichVu
+              gia
+              maDichVu
+              loaiDichVu
+              thoiGian
+            }
+            uuTienTasker
+            tongTien
+            diaChi {
+              id
+              tinhTP
+              quanHuyen
+              xaPhuong
+              soNhaTenDuong
+              ghiChu
+            }
+            danhSachLichThucHien {
+              thoiGianBatDauLich
+              thoiGianKetThucLich
+              trangThaiLich
+            }
+          }
     }  
       `;
     const res = await fetch(GRAPHQL_SERVER,{
@@ -170,6 +170,31 @@ export const themNhanVienVaoDonHang = async (idDonHang,idNhanVien) => {
       query,
       variables: {
         idNhanVien,
+        idDonHang
+      }
+    })
+  });
+  
+  const data = await res.json();
+  return data;
+};
+
+export const apiTuChoiDonHang = async (idDonHang) => {
+  const query = `mutation TuChoiDonHang($idDonHang: String) {
+    tuChoiDonHang(idDonHang: $idDonHang) {
+      maDonHang
+    }
+  }
+  `;
+  const res = await fetch(GRAPHQL_SERVER, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
         idDonHang
       }
     })

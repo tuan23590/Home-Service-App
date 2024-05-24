@@ -28,7 +28,7 @@ import {
 import { apiDanhSachNhanVienNhanDonHang } from '../utils/NhanVienUtils';
 import { Card, CardContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { themNhanVienVaoDonHang } from '../utils/DonHangUtils';
+import { apiTuChoiDonHang, themNhanVienVaoDonHang } from '../utils/DonHangUtils';
 
 export default function OrderAllocation() {
   const [selectedStatus, setSelectedStatus] = useState('Chờ duyệt');
@@ -47,8 +47,8 @@ export default function OrderAllocation() {
   const {data} = useLoaderData();
 
   useEffect(() => {
-    if (data && data.DonHangs) {
-      setOrders(data.DonHangs);
+    if (data && data.DonHangDangChoDuyet) {
+      setOrders(data.DonHangDangChoDuyet);
     }
   }, [data]);
 
@@ -128,11 +128,22 @@ export default function OrderAllocation() {
 
   const duyetDonHang = async () => {
     const data = await themNhanVienVaoDonHang(selectedOrder.id, [nhanVienDaChon]);
-    console.log("Data: ",data);
+    if (data !== null) {
+      alert('Duyệt đơn hàng thành công');
+      window.location.reload();
+    }
   };
-  const XoaDonHang = () => {
-
+  const TuChoiDonHang = async () => {
+    const confirmAction = window.confirm('Bạn có chắc chắn muốn từ chối đơn hàng không?');
+    if (confirmAction) {
+      const data = await apiTuChoiDonHang(selectedOrder.id);
+      if (data !== null) {
+        alert('Từ chối đơn hàng thành công');
+        window.location.reload();
+      }
+    }
   };
+  
   const filteredOrders = orders.filter(order => order?.trangThaiDonHang === selectedStatus);
 
   return (
@@ -266,7 +277,7 @@ export default function OrderAllocation() {
 
                     <Typography>Tổng tiền: {selectedOrder.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
                     <Button variant="contained" color="success" onClick={duyetDonHang}>Duyệt Đơn Hàng</Button>
-                    <Button variant="contained" onClick={XoaDonHang}>Xóa Đơn Hàng</Button>
+                    <Button variant="contained" onClick={TuChoiDonHang}>Từ Chối Đơn Hàng</Button>
                   </div>
                 )}
               </Paper>
