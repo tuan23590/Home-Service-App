@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, Outlet, useLoaderData } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -123,20 +123,6 @@ export default function OrderAllocation() {
     );
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const duyetDonHang = async () => {
     const data = await themNhanVienVaoDonHang(selectedOrder.id, [nhanVienDaChon]);
     if (data !== null) {
@@ -169,13 +155,16 @@ export default function OrderAllocation() {
               Chờ duyệt
             </Button>
             <Button color="inherit" onClick={() => setSelectedStatus('Đã phân bổ')}>
-              Đã phân bổ
+              Đã Duyệt
             </Button>
             <Button color="inherit" onClick={() => setSelectedStatus('Đang thực hiện')}>
               Đang thực hiện
             </Button>
             <Button color="inherit" onClick={() => setSelectedStatus('Đã hoàn thành')}>
               Đã hoàn thành
+            </Button>
+            <Button color="inherit" onClick={() => setSelectedStatus('Đã từ chối')}>
+              Đã từ chối
             </Button>
           </div>
         </Toolbar>
@@ -336,6 +325,7 @@ export default function OrderAllocation() {
           <Button onClick={() => setAddEmployeeDialogOpen(false)}>Đóng</Button>
         </DialogActions>
       </Dialog>
+      <Outlet/>
     </div>
   );
 }

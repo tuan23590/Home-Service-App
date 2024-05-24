@@ -17,7 +17,8 @@ import TotalCleaning from "../../pages/TotalCleaning";
 import GroceryShopping from "../../pages/GroceryShopping";
 import GioiThieu from "../../pages/GioiThieu";
 import LienHe from "../../pages/LienHe";
-
+import ChiTietDonHang from "../components/ChiThietDonHang";
+import DanhSachDonHang from "../components/DanhSachDonHang";
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
@@ -56,6 +57,18 @@ export default createBrowserRouter([
                 element: <OrderBrowser />,
                 path: '/order',
                 loader: DonHangLoader,
+                children: [
+                    {
+                        element: <DanhSachDonHang />,
+                        path: `/order/DanhSachDonHang`,
+                        children: [
+                            {
+                                element: <ChiTietDonHang />,
+                                path: `/order/DanhSachDonHang/ChiTietDonHang`,
+                            },
+                        ],
+                    },
+                ],
             },
             {
                 element:   <ServiceRegistration />,
