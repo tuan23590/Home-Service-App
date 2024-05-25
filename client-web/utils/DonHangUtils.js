@@ -101,7 +101,24 @@ export const APIDanhSachDonHangDaDuyet = async ()=> {
             thoiGianKetThucLich
             trangThaiLich
           }
+      nhanVien {
+        id
+        tenNhanVien
+        gioiTinh
+        ngaySinh
+        diaChi
+        soDienThoai
+        email
+        cccd
+        dichVu {
+          tenDichVu
         }
+        ghiChu
+        trangThaiTaiKhoan
+        danhGia
+        trangThaiHienTai
+      }
+    }
   }  
     `;
   const res = await fetch(GRAPHQL_SERVER,{

@@ -5,7 +5,7 @@ import { apiTuChoiDonHang, themNhanVienVaoDonHang } from '../../../utils/DonHang
 import { apiDanhSachNhanVienNhanDonHang } from '../../../utils/NhanVienUtils';
 import { styled } from '@mui/material/styles';
 import { Card } from '@mui/material';
-const ChiTietDonHang = () => {
+const ChiThietDonHangChoDuyet = () => {
     const selectedOrder = useOutletContext();
     const [danhSachNhanVienNhanDonHang, setDanhSachNhanVienNhanDonHang] = useState([]);
     const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
@@ -245,4 +245,4 @@ const ChiTietDonHang = () => {
     );
 };
 
-export default ChiTietDonHang;
+export default ChiThietDonHangChoDuyet;

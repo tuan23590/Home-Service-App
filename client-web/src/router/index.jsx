@@ -23,10 +23,13 @@ import ErrorPage from "../../pages/ErrorPage";
 import SignUp from "../../pages/SignUp";
 
 
-import ChiTietDonHang from "../components/ChiTietDonHang/ChiThietDonHang";
+
 import DanhSachDonHangChoDuyet from "../components/DanhSachDonHang/DanhSachDonHangChoDuyet";
 import DanhSachDonHangDaDuyet from "../components/DanhSachDonHang/DanhSachDonHangDaDuyet";
 import DanhSachDonHangDaTuChoi from "../components/DanhSachDonHang/DanhSachDonHangDaTuChoi";
+import ChiThietDonHangChoDuyet from "../components/ChiTietDonHang/ChiThietDonHangChoDuyet";
+import ChiThietDonHangDaDuyet from "../components/ChiTietDonHang/ChiThietDonHangDaDuyet";
+import ChiThietDonHangDaTuChoi from "../components/ChiTietDonHang/ChiThietDonHangDaTuChoi";
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
@@ -79,8 +82,8 @@ export default createBrowserRouter([
                         loader: APIDanhSachDonHangChoDuyet,
                         children: [
                             {
-                                element: <ChiTietDonHang />,
-                                path: `/order/DanhSachDonHangChoDuyet/ChiTietDonHang`,
+                                element: <ChiThietDonHangChoDuyet />,
+                                path: `/order/DanhSachDonHangChoDuyet/ChiThietDonHangChoDuyet`,
                             },
                         ]
                     },
@@ -90,8 +93,8 @@ export default createBrowserRouter([
                         loader: APIDanhSachDonHangDaDuyet,
                         children: [
                             {
-                                element: <ChiTietDonHang />,
-                                path: `/order/DanhSachDonHangDaDuyet/ChiTietDonHang`,
+                                element: <ChiThietDonHangDaDuyet />,
+                                path: `/order/DanhSachDonHangDaDuyet/ChiThietDonHangDaDuyet`,
                             },
                         ],
                     },
@@ -101,8 +104,8 @@ export default createBrowserRouter([
                         loader: APIDanhSachDonHangDaTuChoi,
                         children: [
                             {
-                                element: <ChiTietDonHang />,
-                                path: `/order/DanhSachDonHangDaTuChoi/ChiTietDonHang`,
+                                element: <ChiThietDonHangDaTuChoi />,
+                                path: `/order/DanhSachDonHangDaTuChoi/ChiThietDonHangDaTuChoi`,
                             },
                         ],
                     }

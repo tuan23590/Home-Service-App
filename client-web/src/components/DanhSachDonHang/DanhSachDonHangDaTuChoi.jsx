@@ -13,18 +13,18 @@ const DanhSachDonHangDaTuChoi = () => {
     useEffect(() => {
       if (chonDonHang===null) {
         setChonDonHang(data.DonHangDaTuChoi[0]);
-        navigate("./ChiTietDonHang")
+        navigate("./ChiThietDonHangDaTuChoi")
       }
     }, [data]);
 
     const handlePress = (donHang) => {
         setChonDonHang(donHang);
-        navigate("./ChiTietDonHang")
+        navigate("./ChiThietDonHangDaTuChoi")
     }
     return (
       <div>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={2}>
             <div style={{ padding: 20, border: '1px solid black', height: '92vh', overflow: 'auto' }}>
               <Typography variant="h5" gutterBottom>
                 Danh sách đơn hàng đã từ chối
@@ -42,7 +42,7 @@ const DanhSachDonHangDaTuChoi = () => {
               )}
             </div>
           </Grid>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={12} sm={10}>
             <Outlet context={chonDonHang} />
           </Grid>
         </Grid>

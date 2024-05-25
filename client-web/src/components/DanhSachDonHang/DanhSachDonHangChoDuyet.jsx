@@ -10,7 +10,7 @@ const DanhSachDonHangChoDuyet = () => {
     useEffect(() => {
       if (chonDonHang===null) {
         setChonDonHang(data.DonHangDangChoDuyet[0]);
-        navigate("./ChiTietDonHang")
+        navigate("./ChiThietDonHangChoDuyet")
       }
     }, [data]);
 
@@ -18,7 +18,7 @@ const DanhSachDonHangChoDuyet = () => {
 
     const handlePress = (donHang) => {
         setChonDonHang(donHang);
-        navigate("./ChiTietDonHang")
+        navigate("./ChiThietDonHangChoDuyet")
     }
     return (
       <div>

@@ -133,7 +133,7 @@ export const resolvers = {
             return data;
         },
         nhanVien: async (parent)=>{
-            const data = await NhanVienModel.findOne({ _id: parent.nhanVien });
+            const data = await NhanVienModel.find({ _id: parent.nhanVien });
             return data;
         },
         danhSachLichThucHien: async (parent)=>{
