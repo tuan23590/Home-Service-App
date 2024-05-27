@@ -3,7 +3,7 @@ export const typeDefs = `#graphql
         id: String,
         tenDichVu: String,
         maDichVu: String,
-        moTaDichVu: String,
+        khoiLuongCongViec: String,
         gia: Int,
         thoiGian: Int,
         icon: String,
@@ -115,7 +115,7 @@ export const typeDefs = `#graphql
         DonHangDaTuChoi: [DonHang],
     },
     type Mutation {
-        themDichVu(tenDichVu: String!, maDichVu: String, moTaDichVu: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
+        themDichVu(tenDichVu: String!, maDichVu: String, khoiLuongCongViec: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
         themDonHang(
             soGioThucHien: Int,
             danhSachLichThucHien: [String],

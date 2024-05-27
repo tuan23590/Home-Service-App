@@ -3,33 +3,29 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { apiTuChoiDonHang, themNhanVienVaoDonHang } from '../../../utils/DonHangUtils';
 import { apiDanhSachNhanVienNhanDonHang } from '../../../utils/NhanVienUtils';
-import { styled } from '@mui/material/styles';
-import { Card } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
-  const selectedOrder = useOutletContext();
+const ChiThietDonHangChoDuyet = () => {
+  const donHang = useOutletContext();
   const [danhSachNhanVienNhanDonHang, setDanhSachNhanVienNhanDonHang] = useState([]);
   const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
   const navigate = useNavigate();
   const formatDate = (epochTime) => {
-    // Tạo một đối tượng Date từ thời gian Epoch (milliseconds)
+    const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
     const date = new Date(epochTime * 1000);
-
-    // Lấy thông tin về giờ, phút, ngày, tháng và năm từ đối tượng Date
+    const dayOfWeek = daysOfWeek[date.getDay()];
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0 nên cần cộng thêm 1
     const year = date.getFullYear();
-    const formattedDateTime = `${hours}:${minutes} ${day}/${month}/${year}`;
-
+    const formattedDateTime = `${dayOfWeek}, ${day}/${month}/${year} - ${hours}:${minutes}`;
     return formattedDateTime;
   };
   useEffect(() => {
     const fetchData = async () => {
-      if (selectedOrder && selectedOrder.id) {
+      if (donHang && donHang.id) {
         try {
-          const { data } = await apiDanhSachNhanVienNhanDonHang(selectedOrder.id);
+          const { data } = await apiDanhSachNhanVienNhanDonHang(donHang.id);
           setDanhSachNhanVienNhanDonHang(data.DanhSachNhanVienTrongViec);
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -38,53 +34,12 @@ const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
     };
 
     fetchData();
-  }, [selectedOrder]);
-  const StyledCard = styled(Card)(({ selected }) => ({
-    cursor: 'pointer',
-    margin: '10px',
-    border: selected ? '2px solid #3f51b5' : '1px solid #ccc',
-    boxShadow: selected ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
-  }));
-
-  const EmployeeCard = ({ employee, onSelect, selected }) => {
-    return (
-      <StyledCard onClick={() => onSelect(employee.id)} selected={selected}>
-        <CardContent>
-          <Typography variant="h5">{employee.tenNhanVien}</Typography>
-          <Typography variant="body2">Giới tính: {employee.gioiTinh}</Typography>
-          <Typography variant="body2">Ngày sinh: {employee.ngaySinh}</Typography>
-          <Typography variant="body2">Số điện thoại: {employee.soDienThoai}</Typography>
-          <Typography variant="body2">Email: {employee.email}</Typography>
-          <Typography variant="body2">Chuyên môn: {employee.dichVu.map(dv => dv.tenDichVu).join(', ')}</Typography>
-          <Typography variant="body2">Ghi chú: {employee.ghiChu}</Typography>
-          <Typography variant="body2">Đánh giá: {employee.danhGia}</Typography>
-          <Typography variant="body2">Trạng thái: {employee.trangThaiHienTai}</Typography>
-        </CardContent>
-      </StyledCard>
-    );
-  };
-
-  const EmployeeList = ({ employees, onSelect, selectedEmployeeId }) => {
-    return (
-      <Grid container>
-        {employees.map((employee) => (
-          <Grid item xs={12} sm={6} md={4} key={employee.id}>
-            <EmployeeCard
-              employee={employee}
-              onSelect={onSelect}
-              selected={employee.id === selectedEmployeeId}
-            />
-          </Grid>
-        ))}
-      </Grid>
-    );
-  };
-
+  }, [donHang]);
   const duyetDonHang = async () => {
-    const { data } = await themNhanVienVaoDonHang(selectedOrder.id, [nhanVienDaChon]);
+    const { data } = await themNhanVienVaoDonHang(donHang.id, [nhanVienDaChon]);
     if (data.themNhanVienVaoDonHang !== null) {
       alert('Duyệt đơn hàng thành công');
-      window.location.reload();
+      navigate('../');
     } else {
       alert('Duyệt đơn hàng thất bại');
     }
@@ -92,10 +47,10 @@ const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
   const TuChoiDonHang = async () => {
     const confirmAction = window.confirm('Bạn có chắc chắn muốn từ chối đơn hàng không?');
     if (confirmAction) {
-      const data = await apiTuChoiDonHang(selectedOrder.id);
+      const data = await apiTuChoiDonHang(donHang.id);
       if (data !== null) {
         alert('Từ chối đơn hàng thành công');
-        window.location.reload();
+        navigate('../');
       }
     }
   };
@@ -115,12 +70,14 @@ const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
     };
   }, []);
   return (
-    <Box sx={{ 
-      position: 'absolute', 
-      top: '3vh', 
-      left: '38vh', 
-      backgroundColor: 'white', 
-      }}>
+    <Box
+      sx={{
+        position: 'absolute',
+        top: '5vh',
+        left: '39vh',
+        backgroundColor: 'white',
+      }}
+    >
       <Box sx={{
         backgroundColor: '#000000',
         opacity: 0.8,
@@ -142,175 +99,254 @@ const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
       <Paper
         sx={{
           width: '155vh',
-          height: '83vh',
+          height: '80vh',
           overflow: 'auto',
           padding: '20px',
         }}
       >
-
-        {selectedOrder && (
-          <div>
-            <Typography variant='h6'>Thông tin đơn hàng</Typography>
-            <br />
+        {donHang && (
+          <Box>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography>
-                  Mã đơn hàng: {selectedOrder.maDonHang}
+              <Grid item xs={12}>
+                <Typography variant='h5'>Thông tin đơn hàng</Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Mã đơn hàng:</strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.maDonHang}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Thời gian tạo đơn: {formatDate(selectedOrder.ngayDatHang)}
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Thời gian bắt đầu: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {formatDate(donHang.ngayBatDau)}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Số giờ thực hiện: {selectedOrder.soGioThucHien} giờ
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Tên dịch vụ: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].tenDichVu}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Thời gian bắt đầu: {formatDate(selectedOrder.ngayBatDau)}
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Thời gian kết thúc: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {formatDate(donHang.ngayKetThuc)}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Thời gian kết thúc: {formatDate(selectedOrder.ngayKetThuc)}
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Khối lượng CV: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].khoiLuongCongViec}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Địa chỉ: {[
-                    selectedOrder.diaChi.soNhaTenDuong,
-                    selectedOrder.diaChi.xaPhuong,
-                    selectedOrder.diaChi.quanHuyen,
-                    selectedOrder.diaChi.tinhTP,
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Vật nuôi: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.vatNuoi}
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Thời gian tạo đơn: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {formatDate(donHang.ngayDatHang)}
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Trạng thái ĐH: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.trangThaiDonHang}
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Số giờ thực hiện: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.soGioThucHien} giờ
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Ghi chú ĐH: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.ghiChu}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Divider sx={{ margin: '20px 0' }} />
+            <Box display={'flex'} justifyContent={'space-between'} >
+              <Box sx={{ width: '48%' }}>
+                <Typography variant="h6" gutterBottom>
+                  Danh sách dịch vụ thêm
+                </Typography>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Tên Dịch vụ</TableCell>
+                        <TableCell>Biểu phí</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {donHang && Array.isArray(donHang.danhSachDichVu) ? (
+                        donHang.danhSachDichVu.map((service, index) => (
+                          service.loaiDichVu === "DichVuThem" && (
+                            <TableRow key={index}>
+                              <TableCell>
+                                {service.tenDichVu}
+                              </TableCell>
+                              <TableCell>
+                                {service.gia === null ? `+ ${service.thoiGian} Giờ` : `+ ${service.gia.toLocaleString('vi-VN')} VNĐ`}
+                              </TableCell>
+                            </TableRow>
+                          )
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={2}>Không có dịch vụ đã đặt</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+              <Box sx={{ width: '49.5%' }}>
+                <Typography variant="h6" gutterBottom>
+                  Danh sách lịch thực hiện
+                </Typography>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Thời gian bắt đầu</TableCell>
+                        <TableCell>Thời gian kết thúc</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {donHang.danhSachLichThucHien.map((schedule, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{formatDate(schedule.thoiGianBatDauLich)}</TableCell>
+                          <TableCell>{formatDate(schedule.thoiGianKetThucLich)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </Box>
+            <hr />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h5">
+                  Thông tin khách hàng
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Tên khách hàng: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.khachHang.tenKhachHang}
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Địa chỉ: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {[
+                    donHang.diaChi.soNhaTenDuong,
+                    donHang.diaChi.xaPhuong,
+                    donHang.diaChi.quanHuyen,
+                    donHang.diaChi.tinhTP,
                   ].join(', ')}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Ghi chú địa chỉ: {selectedOrder.diaChi.ghiChu}
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Số điện thoại: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.khachHang.soDienThoai}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Vật nuôi: {selectedOrder.vatNuoi}
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Ghi chú địa chỉ: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.diaChi.ghiChu}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Ghi chú đon hàng: {selectedOrder.ghiChu}
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography sx={{ width: '20%' }}>
+                  <strong>Email: </strong>
+                </Typography>
+                <Typography sx={{ width: '80%' }}>
+                  {donHang.khachHang.email}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Trạng thái đơn hàng: {selectedOrder.trangThaiDonHang}
-                </Typography>
-              </Grid>
-
             </Grid>
             <hr />
-
-
-            <Typography variant="h6">
-              Thông tin khách hàng:
-            </Typography>
-            <br />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography>
-                  Tên khách hàng: {selectedOrder.khachHang.tenKhachHang}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Số điện thoại: {selectedOrder.khachHang.soDienThoai}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  Email: {selectedOrder.khachHang.email}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Divider style={{ margin: '20px 0' }} />
-            <Typography variant="h6" gutterBottom>
-              Dịch vụ đã đặt
-            </Typography>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Tên Dịch vụ</TableCell>
-                    <TableCell>Loại Dịch Vụ</TableCell>
-                    <TableCell>Giá tiền</TableCell>
-                    <TableCell>Số lần lập lại</TableCell>
-                    <TableCell>Thành tiền</TableCell>
-                    <TableCell>Ghi chú</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {selectedOrder && Array.isArray(selectedOrder.danhSachDichVu) ? (
-                    selectedOrder.danhSachDichVu.map((service, index) => (
-                      <TableRow key={index}>
-                        <TableCell>
-                          {service.tenDichVu}
-
-                        </TableCell>
-                        <TableCell>
-                          {service.loaiDichVu === "DichVuThem" ? "Dịch vụ thêm" :
-                            service.loaiDichVu === "CaLe" ? "Dich vụ chính" : service.loaiDichVu}
-                        </TableCell>
-                        <TableCell>
-                          {service.loaiDichVu === "DichVuThem" && " + "}
-                          {service.gia === null ? `${service.thoiGian} Giờ` : `${service.gia.toLocaleString('vi-VN')} VNĐ`}
-                        </TableCell>
-                        <TableCell>
-                          {selectedOrder && selectedOrder.danhSachLichThucHien ? selectedOrder.danhSachLichThucHien.length : 0} lần
-                        </TableCell>
-                        <TableCell>
-                          {service.loaiDichVu === "DichVuThem" && " + "}
-                          {selectedOrder && selectedOrder.danhSachLichThucHien ?
-                            (selectedOrder.danhSachLichThucHien.length * (service.gia === null ? service.thoiGian : service.gia)).toLocaleString('vi-VN') +
-                            (service.gia === null ? " giờ" : " VNĐ")
-                            : "0"}
-                        </TableCell>
-                        <TableCell>
-                          {service.loaiDichVu !== "DichVuThem" && "(Dịch vụ chính)"}
-                          {service.loaiDichVu === "DichVuThem" && service.thoiGian && " (Đã cộng vào dịch vụ chính)"}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
+            <Box>
+              <Typography variant="h5" gutterBottom>Danh sách nhân viên phù hợp</Typography>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
                     <TableRow>
-                      <TableCell colSpan={7}>Không có dịch vụ đã đặt</TableCell>
+                      <TableCell>Tên nhân viên</TableCell>
+                      <TableCell>Giới tính</TableCell>
+                      <TableCell>Ngày sinh</TableCell>
+                      <TableCell>Số điện thoại</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Chuyên môn</TableCell>
+                      <TableCell>Ghi chú</TableCell>
+                      <TableCell>Đánh giá</TableCell>
+                      <TableCell>Trạng thái</TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-
-
-
-            <div>
-              <Typography variant="h4" gutterBottom>Danh sách nhân viên</Typography>
-              <EmployeeList
-                employees={danhSachNhanVienNhanDonHang}
-                onSelect={setNhanVienDaChon}
-                selectedEmployeeId={nhanVienDaChon}
-              />
-            </div>
-
-
-
-
-            <Typography>Tổng tiền: {selectedOrder.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
-           
-              <Button variant="contained" color="success" onClick={duyetDonHang}>Duyệt Đơn Hàng</Button>
-              <Button variant="contained" onClick={TuChoiDonHang}>Từ Chối Đơn Hàng</Button>
-          </div>
+                  </TableHead>
+                  <TableBody>
+                    {danhSachNhanVienNhanDonHang.map((employee, index) => (
+                      <TableRow key={index} onClick={() => setNhanVienDaChon(employee.id)} selected={nhanVienDaChon === employee.id}
+                      >
+                        <TableCell>{employee.tenNhanVien}</TableCell>
+                        <TableCell>{employee.gioiTinh}</TableCell>
+                        <TableCell>{employee.ngaySinh}</TableCell>
+                        <TableCell>{employee.soDienThoai}</TableCell>
+                        <TableCell>{employee.email}</TableCell>
+                        <TableCell>{employee.dichVu.map(dv => dv.tenDichVu).join(', ')}</TableCell>
+                        <TableCell>{employee.ghiChu}</TableCell>
+                        <TableCell>{employee.danhGia}</TableCell>
+                        <TableCell>{employee.trangThaiHienTai}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+            <hr />
+            <Typography variant='h4' sx={{ width: '80%' }}>Tổng tiền: {donHang.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
+            <Button variant="contained" color="success" onClick={duyetDonHang}>Duyệt Đơn Hàng</Button>
+            <Button variant="contained" onClick={TuChoiDonHang}>Từ Chối Đơn Hàng</Button>
+          </Box>
         )}
       </Paper>
     </Box>

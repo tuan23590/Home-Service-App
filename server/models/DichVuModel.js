@@ -11,7 +11,7 @@ const DichVuSchema = new mongoose.Schema({
     loaiDichVu:{
         type: String
     },
-    moTaDichVu:{
+    khoiLuongCongViec:{
         type: String
     },
     gia:{

@@ -7,7 +7,7 @@ const SideBarList = ({listItem}) => {
         <List sx={{
             backgroundColor: '#000000',
             opacity: 0.8,
-            height: '90%',
+            height: '93%',
             borderRadius: '20px',
             padding: '20px',
             margin: '10px',

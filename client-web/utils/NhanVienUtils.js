@@ -43,7 +43,6 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         cccd
         dichVu {
           tenDichVu
-          moTaDichVu
           maDichVu
         }
         ghiChu

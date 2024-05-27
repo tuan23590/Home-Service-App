@@ -27,6 +27,7 @@ export const DonHangLoader = async ()=> {
               maDichVu
               loaiDichVu
               thoiGian
+              moTaDichVu
             }
             uuTienTasker
             tongTien
@@ -85,6 +86,7 @@ export const APIDanhSachDonHangDaDuyet = async ()=> {
             maDichVu
             loaiDichVu
             thoiGian
+            khoiLuongCongViec
           }
           uuTienTasker
           tongTien
@@ -159,6 +161,7 @@ export const APIDanhSachDonHangDaTuChoi = async ()=> {
             maDichVu
             loaiDichVu
             thoiGian
+            khoiLuongCongViec
           }
           uuTienTasker
           tongTien
@@ -217,6 +220,7 @@ export const APIDanhSachDonHangChoDuyet = async ()=> {
             maDichVu
             loaiDichVu
             thoiGian
+            khoiLuongCongViec
           }
           uuTienTasker
           tongTien
