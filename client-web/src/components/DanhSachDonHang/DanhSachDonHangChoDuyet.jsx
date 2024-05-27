@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Outlet, useLoaderData, useNavigate} from 'react-router-dom';
 import {
   Table,
@@ -10,10 +10,10 @@ import {
   Paper,
   Box
 } from '@mui/material';
-import ChiThietDonHangChoDuyet from '../ChiTietDonHang/ChiThietDonHangChoDuyet';
 
 const DanhSachDonHangChoDuyet = () => {
     const {data} = useLoaderData();
+    const danhSachDonHang = data.DonHangDangChoDuyet;
     const navigate = useNavigate();
     const formatDate = (epochTime) => {
       // Tạo một đối tượng Date từ thời gian Epoch (milliseconds)
@@ -32,17 +32,12 @@ const DanhSachDonHangChoDuyet = () => {
       return formattedDateTime;
     };
 
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [chonDonHang, setChonDonHang] = useState(danhSachDonHang[0]);
     const handleRowClick = (item) => {
-      setSelectedItem(item);
+      setChonDonHang(item);
       navigate('./ChiThietDonHangChoDuyet');
     };
   
-    const handleCloseModal = () => {
-      setModalOpen(false);
-    };
-
     return (
       <Box sx={{marginTop: '15px'}}>
         <TableContainer component={Paper}>
@@ -58,7 +53,7 @@ const DanhSachDonHangChoDuyet = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.DonHangDangChoDuyet.map((row) => (
+          {danhSachDonHang.map((row) => (
             <TableRow
             key={row.id}
             onClick={() => handleRowClick(row)}
@@ -80,7 +75,7 @@ const DanhSachDonHangChoDuyet = () => {
         </TableBody>
       </Table>
     </TableContainer>
-      <Outlet context={selectedItem}/>
+      <Outlet context={chonDonHang}/>
       </Box>
     );
 };

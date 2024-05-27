@@ -102,15 +102,32 @@ const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
   const HandelClose = () => {
     navigate('../');
   }
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      navigate('../');
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
   return (
-    <Box sx={{ position: 'absolute', top: '3vh', left: '38vh', backgroundColor: 'white' }}>
+    <Box sx={{ 
+      position: 'absolute', 
+      top: '3vh', 
+      left: '38vh', 
+      backgroundColor: 'white', 
+      }}>
       <Box sx={{
         backgroundColor: '#000000',
         opacity: 0.8,
         padding: '5px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
       }}>
         <Typography variant="h6" sx={{ color: 'white', paddingLeft: '10px' }}>
           Duyệt đơn hàng
@@ -127,7 +144,7 @@ const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
           width: '155vh',
           height: '83vh',
           overflow: 'auto',
-          padding: '20px'
+          padding: '20px',
         }}
       >
 
@@ -290,8 +307,9 @@ const ChiThietDonHangChoDuyet = ({ open, handleClose, item }) => {
 
 
             <Typography>Tổng tiền: {selectedOrder.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
-            <Button variant="contained" color="success" onClick={duyetDonHang}>Duyệt Đơn Hàng</Button>
-            <Button variant="contained" onClick={TuChoiDonHang}>Từ Chối Đơn Hàng</Button>
+           
+              <Button variant="contained" color="success" onClick={duyetDonHang}>Duyệt Đơn Hàng</Button>
+              <Button variant="contained" onClick={TuChoiDonHang}>Từ Chối Đơn Hàng</Button>
           </div>
         )}
       </Paper>
