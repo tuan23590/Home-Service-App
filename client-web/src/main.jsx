@@ -7,7 +7,7 @@ import './firebase/config';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-  <Container maxWidth='lg' sx={{textAlign: 'center', marginTop:'50px'}}>
+  <Container maxWidth='lg' sx={{textAlign: 'center'}}>
 
   </Container>
   <RouterProvider router={router}/>

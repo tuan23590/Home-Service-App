@@ -30,6 +30,7 @@ import DanhSachDonHangDaTuChoi from "../components/DanhSachDonHang/DanhSachDonHa
 import ChiThietDonHangChoDuyet from "../components/ChiTietDonHang/ChiThietDonHangChoDuyet";
 import ChiThietDonHangDaDuyet from "../components/ChiTietDonHang/ChiThietDonHangDaDuyet";
 import ChiThietDonHangDaTuChoi from "../components/ChiTietDonHang/ChiThietDonHangDaTuChoi";
+import QuanLyDonHang from "../../pages/QuanLyDonHang";
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
@@ -73,39 +74,39 @@ export default createBrowserRouter([
                 ],
             },
             {
-                element: <OrderBrowser />,
-                path: '/order',
+                element: <QuanLyDonHang />,
+                path: '/QuanLyDonHang',
                 children: [
                     {
                         element: <DanhSachDonHangChoDuyet />,
-                        path: `/order/DanhSachDonHangChoDuyet`,
+                        path: `/QuanLyDonHang/DanhSachDonHangChoDuyet`,
                         loader: APIDanhSachDonHangChoDuyet,
                         children: [
                             {
                                 element: <ChiThietDonHangChoDuyet />,
-                                path: `/order/DanhSachDonHangChoDuyet/ChiThietDonHangChoDuyet`,
+                                path: `/QuanLyDonHang/DanhSachDonHangChoDuyet/ChiThietDonHangChoDuyet`,
                             },
                         ]
                     },
                     {
                         element: <DanhSachDonHangDaDuyet />,
-                        path: `/order/DanhSachDonHangDaDuyet`,
+                        path: `/QuanLyDonHang/DanhSachDonHangDaDuyet`,
                         loader: APIDanhSachDonHangDaDuyet,
                         children: [
                             {
                                 element: <ChiThietDonHangDaDuyet />,
-                                path: `/order/DanhSachDonHangDaDuyet/ChiThietDonHangDaDuyet`,
+                                path: `/QuanLyDonHang/DanhSachDonHangDaDuyet/ChiThietDonHangDaDuyet`,
                             },
                         ],
                     },
                     {
                         element: <DanhSachDonHangDaTuChoi />,
-                        path: `/order/DanhSachDonHangDaTuChoi`,
+                        path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi`,
                         loader: APIDanhSachDonHangDaTuChoi,
                         children: [
                             {
                                 element: <ChiThietDonHangDaTuChoi />,
-                                path: `/order/DanhSachDonHangDaTuChoi/ChiThietDonHangDaTuChoi`,
+                                path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi/ChiThietDonHangDaTuChoi`,
                             },
                         ],
                     }
