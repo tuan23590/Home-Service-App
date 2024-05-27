@@ -3,7 +3,7 @@ import { request, gql } from 'graphql-request'
 
 
 const MASTER_URL = 'https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master'
-const API_URL = 'http://192.168.1.33:4000/graphql'
+const API_URL = 'http://192.168.19.149:4000/graphql'
 const getSlider=async()=>{
 const query = gql`
 query GetSlider {

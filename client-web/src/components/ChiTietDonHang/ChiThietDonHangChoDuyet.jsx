@@ -188,7 +188,7 @@ const ChiThietDonHangChoDuyet = () => {
                                 </TableCell>
                                 <TableCell>
                                   {service.loaiDichVu === "DichVuThem" ? "Dịch vụ thêm" : 
-                                  service.loaiDichVu === "CaLe" ? "Ca lẽ" : service.loaiDichVu}
+                                  service.loaiDichVu === "CaLe" ? "Dich vụ chính" : service.loaiDichVu}
                                 </TableCell>
                                 <TableCell>
                                   {service.loaiDichVu === "DichVuThem" && " + "}
