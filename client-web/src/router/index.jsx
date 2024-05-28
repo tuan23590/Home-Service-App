@@ -31,6 +31,8 @@ import ChiThietDonHangChoDuyet from "../components/ChiTietDonHang/ChiThietDonHan
 import ChiThietDonHangDaDuyet from "../components/ChiTietDonHang/ChiThietDonHangDaDuyet";
 import ChiThietDonHangDaTuChoi from "../components/ChiTietDonHang/ChiThietDonHangDaTuChoi";
 import QuanLyDonHang from "../../pages/QuanLyDonHang";
+import ChonNhanVienTrong from "../components/ChonNhanVienTrong";
+import { apiDanhSachNhanVienNhanDonHang } from "../../utils/NhanVienUtils";
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
@@ -96,6 +98,13 @@ export default createBrowserRouter([
                             {
                                 element: <ChiThietDonHangDaDuyet />,
                                 path: `/QuanLyDonHang/DanhSachDonHangDaDuyet/ChiThietDonHangDaDuyet`,
+                                children: [
+                                    {
+                                        element: <ChonNhanVienTrong />,
+                                        path: `/QuanLyDonHang/DanhSachDonHangDaDuyet/ChiThietDonHangDaDuyet/ChonNhanVienTrong/:idDonHang`,
+                                        loader: apiDanhSachNhanVienNhanDonHang,
+                                    },
+                                ],
                             },
                         ],
                     },

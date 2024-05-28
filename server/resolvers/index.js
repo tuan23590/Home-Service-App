@@ -283,10 +283,17 @@ export const resolvers = {
                 console.error("Lỗi khi hủy đơn hàng:", error);
             }
         },
-        huyLichThucHien: async (parent, args) => {
+        dungLichThucHien: async (parent, args) => {
             const lichThucHien = await LichThucHienModel.findById(args.idLichThucHien);
-            lichThucHien.trangThaiLich = "Đã hủy lịch";
-            lichThucHien.lyDoHuyLich = args.lyDoHuyLich;
+            lichThucHien.trangThaiLich = "Đã dừng lịch";
+            lichThucHien.lyDoDungLich = args.lyDoDungLich;
+            lichThucHien.save();
+            return lichThucHien;
+        },
+        tiepTucLichThucHien: async (parent, args) => {
+            const lichThucHien = await LichThucHienModel.findById(args.idLichThucHien);
+            lichThucHien.trangThaiLich = "Đang thực hiện";
+            lichThucHien.lyDoDungLich = null;
             lichThucHien.save();
             return lichThucHien;
         }

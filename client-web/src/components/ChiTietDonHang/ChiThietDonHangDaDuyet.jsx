@@ -1,22 +1,55 @@
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, CardContent, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Tooltip, IconButton, Pagination, TextField, Input } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Tooltip, IconButton, Pagination, TextField, Input } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
-import { apiHuyDonHang, apiTuChoiDonHang, themNhanVienVaoDonHang } from '../../../utils/DonHangUtils';
-import { apiDanhSachNhanVienNhanDonHang } from '../../../utils/NhanVienUtils';
+import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
+import { apiHuyDonHang } from '../../../utils/DonHangUtils';
 import CloseIcon from '@mui/icons-material/Close';
+import { apiNgungLichThucHien, apiTiepTucLichThucHien } from '../../../utils/LichThucHienUtils';
+import ChonNhanVienTrong from '../ChonNhanVienTrong';
 
 const ChiThietDonHangChoDuyet = () => {
   const data = useOutletContext();
   const setSnackbar = data.setSnackbar;
   const donHang = data.chonDonHang;
-
-  console.log(donHang);
-  const [danhSachNhanVienNhanDonHang, setDanhSachNhanVienNhanDonHang] = useState([]);
   const nhanVienDaChon = donHang.nhanVien[0];
   const navigate = useNavigate();
 
+
+  const formatDateTimeToTime = (epochBatDau, epochKetThuc) => {
+    const daysOfWeek = [
+      'CN', 'T2', 'T3', 'T4',
+      'T5', 'T6', 'T7'
+    ];
+  
+    const formatTime = (date) => {
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    };
+  
+    const formatDate = (date) => {
+      const dayOfWeek = daysOfWeek[date.getDay()];
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${dayOfWeek}, ${day}/${month}/${year}`;
+    };
+  
+    const dateBatDau = new Date(epochBatDau * 1000);
+    const dateKetThuc = new Date(epochKetThuc * 1000);
+  
+    const formattedDate = formatDate(dateBatDau);
+    const formattedTimeBatDau = formatTime(dateBatDau);
+    const formattedTimeKetThuc = formatTime(dateKetThuc);
+  
+    return `${formattedDate} - ${formattedTimeBatDau} đến ${formattedTimeKetThuc}`;
+  };
+
+
   const formatDate = (epochTime) => {
-    const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+    const daysOfWeek = [
+      'CN', 'T2', 'T3', 'T4',
+      'T5', 'T6', 'T7'
+    ];
     const date = new Date(epochTime * 1000);
     const dayOfWeek = daysOfWeek[date.getDay()];
     const hours = date.getHours().toString().padStart(2, '0');
@@ -27,35 +60,28 @@ const ChiThietDonHangChoDuyet = () => {
     const formattedDateTime = `${dayOfWeek}, ${day}/${month}/${year} - ${hours}:${minutes}`;
     return formattedDateTime;
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      if (donHang && donHang.id) {
-        try {
-          const { data } = await apiDanhSachNhanVienNhanDonHang(donHang.id);
-          setDanhSachNhanVienNhanDonHang(data.DanhSachNhanVienTrongViec);
-          setNhanVienDaChon(data.DanhSachNhanVienTrongViec[0]);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
-    };
-    fetchData();
-  }, [donHang]);
-
-
-  console.log(donHang);
-  const handleThayDoiNhanVien = async () => {
-    // const { data } = await themNhanVienVaoDonHang(donHang.id, [nhanVienDaChon.id]);
-    // if (data.themNhanVienVaoDonHang !== null) {
-    //   setSnackbar({ open: true, message: 'Duyệt đơn hàng thành công', severity: 'success' });
-    //   navigate('../');
-    // } else {
-    //   setSnackbar({ open: true, message: 'Duyệt đơn hàng thất bại', severity: 'error' });
-    // }
+  const thayDoiNhanVien = async () => {
     setSnackbar({ open: true, message: 'Thay đổi nhân viên thành công', severity: 'success' });
     window.location.reload();
   };
-
+  const dungLichThucHien = async () => { 
+    const data = await apiNgungLichThucHien(idLichNgung, lyDoDungLich);
+    if (data !== null) {
+      setSnackbar({ open: true, message: 'Ngưng lịch thực hiện thành công', severity: 'success' });
+      window.location.reload();
+    } else {
+      setSnackbar({ open: true, message: 'Ngưng lịch thực hiện thất bại', severity: 'error' });
+    }
+  };
+  const tiepTucLichThucHien = async (idLich) => {
+    const data = await apiTiepTucLichThucHien(idLich);
+    if (data !== null) {
+      setSnackbar({ open: true, message: 'Tiếp tục lịch thực hiện thành công', severity: 'success' });
+      window.location.reload();
+    } else {
+      setSnackbar({ open: true, message: 'Tiếp tục lịch thực hiện thất bại', severity: 'error' });
+    }
+  }
   const huyDonHang = async () => {
     const data = await apiHuyDonHang(donHang.id, lyDoHuyDonHang);
     if (data !== null) {
@@ -65,13 +91,7 @@ const ChiThietDonHangChoDuyet = () => {
       setSnackbar({ open: true, message: 'Hủy đơn hàng thất bại', severity: 'error' });
     }
   };
-
-
-
-
-
-
-  const HandelClose = () => {
+  const xyLyDongTrang = () => {
     navigate('../');
   }
   const handleKeyDown = (event) => {
@@ -86,31 +106,45 @@ const ChiThietDonHangChoDuyet = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 5;
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const indexOfLastRow = page * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = danhSachNhanVienNhanDonHang.slice(indexOfFirstRow, indexOfLastRow);
-  const [open, setOpen] = useState(false);
+  const [trangThaiLyDoHuyDon, setTrangThaiLyDoHuyDon] = useState(false);
+  const [trangThaiLyDoDungLich, setTrangThaiLyDoDungLich] = useState(false);
+  const [trangThaiDoiNhanVien, setTrangThaiDoiNhanVien] = useState(false);
+  const [chonNhanVien, setChonNhanVien] = useState(null);
   const [lyDoHuyDonHang, setLyDoTuChoi] = useState('');
-  const handleOpend = () => {
-    setOpen(true);
+  const [lyDoDungLich, setLyDoDungLich] = useState('');
+  const [idLichNgung, setIdLichNgung] = useState(null);
+  const xyLyMoLyDoHuyDon = () => {
+    setTrangThaiLyDoHuyDon(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const xuLyDongLyDoHuyDon = () => {
+    setTrangThaiLyDoHuyDon(false);
   }
   const handleKeyPress = (event) => {
-    if (event.key == 'Enter') {
-      setOpen(false);
+    if (event.key == 'Enter' && trangThaiLyDoHuyDon === true) {
+      setTrangThaiLyDoHuyDon(false);
       huyDonHang();
+    }else if (event.key == 'Enter' && trangThaiLyDoDungLich === true) {
+      setTrangThaiLyDoDungLich(false);
+      dungLichThucHien();
+    }else if (event.key == 'Enter' && trangThaiDoiNhanVien === true) {
+      setTrangThaiDoiNhanVien(false);
+      thayDoiNhanVien();
     }
   };
-
+  const xuLyMoLyDoDungLich = (idLich) => {
+    setTrangThaiLyDoDungLich(true);
+    setIdLichNgung(idLich);
+  }
+  const xuLyDongLyDoDungLich = () => {
+    setTrangThaiLyDoDungLich(false);
+  }
+  const xuLyMoDoiNhanVien = () => {
+    navigate('./ChonNhanVienTrong/' + donHang.id);
+  }
+  const HandelClose = () => {
+    navigate('./');
+  }
   return (
     <Box
       sx={{
@@ -131,7 +165,7 @@ const ChiThietDonHangChoDuyet = () => {
         <Typography variant="h6" sx={{ color: 'white', paddingLeft: '10px' }}>
           Đơn hàng đã duyệt
         </Typography>
-        <Tooltip title="Đóng" onClick={HandelClose} >
+        <Tooltip title="Đóng" onClick={xyLyDongTrang} >
           <IconButton>
             <CloseIcon style={{ color: 'white' }} />
           </IconButton>
@@ -288,17 +322,42 @@ const ChiThietDonHangChoDuyet = () => {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Thời gian bắt đầu</TableCell>
-                          <TableCell>Thời gian kết thúc</TableCell>
+                          <TableCell>Thời gian thực hiện</TableCell>
+                          <TableCell>Trạng thái</TableCell>
+                          <TableCell>Ghi chú</TableCell>
                           <TableCell>Thao tác</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {donHang.danhSachLichThucHien.map((schedule, index) => (
+                        {donHang.danhSachLichThucHien.map((lichThucHien, index) => (
                           <TableRow key={index}>
-                            <TableCell>{formatDate(schedule.thoiGianBatDauLich)}</TableCell>
-                            <TableCell>{formatDate(schedule.thoiGianKetThucLich)}</TableCell>
-                            <TableCell><Button variant="outlined" color="error">Ngưng lịch</Button></TableCell>
+                            <TableCell>{formatDateTimeToTime(lichThucHien.thoiGianBatDauLich,lichThucHien.thoiGianKetThucLich)}</TableCell>
+                            <TableCell>{lichThucHien.trangThaiLich} </TableCell>
+                            <TableCell>{lichThucHien.lyDoDungLich}</TableCell>
+                            
+                            <TableCell>
+                                {lichThucHien.trangThaiLich === "Đã dừng lịch" ? (
+                                  <Button
+                                    size='small'
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={() => tiepTucLichThucHien(lichThucHien.id)}
+                                  >
+                                    Tiếp tục lịch
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    size='small'
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() => xuLyMoLyDoDungLich(lichThucHien.id)}
+                                  >
+                                    Dừng lịch
+                                  </Button>
+                                )}
+                              </TableCell>
+
+
                           </TableRow>
                         ))}
                       </TableBody>
@@ -371,16 +430,20 @@ const ChiThietDonHangChoDuyet = () => {
             <Paper elevation={3} sx={{ padding: '20px'}}>
                 <Typography variant="h5" gutterBottom>Thông tin nhân viên</Typography>
                 
-                <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <Box sx={{display: 'flex', justifyContent: 'space-around'}}>
                 <Box
-                    component="img"
-                    sx={{
-                      height: 200,
-                      width: 180,
-                    }}
-                    alt="The house from the offer."
-                    src={nhanVienDaChon && nhanVienDaChon.anhDaiDien}
-                  />
+                  component="img"
+                  sx={{
+                    height: 150,
+                    width: 150,
+                    borderRadius: '8px', // Làm cho góc bo tròn
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Thêm bóng đổ nhẹ
+                    border: '2px solid #ddd', // Thêm viền nhạt
+                    transition: 'transform 0.2s, box-shadow 0.2s', // Thêm hiệu ứng chuyển đổi khi di chuột
+                  }}
+                  alt="The house from the offer."
+                  src={nhanVienDaChon && nhanVienDaChon.anhDaiDien}
+                />
                 <Box>
                   {nhanVienDaChon && (
                     <Grid container spacing={2}>
@@ -401,10 +464,10 @@ const ChiThietDonHangChoDuyet = () => {
                         </Typography>
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '35%' }}>
+                        <Typography sx={{ width: '20%' }}>
                           <strong>CCCD: </strong>
                         </Typography>
-                        <Typography sx={{ width: '65%' }}>
+                        <Typography sx={{ width: '80%' }}>
                           {nhanVienDaChon.cccd}
                         </Typography>
                       </Grid>
@@ -433,10 +496,10 @@ const ChiThietDonHangChoDuyet = () => {
                         </Typography>
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '35%' }}>
+                        <Typography sx={{ width: '20%' }}>
                           <strong>Ghi chú: </strong>
                         </Typography>
-                        <Typography sx={{ width: '65%' }}>
+                        <Typography sx={{ width: '80%' }}>
                           {nhanVienDaChon.ghiChu}
                         </Typography>
                       </Grid>
@@ -452,8 +515,8 @@ const ChiThietDonHangChoDuyet = () => {
             <Paper elevation={3} sx={{ padding: '20px', display: 'flex', justifyContent: 'space-between' }}>
               <Typography variant='h5' sx={{ width: '50%' }}> </Typography>
               <Box sx={{ display: 'flex', justifyContent: 'space-around', width: '25%' }}>
-                <Button variant="contained" color="success" onClick={handleThayDoiNhanVien}>Thay đổi nhân viên</Button>
-                <Button variant="contained" onClick={handleOpend}>hủy đơn hàng</Button>
+                <Button variant="contained" color="success" onClick={xuLyMoDoiNhanVien}>Thay đổi nhân viên</Button>
+                <Button variant="contained" onClick={xyLyMoLyDoHuyDon}>hủy đơn hàng</Button>
               </Box>
             </Paper>
           </Box>
@@ -461,7 +524,7 @@ const ChiThietDonHangChoDuyet = () => {
       </Paper>
 
       <Box>
-        <Dialog open={open} onClose={handleClose} disableRestoreFocus onKeyPress={handleKeyPress}>
+        <Dialog open={trangThaiLyDoHuyDon} onClose={xuLyDongLyDoHuyDon} disableRestoreFocus onKeyPress={handleKeyPress}>
           <DialogTitle>hủy đơn hàng</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -479,7 +542,7 @@ const ChiThietDonHangChoDuyet = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={xuLyDongLyDoHuyDon} color="primary">
               Hủy bỏ
             </Button>
             <Button onClick={huyDonHang} color="primary">
@@ -487,6 +550,58 @@ const ChiThietDonHangChoDuyet = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        
+
+        <Dialog open={trangThaiLyDoDungLich} onClose={xuLyDongLyDoDungLich} disableRestoreFocus onKeyPress={handleKeyPress}>
+          <DialogTitle>Dừng lịch thực hiện</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Vui lòng nhập lý do dừng lịch thực hiện:
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Lý do dừng lịch"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={lyDoDungLich}
+              onChange={(e) => setLyDoDungLich(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={xuLyDongLyDoDungLich} color="primary">
+              Hủy bỏ
+            </Button>
+            <Button onClick={dungLichThucHien} color="primary">
+              Xác nhận
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+
+        <Box sx={{position: 'absolute', top: '15%',left: '15%',width: '70%'}}>
+        <Box sx={{
+        backgroundColor: '#000000',
+        opacity: 0.8,
+        padding: '5px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <Typography variant="h6" sx={{ color: 'white', paddingLeft: '10px' }}>
+          Duyệt đơn hàng
+        </Typography>
+        <Tooltip title="Đóng" onClick={HandelClose} >
+          <IconButton>
+            <CloseIcon style={{ color: 'white' }} />
+          </IconButton>
+        </Tooltip>
+      </Box>
+        <Outlet/>
+        </Box>
+
+
       </Box>
 
 

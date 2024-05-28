@@ -99,9 +99,11 @@ export const APIDanhSachDonHangDaDuyet = async ()=> {
             ghiChu
           }
           danhSachLichThucHien {
+            id
             thoiGianBatDauLich
             thoiGianKetThucLich
             trangThaiLich
+            lyDoDungLich
           }
       nhanVien {
         id

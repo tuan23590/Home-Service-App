@@ -10,10 +10,11 @@ const LichThucHienSchema = new mongoose.Schema({
     trangThaiLich: {
         type: String
     },
-    lyDoHuyLich: {
+    lyDoDungLich: {
         type: String
     },
 },{timestamps: true});
 
 const LichThucHienModel = mongoose.model('LichThucHien',LichThucHienSchema);
 export default LichThucHienModel;
+

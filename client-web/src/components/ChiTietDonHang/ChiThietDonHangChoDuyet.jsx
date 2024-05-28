@@ -106,7 +106,6 @@ const ChiThietDonHangChoDuyet = () => {
       TuChoiDonHang();
     }
   };
-console.log(danhSachNhanVienNhanDonHang)
   return (
     <Box
       sx={{
