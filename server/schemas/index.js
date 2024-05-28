@@ -32,7 +32,8 @@ export const typeDefs = `#graphql
         trangThaiTaiKhoan: String,
         danhGia: Float,
         trangThaiHienTai: String,
-        lichLamViec: [LichThucHien]
+        lichLamViec: [LichThucHien],
+        anhDaiDien: String
     },
     type KhachHang {
         id: String,
@@ -46,7 +47,8 @@ export const typeDefs = `#graphql
         id: String,
         thoiGianBatDauLich: Int,
         thoiGianKetThucLich: Int,
-        trangThaiLich: String
+        trangThaiLich: String,
+        lyDoHuyLich: String
     },
     type DonHang {
         id: String,
@@ -68,6 +70,7 @@ export const typeDefs = `#graphql
         uuTienTasker: Boolean,
         tongTien: Float,
         lyDoTuChoi: String,
+        lyDoHuyDonHang: String
     },
     type TinhTp {
         name: String,
@@ -147,5 +150,7 @@ export const typeDefs = `#graphql
         themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String): DiaChi,
         capNhatTrangThaiDonHang(idDonHang: String, trangThaiDonHang: String): DonHang,
         tuChoiDonHang(idDonHang: String,lyDoTuChoi: String): DonHang,
+        huyDonHang(idDonHang: String,lyDoHuyDonHang: String): DonHang,
+        huyLichThucHien(idLichThucHien: String, lyDoHuyLich: String): LichThucHien,
     }
 `

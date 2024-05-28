@@ -49,6 +49,7 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         trangThaiTaiKhoan
         danhGia
         trangThaiHienTai
+        anhDaiDien
       }
     }`;
     const res = await fetch(GRAPHQL_SERVER, {

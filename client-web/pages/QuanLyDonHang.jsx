@@ -33,6 +33,7 @@ export default function QuanLyDonHang() {
             {'link':'DanhSachDonHangChoDuyet','text':'Danh sách chờ duyệt'},
             {'link':'DanhSachDonHangDaDuyet','text':'Danh sách đã duyệt'},
             {'link':'DanhSachDonHangDaTuChoi','text':'Danh sách đã từ chối'},
+            {'link':'DanhSachDonHangDaHuy','text':'Danh sách đã hủy'},
             ]} />
     </Grid>
     <Grid item xs={10} sx={{height: '100%'}}>

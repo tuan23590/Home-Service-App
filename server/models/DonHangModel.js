@@ -52,6 +52,9 @@ const DonHangSchema = new mongoose.Schema({
     lyDoTuChoi:{
         type: String
     },
+    lyDoHuyDonHang:{
+        type: String
+    },
     uuTienTasker:{
         type: Boolean
     },

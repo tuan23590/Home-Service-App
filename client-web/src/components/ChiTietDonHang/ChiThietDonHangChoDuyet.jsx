@@ -1,15 +1,9 @@
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, CardContent, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Tooltip, IconButton, Pagination, TextField, Input } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, CardContent, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Tooltip, IconButton, Pagination, TextField, Input, Avatar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { apiTuChoiDonHang, themNhanVienVaoDonHang } from '../../../utils/DonHangUtils';
 import { apiDanhSachNhanVienNhanDonHang } from '../../../utils/NhanVienUtils';
 import CloseIcon from '@mui/icons-material/Close';
-
-
-
-
-
-
 
 const ChiThietDonHangChoDuyet = () => {
   const data = useOutletContext();
@@ -112,7 +106,7 @@ const ChiThietDonHangChoDuyet = () => {
       TuChoiDonHang();
     }
   };
-
+console.log(danhSachNhanVienNhanDonHang)
   return (
     <Box
       sx={{
@@ -381,7 +375,7 @@ const ChiThietDonHangChoDuyet = () => {
                           onClick={() => setNhanVienDaChon(employee)}
                           selected={nhanVienDaChon === employee}
                         >
-                          <TableCell>{employee.tenNhanVien}</TableCell>
+                          <TableCell sx={{display: 'flex', alignItems: 'center',justifyContent: 'space-around'}}><Avatar src={employee.anhDaiDien}/> {employee.tenNhanVien}</TableCell>
                           <TableCell>{employee.gioiTinh}</TableCell>
                           <TableCell>{employee.ngaySinh}</TableCell>
                           <TableCell>{employee.dichVu.map(dv => dv.tenDichVu).join(', ')}</TableCell>
@@ -421,10 +415,26 @@ const ChiThietDonHangChoDuyet = () => {
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>
                         <Typography sx={{ width: '35%' }}>
+                          <strong>CCCD: </strong>
+                        </Typography>
+                        <Typography sx={{ width: '65%' }}>
+                          {nhanVienDaChon.cccd}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6} sx={{ display: 'flex' }}>
+                        <Typography sx={{ width: '35%' }}>
                           <strong>Ngày sinh: </strong>
                         </Typography>
                         <Typography sx={{ width: '65%' }}>
                           {nhanVienDaChon.ngaySinh}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6} sx={{ display: 'flex' }}>
+                        <Typography sx={{ width: '35%' }}>
+                          <strong>Đánh giá: </strong>
+                        </Typography>
+                        <Typography sx={{ width: '65%' }}>
+                          {nhanVienDaChon.danhGia}
                         </Typography>
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -437,12 +447,13 @@ const ChiThietDonHangChoDuyet = () => {
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>
                         <Typography sx={{ width: '35%' }}>
-                          <strong>Đánh giá: </strong>
+                          <strong>Ghi chú: </strong>
                         </Typography>
                         <Typography sx={{ width: '65%' }}>
-                          {nhanVienDaChon.danhGia}
+                          {nhanVienDaChon.ghiChu}
                         </Typography>
                       </Grid>
+                     
                     </Grid>
                   )}
                 </Box>

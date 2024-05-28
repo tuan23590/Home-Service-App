@@ -253,6 +253,42 @@ export const resolvers = {
             donHang.lyDoTuChoi = args.lyDoTuChoi;
             donHang.save();
             return donHang;
+        },
+        huyDonHang: async (parent, args) => {
+            try {
+                // Lấy thông tin đơn hàng từ cơ sở dữ liệu
+                const donHang = await DonHangModel.findById(args.idDonHang);
+                donHang.trangThaiDonHang = "Đã hủy đơn";
+                
+                // Tìm kiếm thông tin nhân viên liên quan đến đơn hàng
+                const nhanVien = await NhanVienModel.find({ _id: { $in: donHang.nhanVien } });
+                
+                // Lặp qua danh sách các lịch làm việc thực hiện từ đơn hàng
+                donHang.danhSachLichThucHien.forEach(lichThucHien => {
+                    // Lặp qua từng nhân viên để kiểm tra lịch làm việc
+                    nhanVien.forEach(async (nv, index) => {
+                        const indexToRemove = nv.lichLamViec.indexOf(lichThucHien);
+                        // Nếu tìm thấy lịch làm việc trùng, loại bỏ nó khỏi danh sách của nhân viên
+                        if (indexToRemove !== -1) {
+                            nhanVien[index].lichLamViec.splice(indexToRemove, 1);
+                            // Cập nhật lại thông tin nhân viên trong cơ sở dữ liệu
+                            await NhanVienModel.findByIdAndUpdate(nv._id, { $set: { lichLamViec: nv.lichLamViec } });
+                        }
+                    });
+                });
+                donHang.save();
+                console.log("Lịch làm việc của nhân viên sau khi hủy đơn hàng:", nhanVien);
+                
+            } catch (error) {
+                console.error("Lỗi khi hủy đơn hàng:", error);
+            }
+        },
+        huyLichThucHien: async (parent, args) => {
+            const lichThucHien = await LichThucHienModel.findById(args.idLichThucHien);
+            lichThucHien.trangThaiLich = "Đã hủy lịch";
+            lichThucHien.lyDoHuyLich = args.lyDoHuyLich;
+            lichThucHien.save();
+            return lichThucHien;
         }
     }
 };

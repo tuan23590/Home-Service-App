@@ -9,7 +9,10 @@ const LichThucHienSchema = new mongoose.Schema({
     },
     trangThaiLich: {
         type: String
-    }
+    },
+    lyDoHuyLich: {
+        type: String
+    },
 },{timestamps: true});
 
 const LichThucHienModel = mongoose.model('LichThucHien',LichThucHienSchema);

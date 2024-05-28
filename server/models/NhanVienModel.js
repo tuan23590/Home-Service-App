@@ -41,6 +41,9 @@ const NhanVienSchema = new mongoose.Schema({
     },
     trangThaiHienTai:{
         type: String
+    },
+    anhDaiDien:{
+        type: String
     }
     
 },{timestamps: true});

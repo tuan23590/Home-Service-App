@@ -112,6 +112,7 @@ export const APIDanhSachDonHangDaDuyet = async ()=> {
         soDienThoai
         email
         cccd
+        anhDaiDien
         dichVu {
           tenDichVu
         }
@@ -390,6 +391,32 @@ export const apiTuChoiDonHang = async (idDonHang, lyDoTuChoi) => {
       variables: {
         idDonHang,
         lyDoTuChoi
+      }
+    })
+  });
+  
+  const data = await res.json();
+  return data;
+};
+export const apiHuyDonHang = async (idDonHang, lyDoHuyDonHang) => {
+  const query = `mutation HuyDonHang($idDonHang: String, $lyDoHuyDonHang: String) {
+    huyDonHang(idDonHang: $idDonHang, lyDoHuyDonHang: $lyDoHuyDonHang) {
+      maDonHang
+      lyDoHuyDonHang
+    }
+  }
+  `;
+  const res = await fetch(GRAPHQL_SERVER, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        idDonHang,
+        lyDoHuyDonHang
       }
     })
   });
