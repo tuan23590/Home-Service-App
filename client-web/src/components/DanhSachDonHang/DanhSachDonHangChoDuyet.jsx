@@ -11,6 +11,8 @@ import {
   Box,
   TablePagination
 } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
+
 
 const DanhSachDonHangChoDuyet = () => {
   const { data } = useLoaderData();
@@ -45,6 +47,13 @@ const DanhSachDonHangChoDuyet = () => {
     setPage(0);
   };
 
+
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+  
   return (
     <Box sx={{ margin: '15px' }}>
       <TableContainer component={Paper}>
@@ -79,7 +88,7 @@ const DanhSachDonHangChoDuyet = () => {
                   <TableCell>{formatDate(row.ngayDatHang)}</TableCell>
                   <TableCell>{formatDate(row.ngayBatDau)}</TableCell>
                   <TableCell>{formatDate(row.ngayKetThuc)}</TableCell>
-                  <TableCell>{row.soGioThucHien}</TableCell>
+                  <TableCell>{row.soGioThucHien} giờ</TableCell>
                   <TableCell>{row.trangThaiDonHang}</TableCell>
                 </TableRow>
               ))}
@@ -96,7 +105,17 @@ const DanhSachDonHangChoDuyet = () => {
           labelRowsPerPage="Số hàng mỗi trang"
         />
       </TableContainer>
-      <Outlet context={chonDonHang} />
+      <Outlet context={{chonDonHang,setSnackbar}}/>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

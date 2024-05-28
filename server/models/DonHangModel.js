@@ -49,6 +49,9 @@ const DonHangSchema = new mongoose.Schema({
     ghiChuDanhGia:{
         type: String
     },
+    lyDoTuChoi:{
+        type: String
+    },
     uuTienTasker:{
         type: Boolean
     },

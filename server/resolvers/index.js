@@ -250,6 +250,7 @@ export const resolvers = {
         tuChoiDonHang: async (parent, args) => {
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.trangThaiDonHang = "Đã từ chối";
+            donHang.lyDoTuChoi = args.lyDoTuChoi;
             donHang.save();
             return donHang;
         }

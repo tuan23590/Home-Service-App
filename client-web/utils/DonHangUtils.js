@@ -372,9 +372,9 @@ export const themNhanVienVaoDonHang = async (idDonHang,idNhanVien) => {
   return data;
 };
 
-export const apiTuChoiDonHang = async (idDonHang) => {
-  const query = `mutation TuChoiDonHang($idDonHang: String) {
-    tuChoiDonHang(idDonHang: $idDonHang) {
+export const apiTuChoiDonHang = async (idDonHang, lyDoTuChoi) => {
+  const query = `mutation TuChoiDonHang($lyDoTuChoi: String, $idDonHang: String) {
+    tuChoiDonHang(lyDoTuChoi: $lyDoTuChoi, idDonHang: $idDonHang) {
       maDonHang
     }
   }
@@ -388,7 +388,8 @@ export const apiTuChoiDonHang = async (idDonHang) => {
     body: JSON.stringify({
       query,
       variables: {
-        idDonHang
+        idDonHang,
+        lyDoTuChoi
       }
     })
   });

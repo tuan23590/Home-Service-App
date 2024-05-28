@@ -66,7 +66,8 @@ export const typeDefs = `#graphql
         saoDanhGia: String,
         ghiChuDanhGia: String,
         uuTienTasker: Boolean,
-        tongTien: Float
+        tongTien: Float,
+        lyDoTuChoi: String,
     },
     type TinhTp {
         name: String,
@@ -145,6 +146,6 @@ export const typeDefs = `#graphql
         themNhanVienVaoDonHang(idNhanVien: [String], idDonHang: String): DonHang,
         themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String): DiaChi,
         capNhatTrangThaiDonHang(idDonHang: String, trangThaiDonHang: String): DonHang,
-        tuChoiDonHang(idDonHang: String): DonHang,
+        tuChoiDonHang(idDonHang: String,lyDoTuChoi: String): DonHang,
     }
 `
