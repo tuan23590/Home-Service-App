@@ -149,7 +149,7 @@ export const typeDefs = `#graphql
             trangThaiHienTai: String): NhanVien,
         themLichThucHien(thoiGianBatDauLich: Int, thoiGianKetThucLich: Int, trangThaiLich: String): LichThucHien,
         themNhanVienVaoDonHang(idNhanVien: [String], idDonHang: String): DonHang,
-        themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String): DiaChi,
+        themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String,ghiChu: String): DiaChi,
         capNhatTrangThaiDonHang(idDonHang: String, trangThaiDonHang: String): DonHang,
         tuChoiDonHang(idDonHang: String,lyDoTuChoi: String): DonHang,
         huyDonHang(idDonHang: String,lyDoHuyDonHang: String): DonHang,

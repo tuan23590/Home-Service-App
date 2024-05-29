@@ -6,7 +6,7 @@ import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHa
 import Detal from "../../pages/Detal";
 import OrderBrowser from "../../pages/OrderBrowser";
 import ServiceRegistration from "../../pages/ServiceRegistration"; 
-import ThemDonHang from "../../pages/ThemDonHang";
+import ThemDonHang from "../../src/components/ThemDonHang";
 import DangKyNhanViec from "../../pages/DangKyNhanViec";
 import DangKyNauAn from "../../pages/DangKyNauAn";
 import CustomerInfo from "../../pages/CustomerInfo";
@@ -109,6 +109,10 @@ export default createBrowserRouter([
                                 path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi/ChiThietDonHangDaTuChoi`,
                             },
                         ],
+                    },
+                    {
+                        element: <ThemDonHang />,
+                        path: `/QuanLyDonHang/ThemDonHang`,
                     }
                 ],
             },

@@ -15,20 +15,20 @@ const ChiThietDonHangChoDuyet = () => {
   const donHang = data.chonDonHang;
   const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
   const navigate = useNavigate();
-  
+
 
   const formatDateTimeToTime = (epochBatDau, epochKetThuc) => {
     const daysOfWeek = [
       'CN', 'T2', 'T3', 'T4',
       'T5', 'T6', 'T7'
     ];
-  
+
     const formatTime = (date) => {
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     };
-  
+
     const formatDate = (date) => {
       const dayOfWeek = daysOfWeek[date.getDay()];
       const day = date.getDate().toString().padStart(2, '0');
@@ -36,14 +36,14 @@ const ChiThietDonHangChoDuyet = () => {
       const year = date.getFullYear();
       return `${dayOfWeek}, ${day}/${month}/${year}`;
     };
-  
+
     const dateBatDau = new Date(epochBatDau * 1000);
     const dateKetThuc = new Date(epochKetThuc * 1000);
-  
+
     const formattedDate = formatDate(dateBatDau);
     const formattedTimeBatDau = formatTime(dateBatDau);
     const formattedTimeKetThuc = formatTime(dateKetThuc);
-  
+
     return `${formattedDate} - ${formattedTimeBatDau} đến ${formattedTimeKetThuc}`;
   };
 
@@ -68,16 +68,16 @@ const ChiThietDonHangChoDuyet = () => {
       textFieldRef.current.focus();
     }
     else {
-    const data = await apiThayDoiNhanVien(donHang.id, donHang.nhanVien[0].id, nhanVienDaChon.id,lyDoDoiNhanVien);
-    if(data === null){
-      setSnackbar({ open: true, message: 'Thay đổi nhân viên thất bại', severity: 'error' });
-    }else{
-      setSnackbar({ open: true, message: 'Thay đổi nhân viên thành công', severity: 'success' });
-      window.location.reload();
-    }
+      const data = await apiThayDoiNhanVien(donHang.id, donHang.nhanVien[0].id, nhanVienDaChon.id, lyDoDoiNhanVien);
+      if (data === null) {
+        setSnackbar({ open: true, message: 'Thay đổi nhân viên thất bại', severity: 'error' });
+      } else {
+        setSnackbar({ open: true, message: 'Thay đổi nhân viên thành công', severity: 'success' });
+        window.location.reload();
+      }
     }
   };
-  const dungLichThucHien = async () => { 
+  const dungLichThucHien = async () => {
     const data = await apiNgungLichThucHien(idLichNgung, lyDoDungLich);
     if (data !== null) {
       setSnackbar({ open: true, message: 'Ngưng lịch thực hiện thành công', severity: 'success' });
@@ -138,7 +138,7 @@ const ChiThietDonHangChoDuyet = () => {
     if (event.key == 'Enter' && trangThaiLyDoHuyDon === true) {
       setTrangThaiLyDoHuyDon(false);
       huyDonHang();
-    }else if (event.key == 'Enter' && trangThaiLyDoDungLich === true) {
+    } else if (event.key == 'Enter' && trangThaiLyDoDungLich === true) {
       setTrangThaiLyDoDungLich(false);
       dungLichThucHien();
     }
@@ -265,31 +265,33 @@ const ChiThietDonHangChoDuyet = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
-            <Typography sx={{ width: '20%' }}>
-              <strong>Thành tiền: </strong>
-            </Typography>
-            <Typography color={'red'} sx={{ width: '80%' }}>
-              <strong>{donHang.tongTien.toLocaleString('vi-VN')} VNĐ</strong>
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sx={{ display: 'flex' }}>
                   <Typography sx={{ width: '20%' }}>
-                    <strong>Lý do đổi NV:</strong>
+                    <strong>Thành tiền: </strong>
                   </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                  {donHang.lyDoDoiNhanVien === null ? 'Chưa thay đổi nhân viên' : donHang.lyDoDoiNhanVien}
+                  <Typography color={'red'} sx={{ width: '80%' }}>
+                    <strong>{donHang.tongTien.toLocaleString('vi-VN')} VNĐ</strong>
                   </Typography>
                 </Grid>
+
                 <Grid item xs={6} sx={{ display: 'flex' }}>
                   <Typography sx={{ width: '20%' }}>
                     <strong>Ghi chú ĐH: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
                     {donHang.ghiChu}
-                    
+
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sx={{ display: 'flex' }}>
+                  <Typography sx={{ width: '20%' }}>
+                    <strong>Lý do đổi NV:</strong>
+                  </Typography>
+                  <Typography sx={{ width: '80%' }}>
+                    {donHang.lyDoDoiNhanVien === null ? 'Chưa thay đổi nhân viên' : donHang.lyDoDoiNhanVien}
                   </Typography>
                 </Grid>
                
+
               </Grid>
 
               <Divider sx={{ margin: '20px 0' }} />
@@ -346,31 +348,31 @@ const ChiThietDonHangChoDuyet = () => {
                       <TableBody>
                         {donHang.danhSachLichThucHien.map((lichThucHien, index) => (
                           <TableRow key={index}>
-                            <TableCell>{formatDateTimeToTime(lichThucHien.thoiGianBatDauLich,lichThucHien.thoiGianKetThucLich)}</TableCell>
+                            <TableCell>{formatDateTimeToTime(lichThucHien.thoiGianBatDauLich, lichThucHien.thoiGianKetThucLich)}</TableCell>
                             <TableCell>{lichThucHien.trangThaiLich} </TableCell>
                             <TableCell>{lichThucHien.lyDoDungLich}</TableCell>
-                            
+
                             <TableCell>
-                                {lichThucHien.trangThaiLich === "Đã dừng lịch" ? (
-                                  <Button
-                                    size='small'
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={() => tiepTucLichThucHien(lichThucHien.id)}
-                                  >
-                                    Tiếp tục lịch
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    size='small'
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => xuLyMoLyDoDungLich(lichThucHien.id)}
-                                  >
-                                    Dừng lịch
-                                  </Button>
-                                )}
-                              </TableCell>
+                              {lichThucHien.trangThaiLich === "Đã dừng lịch" ? (
+                                <Button
+                                  size='small'
+                                  variant="outlined"
+                                  color="primary"
+                                  onClick={() => tiepTucLichThucHien(lichThucHien.id)}
+                                >
+                                  Tiếp tục lịch
+                                </Button>
+                              ) : (
+                                <Button
+                                  size='small'
+                                  variant="outlined"
+                                  color="error"
+                                  onClick={() => xuLyMoLyDoDungLich(lichThucHien.id)}
+                                >
+                                  Dừng lịch
+                                </Button>
+                              )}
+                            </TableCell>
 
 
                           </TableRow>
@@ -390,20 +392,20 @@ const ChiThietDonHangChoDuyet = () => {
 
 
             {trangThaiDoiNhanVien ? (
-                <Box>
-                  <DanhSachNhanVienPhuHop data={{ nhanVienDaChon, setNhanVienDaChon, donHang }} />
-                  <TextField 
-                  id="outlined-basic" 
-                  label="Nhập lý do đổi nhân viên" 
-                  variant="outlined"  
-                  autoFocus 
-                  sx={{marginTop: '10px', width: '100%'}} 
+              <Box>
+                <DanhSachNhanVienPhuHop data={{ nhanVienDaChon, setNhanVienDaChon, donHang }} />
+                <TextField
+                  id="outlined-basic"
+                  label="Nhập lý do đổi nhân viên"
+                  variant="outlined"
+                  autoFocus
+                  sx={{ marginTop: '10px', width: '100%' }}
                   inputRef={textFieldRef}
                   onChange={(e) => setLyDoDoiNhanVien(e.target.value)}
-                  />
-                </Box>
+                />
+              </Box>
             ) : (
-                <ThongTinNhanVien nhanVienDaChon={donHang.nhanVien[0]} />
+              <ThongTinNhanVien nhanVienDaChon={donHang.nhanVien[0]} />
             )}
 
             <Divider sx={{ margin: '15px' }} />
@@ -411,18 +413,18 @@ const ChiThietDonHangChoDuyet = () => {
             <Paper elevation={3} sx={{ padding: '20px', display: 'flex', justifyContent: 'flex-end' }}>
 
               {trangThaiDoiNhanVien ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-around'}}>
-                    <Button variant="contained" color='success' sx={{marginInline: '20px'}} onClick={thayDoiNhanVien}>Thay đổi nhân viên</Button>
-                    <Button variant="contained" color='error' onClick={()=>setTrangThaiDoiNhanVien(!trangThaiDoiNhanVien)}>Hủy Thay đổi nhân viên</Button>
-                  </Box>
-                ) : ( 
+                <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                  <Button variant="contained" color='success' sx={{ marginInline: '20px' }} onClick={thayDoiNhanVien}>Thay đổi nhân viên</Button>
+                  <Button variant="contained" color='error' onClick={() => setTrangThaiDoiNhanVien(!trangThaiDoiNhanVien)}>Hủy Thay đổi nhân viên</Button>
+                </Box>
+              ) : (
                 <Box>
-                  <Button variant="contained" color='success' sx={{marginInline: '20px'}}  onClick={()=>setTrangThaiDoiNhanVien(!trangThaiDoiNhanVien)}>Thay đổi nhân viên</Button>
+                  <Button variant="contained" color='success' sx={{ marginInline: '20px' }} onClick={() => setTrangThaiDoiNhanVien(!trangThaiDoiNhanVien)}>Thay đổi nhân viên</Button>
                   <Button variant="contained" onClick={xyLyMoLyDoHuyDon}>hủy đơn hàng</Button>
                 </Box>
-                )
-                }
-               
+              )
+              }
+
             </Paper>
           </Box>
         )}
@@ -455,7 +457,7 @@ const ChiThietDonHangChoDuyet = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        
+
 
         <Dialog open={trangThaiLyDoDungLich} onClose={xuLyDongLyDoDungLich} disableRestoreFocus onKeyPress={handleKeyPress}>
           <DialogTitle>Dừng lịch thực hiện</DialogTitle>
@@ -485,25 +487,8 @@ const ChiThietDonHangChoDuyet = () => {
         </Dialog>
 
 
-        <Box sx={{position: 'absolute', top: '15%',left: '15%',width: '70%'}}>
-        {/* <Box sx={{
-        backgroundColor: '#000000',
-        opacity: 0.8,
-        padding: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
-        <Typography variant="h6" sx={{ color: 'white', paddingLeft: '10px' }}>
-          Duyệt đơn hàng
-        </Typography>
-        <Tooltip title="Đóng" onClick={HandelClose} >
-          <IconButton>
-            <CloseIcon style={{ color: 'white' }} />
-          </IconButton>
-        </Tooltip>
-      </Box> */}
-        <Outlet/>
+        <Box sx={{ position: 'absolute', top: '15%', left: '15%', width: '70%' }}>
+          <Outlet />
         </Box>
 
 

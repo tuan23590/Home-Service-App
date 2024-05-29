@@ -59,7 +59,7 @@ export default function ThoiLuong() {
       onPress={() => handlePress(item) }
     >
       <Text style={styles.text}>{item.thoiGian} giờ</Text>
-      <Text>{item.moTaDichVu} Phòng</Text>
+      <Text>{item.khoiLuongCongViec}</Text>
     </TouchableOpacity>
   );
 
