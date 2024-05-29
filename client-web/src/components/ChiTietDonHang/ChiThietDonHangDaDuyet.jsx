@@ -373,7 +373,10 @@ const ChiThietDonHangChoDuyet = () => {
 
 
             {trangThaiDoiNhanVien ? (
-                <DanhSachNhanVienPhuHop data={{ nhanVienDaChon, setNhanVienDaChon, donHang }} />
+                <Box>
+                  <DanhSachNhanVienPhuHop data={{ nhanVienDaChon, setNhanVienDaChon, donHang }} />
+                  <TextField id="outlined-basic" label="Nhập lý do đổi nhân viên" variant="outlined"  autoFocus sx={{marginTop: '10px', width: '100%'}}/>
+                </Box>
             ) : (
                 <ThongTinNhanVien nhanVienDaChon={donHang.nhanVien[0]} />
             )}
