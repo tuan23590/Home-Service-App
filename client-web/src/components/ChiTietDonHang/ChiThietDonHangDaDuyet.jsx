@@ -4,15 +4,18 @@ import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import { apiHuyDonHang } from '../../../utils/DonHangUtils';
 import CloseIcon from '@mui/icons-material/Close';
 import { apiNgungLichThucHien, apiTiepTucLichThucHien } from '../../../utils/LichThucHienUtils';
-import ChonNhanVienTrong from '../ChonNhanVienTrong';
+import ThongTinNhanVien from './ThongTinNhanVien';
+import ThongTinKhachHang from './ThongTinKhachHang';
+import DanhSachNhanVienPhuHop from './DanhSachNhanVienPhuHop';
+import { apiThayDoiNhanVien } from '../../../utils/NhanVienUtils';
 
 const ChiThietDonHangChoDuyet = () => {
   const data = useOutletContext();
   const setSnackbar = data.setSnackbar;
   const donHang = data.chonDonHang;
-  const nhanVienDaChon = donHang.nhanVien[0];
+  const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
   const navigate = useNavigate();
-
+  
 
   const formatDateTimeToTime = (epochBatDau, epochKetThuc) => {
     const daysOfWeek = [
@@ -61,8 +64,13 @@ const ChiThietDonHangChoDuyet = () => {
     return formattedDateTime;
   };
   const thayDoiNhanVien = async () => {
-    setSnackbar({ open: true, message: 'Thay đổi nhân viên thành công', severity: 'success' });
-    window.location.reload();
+    const data = await apiThayDoiNhanVien(donHang.id, donHang.nhanVien[0].id, nhanVienDaChon.id);
+    if(data === null){
+      setSnackbar({ open: true, message: 'Thay đổi nhân viên thất bại', severity: 'error' });
+    }else{
+      setSnackbar({ open: true, message: 'Thay đổi nhân viên thành công', severity: 'success' });
+      window.location.reload();
+    }
   };
   const dungLichThucHien = async () => { 
     const data = await apiNgungLichThucHien(idLichNgung, lyDoDungLich);
@@ -109,7 +117,6 @@ const ChiThietDonHangChoDuyet = () => {
   const [trangThaiLyDoHuyDon, setTrangThaiLyDoHuyDon] = useState(false);
   const [trangThaiLyDoDungLich, setTrangThaiLyDoDungLich] = useState(false);
   const [trangThaiDoiNhanVien, setTrangThaiDoiNhanVien] = useState(false);
-  const [chonNhanVien, setChonNhanVien] = useState(null);
   const [lyDoHuyDonHang, setLyDoTuChoi] = useState('');
   const [lyDoDungLich, setLyDoDungLich] = useState('');
   const [idLichNgung, setIdLichNgung] = useState(null);
@@ -127,9 +134,6 @@ const ChiThietDonHangChoDuyet = () => {
     }else if (event.key == 'Enter' && trangThaiLyDoDungLich === true) {
       setTrangThaiLyDoDungLich(false);
       dungLichThucHien();
-    }else if (event.key == 'Enter' && trangThaiDoiNhanVien === true) {
-      setTrangThaiDoiNhanVien(false);
-      thayDoiNhanVien();
     }
   };
   const xuLyMoLyDoDungLich = (idLich) => {
@@ -138,12 +142,6 @@ const ChiThietDonHangChoDuyet = () => {
   }
   const xuLyDongLyDoDungLich = () => {
     setTrangThaiLyDoDungLich(false);
-  }
-  const xuLyMoDoiNhanVien = () => {
-    navigate('./ChonNhanVienTrong/' + donHang.id);
-  }
-  const HandelClose = () => {
-    navigate('./');
   }
   return (
     <Box
@@ -260,13 +258,13 @@ const ChiThietDonHangChoDuyet = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Tổng tiền: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {donHang.tongTien.toLocaleString('vi-VN')} VNĐ
-                  </Typography>
-                </Grid>
+            <Typography sx={{ width: '20%' }}>
+              <strong>Thành tiền: </strong>
+            </Typography>
+            <Typography color={'red'} sx={{ width: '80%' }}>
+              <strong>{donHang.tongTien.toLocaleString('vi-VN')} VNĐ</strong>
+            </Typography>
+          </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
                   <Typography sx={{ width: '20%' }}>
                     <strong>Ghi chú ĐH: </strong>
@@ -369,155 +367,34 @@ const ChiThietDonHangChoDuyet = () => {
 
             <Divider sx={{ margin: '15px' }} />
 
-            <Paper elevation={3} sx={{ padding: '20px' }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography variant="h5">
-                    Thông tin khách hàng
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Tên khách hàng: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {donHang.khachHang.tenKhachHang}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Địa chỉ: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {[
-                      donHang.diaChi.soNhaTenDuong,
-                      donHang.diaChi.xaPhuong,
-                      donHang.diaChi.quanHuyen,
-                      donHang.diaChi.tinhTP,
-                    ].join(', ')}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Số điện thoại: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {donHang.khachHang.soDienThoai}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Ghi chú địa chỉ: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {donHang.diaChi.ghiChu}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Email: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {donHang.khachHang.email}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Paper>
+            <ThongTinKhachHang donHang={donHang} />
 
             <Divider sx={{ margin: '15px' }} />
 
 
-            <Paper elevation={3} sx={{ padding: '20px'}}>
-                <Typography variant="h5" gutterBottom>Thông tin nhân viên</Typography>
-                
-                <Box sx={{display: 'flex', justifyContent: 'space-around'}}>
-                <Box
-                  component="img"
-                  sx={{
-                    height: 150,
-                    width: 150,
-                    borderRadius: '8px', // Làm cho góc bo tròn
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Thêm bóng đổ nhẹ
-                    border: '2px solid #ddd', // Thêm viền nhạt
-                    transition: 'transform 0.2s, box-shadow 0.2s', // Thêm hiệu ứng chuyển đổi khi di chuột
-                  }}
-                  alt="The house from the offer."
-                  src={nhanVienDaChon && nhanVienDaChon.anhDaiDien}
-                />
+            {trangThaiDoiNhanVien ? (
+                <DanhSachNhanVienPhuHop data={{ nhanVienDaChon, setNhanVienDaChon, donHang }} />
+            ) : (
+                <ThongTinNhanVien nhanVienDaChon={donHang.nhanVien[0]} />
+            )}
+
+            <Divider sx={{ margin: '15px' }} />
+
+            <Paper elevation={3} sx={{ padding: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+
+              {trangThaiDoiNhanVien ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'space-around'}}>
+                    <Button variant="contained" color='success' sx={{marginInline: '20px'}} onClick={thayDoiNhanVien}>Thay đổi nhân viên</Button>
+                    <Button variant="contained" color='error' onClick={()=>setTrangThaiDoiNhanVien(!trangThaiDoiNhanVien)}>Hủy Thay đổi nhân viên</Button>
+                  </Box>
+                ) : ( 
                 <Box>
-                  {nhanVienDaChon && (
-                    <Grid container spacing={2}>
-                      <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '20%' }}>
-                          <strong>Tên nhân viên: </strong>
-                        </Typography>
-                        <Typography sx={{ width: '80%' }}>
-                          {nhanVienDaChon.tenNhanVien}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '20%' }}>
-                          <strong>Giới tính: </strong>
-                        </Typography>
-                        <Typography sx={{ width: '80%' }}>
-                          {nhanVienDaChon.gioiTinh}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '20%' }}>
-                          <strong>CCCD: </strong>
-                        </Typography>
-                        <Typography sx={{ width: '80%' }}>
-                          {nhanVienDaChon.cccd}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '20%' }}>
-                          <strong>Ngày sinh: </strong>
-                        </Typography>
-                        <Typography sx={{ width: '80%' }}>
-                          {nhanVienDaChon.ngaySinh}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '20%' }}>
-                          <strong>Đánh giá: </strong>
-                        </Typography>
-                        <Typography sx={{ width: '80%' }}>
-                          {nhanVienDaChon.danhGia}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '20%' }}>
-                          <strong>Chuyên môn: </strong>
-                        </Typography>
-                        <Typography sx={{ width: '80%' }}>
-                          {nhanVienDaChon.dichVu.map(dv => dv.tenDichVu).join(', ')}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <Typography sx={{ width: '20%' }}>
-                          <strong>Ghi chú: </strong>
-                        </Typography>
-                        <Typography sx={{ width: '80%' }}>
-                          {nhanVienDaChon.ghiChu}
-                        </Typography>
-                      </Grid>
-                      
-                    </Grid>
-                  )}
+                  <Button variant="contained" color='success' sx={{marginInline: '20px'}}  onClick={()=>setTrangThaiDoiNhanVien(!trangThaiDoiNhanVien)}>Thay đổi nhân viên</Button>
+                  <Button variant="contained" onClick={xyLyMoLyDoHuyDon}>hủy đơn hàng</Button>
                 </Box>
-                </Box>
-            </Paper>
-
-            <Divider sx={{ margin: '15px' }} />
-
-            <Paper elevation={3} sx={{ padding: '20px', display: 'flex', justifyContent: 'space-between' }}>
-              <Typography variant='h5' sx={{ width: '50%' }}> </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'space-around', width: '25%' }}>
-                <Button variant="contained" color="success" onClick={xuLyMoDoiNhanVien}>Thay đổi nhân viên</Button>
-                <Button variant="contained" onClick={xyLyMoLyDoHuyDon}>hủy đơn hàng</Button>
-              </Box>
+                )
+                }
+               
             </Paper>
           </Box>
         )}
@@ -581,7 +458,7 @@ const ChiThietDonHangChoDuyet = () => {
 
 
         <Box sx={{position: 'absolute', top: '15%',left: '15%',width: '70%'}}>
-        <Box sx={{
+        {/* <Box sx={{
         backgroundColor: '#000000',
         opacity: 0.8,
         padding: '5px',
@@ -597,7 +474,7 @@ const ChiThietDonHangChoDuyet = () => {
             <CloseIcon style={{ color: 'white' }} />
           </IconButton>
         </Tooltip>
-      </Box>
+      </Box> */}
         <Outlet/>
         </Box>
 

@@ -153,5 +153,6 @@ export const typeDefs = `#graphql
         huyDonHang(idDonHang: String,lyDoHuyDonHang: String): DonHang,
         dungLichThucHien(idLichThucHien: String, lyDoDungLich: String): LichThucHien,
         tiepTucLichThucHien(idLichThucHien: String): LichThucHien,
+        doiNhanVien(idDonHang: String,idNhanVienCu: String,idNhanVienMoi: String,): DonHang,
     }
 `

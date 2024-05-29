@@ -1,33 +1,37 @@
+import { Box, Grid, Pagination, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography,TableContainer, Avatar  } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { apiDanhSachNhanVienNhanDonHang } from '../../utils/NhanVienUtils';
-import { Avatar, Box, Grid, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { useLoaderData } from 'react-router-dom';
+import { apiDanhSachNhanVienNhanDonHang } from '../../../utils/NhanVienUtils';
 
-const ChonNhanVienTrong = ({idDonHang, setChonNhanVien}) => {
-    const [danhSachNhanVienNhanDonHang, setDanhSachNhanVienNhanDonHang] = useState([]);
-    const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
+const DanhSachNhanVienPhuHop = ({data}) => {
+    const {setNhanVienDaChon,nhanVienDaChon,donHang} = data;
     const [page, setPage] = useState(1);
+    const [danhSachNhanVienNhanDonHang, setDanhSachNhanVienNhanDonHang] = useState([]);
     const rowsPerPage = 5;
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
-
     const indexOfLastRow = page * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
     const currentRows = danhSachNhanVienNhanDonHang.slice(indexOfFirstRow, indexOfLastRow);
-    const data = useLoaderData();
-
+    
+    
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await apiDanhSachNhanVienNhanDonHang('66555bb181e0144f1b22ec97');
-            setDanhSachNhanVienNhanDonHang(data.DanhSachNhanVienTrongViec);
-            console.log('[data]:', data)
+          if (donHang && donHang.id) {
+            try {
+              const { data } = await apiDanhSachNhanVienNhanDonHang(donHang.id);
+              setDanhSachNhanVienNhanDonHang(data.DanhSachNhanVienTrongViec);
+              setNhanVienDaChon(data.DanhSachNhanVienTrongViec[0]);
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          }
         };
+
         fetchData();
-    }, [data]);
-    console.log(danhSachNhanVienNhanDonHang)
+      }, [donHang]);
     return (
-        <Paper elevation={3} sx={{ padding: '20px', display: 'flex', justifyContent: 'space-between'}}>
+        <Paper elevation={3} sx={{ padding: '20px', display: 'flex', justifyContent: 'space-between' }}>
               <Box sx={{ width: '48%' }}>
                 <Typography variant="h5" gutterBottom>Danh sách nhân viên phù hợp</Typography>
                 <TableContainer component={Paper}>
@@ -131,8 +135,8 @@ const ChonNhanVienTrong = ({idDonHang, setChonNhanVien}) => {
                   )}
                 </Box>
               </Box>
-            </Paper>
+        </Paper>
     );
 };
 
-export default ChonNhanVienTrong;
+export default DanhSachNhanVienPhuHop;

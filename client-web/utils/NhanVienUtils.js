@@ -65,3 +65,22 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     return data;
   };
   
+  export const apiThayDoiNhanVien = async (idDonHang,idNhanVienCu,idNhanVienMoi) => {
+    const query = `mutation DoiNhanVien($idDonHang: String, $idNhanVienCu: String, $idNhanVienMoi: String) {
+      doiNhanVien(idDonHang: $idDonHang, idNhanVienCu: $idNhanVienCu, idNhanVienMoi: $idNhanVienMoi) {
+        maDonHang
+      }
+    }`;
+    const res = await fetch(GRAPHQL_SERVER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ query,variables:{ idDonHang ,idNhanVienCu,idNhanVienMoi}})
+    });
+    
+    const data = await res.json();
+    return data;
+  };
+  
