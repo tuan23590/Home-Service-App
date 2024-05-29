@@ -58,6 +58,12 @@ const DonHangSchema = new mongoose.Schema({
     uuTienTasker:{
         type: Boolean
     },
+    nhanVienCu:{
+        type: String
+    },
+    lyDoDoiNhanVien:{
+        type: String
+    },
     
 },{timestamps: true});
 

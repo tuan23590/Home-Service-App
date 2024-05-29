@@ -75,6 +75,7 @@ export const APIDanhSachDonHangDaDuyet = async ()=> {
           ghiChu
           saoDanhGia
           ghiChuDanhGia
+          lyDoDoiNhanVien
           khachHang {
             tenKhachHang
             soDienThoai

@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Tooltip, IconButton, Pagination, TextField, Input } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import { apiHuyDonHang } from '../../../utils/DonHangUtils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -64,12 +64,17 @@ const ChiThietDonHangChoDuyet = () => {
     return formattedDateTime;
   };
   const thayDoiNhanVien = async () => {
-    const data = await apiThayDoiNhanVien(donHang.id, donHang.nhanVien[0].id, nhanVienDaChon.id);
+    if (lyDoDoiNhanVien === '') {
+      textFieldRef.current.focus();
+    }
+    else {
+    const data = await apiThayDoiNhanVien(donHang.id, donHang.nhanVien[0].id, nhanVienDaChon.id,lyDoDoiNhanVien);
     if(data === null){
       setSnackbar({ open: true, message: 'Thay đổi nhân viên thất bại', severity: 'error' });
     }else{
       setSnackbar({ open: true, message: 'Thay đổi nhân viên thành công', severity: 'success' });
       window.location.reload();
+    }
     }
   };
   const dungLichThucHien = async () => { 
@@ -120,6 +125,8 @@ const ChiThietDonHangChoDuyet = () => {
   const [lyDoHuyDonHang, setLyDoTuChoi] = useState('');
   const [lyDoDungLich, setLyDoDungLich] = useState('');
   const [idLichNgung, setIdLichNgung] = useState(null);
+  const textFieldRef = useRef(null);
+  const [lyDoDoiNhanVien, setLyDoDoiNhanVien] = useState('');
   const xyLyMoLyDoHuyDon = () => {
     setTrangThaiLyDoHuyDon(true);
   };
@@ -265,14 +272,24 @@ const ChiThietDonHangChoDuyet = () => {
               <strong>{donHang.tongTien.toLocaleString('vi-VN')} VNĐ</strong>
             </Typography>
           </Grid>
+          <Grid item xs={6} sx={{ display: 'flex' }}>
+                  <Typography sx={{ width: '20%' }}>
+                    <strong>Lý do đổi NV:</strong>
+                  </Typography>
+                  <Typography sx={{ width: '80%' }}>
+                  {donHang.lyDoDoiNhanVien === null ? 'Chưa thay đổi nhân viên' : donHang.lyDoDoiNhanVien}
+                  </Typography>
+                </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
                   <Typography sx={{ width: '20%' }}>
                     <strong>Ghi chú ĐH: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
                     {donHang.ghiChu}
+                    
                   </Typography>
                 </Grid>
+               
               </Grid>
 
               <Divider sx={{ margin: '20px 0' }} />
@@ -375,7 +392,15 @@ const ChiThietDonHangChoDuyet = () => {
             {trangThaiDoiNhanVien ? (
                 <Box>
                   <DanhSachNhanVienPhuHop data={{ nhanVienDaChon, setNhanVienDaChon, donHang }} />
-                  <TextField id="outlined-basic" label="Nhập lý do đổi nhân viên" variant="outlined"  autoFocus sx={{marginTop: '10px', width: '100%'}}/>
+                  <TextField 
+                  id="outlined-basic" 
+                  label="Nhập lý do đổi nhân viên" 
+                  variant="outlined"  
+                  autoFocus 
+                  sx={{marginTop: '10px', width: '100%'}} 
+                  inputRef={textFieldRef}
+                  onChange={(e) => setLyDoDoiNhanVien(e.target.value)}
+                  />
                 </Box>
             ) : (
                 <ThongTinNhanVien nhanVienDaChon={donHang.nhanVien[0]} />

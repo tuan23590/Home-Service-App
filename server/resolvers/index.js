@@ -298,6 +298,8 @@ export const resolvers = {
         doiNhanVien: async (parent, args) => {
             console.log(args);
             const donHang = await DonHangModel.findById(args.idDonHang);
+            donHang.lyDoDoiNhanVien = args.lyDoDoiNhanVien;
+            donHang.nhanVienCu = args.idNhanVienCu;
             const index = donHang.nhanVien.indexOf(args.idNhanVienCu);
             if (index !== -1)
                 donHang.nhanVien[index] = args.idNhanVienMoi;
