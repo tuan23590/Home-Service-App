@@ -31,6 +31,34 @@ export const DBDataDichVu = async () => {
         id
         tenDichVu
         gia
+        thoiGian
+      }
+    }`;
+    
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        query
+      })
+    });
+  
+    const data = await res.json();
+    return data;
+  };
+
+
+  export const apiDanhSachDichVuChinh = async () => {
+    const query = `query DichVuCaLe {
+      DichVuCaLe {
+        tenDichVu
+        khoiLuongCongViec
+        gia
+        thoiGian
+        loaiDichVu
       }
     }`;
     

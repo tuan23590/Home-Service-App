@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Grid, Typography, Paper, Select, MenuItem, FormControl, InputLabel, Autocomplete } from '@mui/material';
+import { TextField, Button, Grid, Typography, Paper, Select, MenuItem, FormControl, InputLabel, Autocomplete, Table, TableHead, TableRow, TableCell, TableBody, Checkbox } from '@mui/material';
 import { apiQuanHuyen, apiTinhTP, apiXaPhuong } from '../../utils/DiaChiUtil';
+import { dichVuLoader,apiDanhSachDichVuChinh } from '../../utils/DichVuUtils';
 
 const ThemDonHang = () => {
+    const [errors, setErrors] = useState({});
     const [donHangData, setDonHangData] = useState({
         soGioThucHien: '',
         danhSachLichThucHien: [''],
         khachHang: '',
-        dichVuChinh: '',
+        dichVuChinh: null,
         danhSachDichVuThem: [''],
         vatNuoi: '',
         ghiChu: '',
@@ -28,7 +30,9 @@ const ThemDonHang = () => {
         ghiChu: ''
     });
 
-    const [danhSachDichVuChinh, setDanhSachDichVuChinh] = useState(['Dịch vụ A', 'Dịch vụ B', 'Dịch vụ C']);
+    const [danhSachDichVuChinh, setDanhSachDichVuChinh] = useState([]);
+    const [danhSachDichVuThem, setDanhSachDichVuThem] = useState([]);
+    const [dichVuThemSelected, setDichVuThemSelected] = useState([]);
     const [danhSachTinhTp, setDanhSachTinhTp] = useState([]);
     const [danhSachQuanHuyen, setDanhSachQuanHuyen] = useState([]);
     const [danhSachXaPhuong, setDanhSachXaPhuong] = useState([]);
@@ -38,6 +42,11 @@ const ThemDonHang = () => {
             try {
                 const { data } = await apiTinhTP();
                 setDanhSachTinhTp(data.DanhSachTinhTp)
+                const dataDanhSachDichvuThem = await dichVuLoader();
+                setDanhSachDichVuThem(dataDanhSachDichvuThem.data.DichVuThem);
+                const dataDanhSachDichVuChinh = await apiDanhSachDichVuChinh();
+                setDanhSachDichVuChinh(dataDanhSachDichVuChinh.data.DichVuCaLe);
+                console.log("dataDanhSachDichVuChinh", dataDanhSachDichVuChinh);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -98,11 +107,14 @@ const ThemDonHang = () => {
                 newData.xaPhuong = null;
                 newData.soNhaTenDuong = '';
                 newData.ghiChu = '';
+                setDanhSachQuanHuyen ([]);
+                setDanhSachXaPhuong ([]);
             }
             if (name === 'quanHuyen') {
                 newData.xaPhuong = null;
                 newData.soNhaTenDuong = '';
                 newData.ghiChu = '';
+                setDanhSachXaPhuong([]);
             }
             if (name === 'xaPhuong') {
                 newData.soNhaTenDuong = '';
@@ -113,9 +125,26 @@ const ThemDonHang = () => {
         });
     };
 
+    const [selectedDichVu, setSelectedDichVu] = useState([]);
 
 
-    
+    const handleSelect = (id) => {
+        const newSelectedDichVu = [...selectedDichVu];
+        if (newSelectedDichVu.includes(id)) {
+            const index = newSelectedDichVu.indexOf(id);
+            newSelectedDichVu.splice(index, 1);
+        } else {
+            newSelectedDichVu.push(id);
+        }
+        setSelectedDichVu(newSelectedDichVu);
+
+        // Cập nhật danhSachDichVuThem
+        const newDanhSachDichVuThem = danhSachDichVuThem.map(dichVu => ({
+            ...dichVu,
+            selected: newSelectedDichVu.includes(dichVu.id)
+        }));
+        setDanhSachDichVuThem(newDanhSachDichVuThem);
+    };
 
 
 
@@ -124,6 +153,7 @@ const ThemDonHang = () => {
         e.preventDefault();
         // Thực hiện logic khi submit form
     };
+    
     return (
         <Paper sx={{ padding: '20px', marginTop: '15px' }}>
             <form onSubmit={handleSubmit}>
@@ -133,6 +163,7 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
+                            getOptionLabel={(option) => option.tenDichVu}
                             options={danhSachDichVuChinh}
                             value={donHangData.dichVuChinh}
                             onChange={(event, newValue) => handleChangeDonHang({ target: { name: 'dichVuChinh', value: newValue } })}
@@ -150,17 +181,6 @@ const ThemDonHang = () => {
                     <Grid item xs={6}>
                         <TextField
                             fullWidth
-                            label="Danh sách dịch vụ thêm"
-                            name="danhSachDichVuThem"
-                            variant="outlined"
-                            size="small"
-                            value={donHangData.danhSachDichVuThem}
-                            onChange={handleChangeDonHang}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
                             label="Vật nuôi"
                             name="vatNuoi"
                             variant="outlined"
@@ -169,6 +189,38 @@ const ThemDonHang = () => {
                             onChange={handleChangeDonHang}
                         />
                     </Grid>
+                    <Grid item xs={6}>
+                        <Typography><strong>Danh sách dich vụ thêm</strong></Typography>
+                    <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Chọn</TableCell>
+                        <TableCell>Tên Dịch Vụ</TableCell>
+                        <TableCell>Giá</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {danhSachDichVuThem.map((dichVu) => (
+                        <TableRow key={dichVu.id} sx={{
+                            cursor: 'pointer',
+                            '&:hover': {
+                              backgroundColor: '#bec2cc',
+                            },
+                          }} onClick={() => handleSelect(dichVu.id)}>
+                            <TableCell>
+                                <Checkbox
+                                    checked={selectedDichVu.includes(dichVu.id)}
+                                    onChange={() => handleSelect(dichVu.id)}
+                                />
+                            </TableCell>
+                            <TableCell>{dichVu.tenDichVu}</TableCell>
+                            <TableCell>{dichVu.gia !== null ?  '+ '+ dichVu.gia + ' VNĐ' : '+ '+ dichVu.thoiGian + ' giờ'}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+                    </Grid>
+                  
                     <Grid item xs={6}>
                         <TextField
                             fullWidth
@@ -223,7 +275,7 @@ const ThemDonHang = () => {
                 <br />
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h6">Địa chỉ chi tiết</Typography>
+                        <Typography variant="h6">Địa chỉ làm việc</Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
@@ -298,6 +350,19 @@ const ThemDonHang = () => {
                             onChange={handleChangeDiaChi}
                         />
                     </Grid>
+                    <Grid item xs={6}>
+                    <TextField
+                        fullWidth
+                        label="Vật nuôi"
+                        name="vatNuoi"
+                        variant="outlined"
+                        size="small"
+                        value={donHangData.vatNuoi}
+                        onChange={handleChangeDonHang}
+                        error={!!errors.vatNuoi}
+                        helperText={errors.vatNuoi}
+                    />
+                </Grid>
                 </Grid>
                 <br />
                 <Button type="submit" variant="contained" color="primary">Submit</Button>
