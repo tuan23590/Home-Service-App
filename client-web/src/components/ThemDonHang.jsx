@@ -4,7 +4,6 @@ import { apiQuanHuyen, apiTinhTP, apiXaPhuong } from '../../utils/DiaChiUtil';
 import { dichVuLoader, apiDanhSachDichVuChinh } from '../../utils/DichVuUtils';
 
 const ThemDonHang = () => {
-    const [errors, setErrors] = useState({});
     const [donHangData, setDonHangData] = useState({
         soGioThucHien: '',
         danhSachLichThucHien: [''],
@@ -12,12 +11,15 @@ const ThemDonHang = () => {
         dichVuChinh: null,
         danhSachDichVuThem: [''],
         ngayBatDau: null,
+        gioBatDau: null,
         soThangLapLai: null,
         vatNuoi: '',
         ghiChu: '',
         uuTienTasker: '',
         diaChi: '',
-        tongTien: ''
+        tongTien: 0,
+        dichVuTheoYeuCauCuaKhachHang: '',
+        giaDichVuTheoYeuCauCuaKhachHang: '',
     });
     const [khachHangData, setKhachHangData] = useState({
         tenKhachHang: '',
@@ -40,6 +42,8 @@ const ThemDonHang = () => {
     const [danhSachXaPhuong, setDanhSachXaPhuong] = useState([]);
     const [danhSachNgayThucHien, setDanhSachNgayThucHien] = useState([]);
     const [danhSachGioThucHien, setDanhSachGioThucHien] = useState([]);
+    const [dichVuChinh, setDichVuChinh] = useState(null);
+    const danhSachThangLapLai = [{ value: 1, label: '1 tháng' }, { value: 2, label: '2 tháng' }, { value: 3, label: '3 tháng' }, { value: 4, label: '4 tháng' }, { value: 5, label: '5 tháng' }, { value: 6, label: '6 tháng' }, { value: 7, label: '7 tháng' }, { value: 8, label: '8 tháng' }, { value: 9, label: '9 tháng' }, { value: 10, label: '10 tháng' }, { value: 11, label: '11 tháng' }, { value: 12, label: '12 tháng' }];
 
 
     useEffect(() => {
@@ -72,24 +76,28 @@ const ThemDonHang = () => {
       useEffect(() => {
         const generateTimeRanges = (interval) => {
           const timesArray = [];
-          for (let hour = 0; hour < 24; hour += interval) {
+          const businessStart = 9; // Business hours start at 9:00 AM
+          const businessEnd = 17; // Business hours end at 5:00 PM
+      
+          for (let hour = businessStart; hour + interval <= businessEnd; hour++) {
             const startHour = hour.toString().padStart(2, '0');
             const endHour = (hour + interval).toString().padStart(2, '0');
-            if (hour + interval <= 24) {
-              const timeString = `${startHour}:00 đến ${endHour}:00`;
-              timesArray.push(timeString);
-            }
+      
+            const timeString = `${startHour}:00 đến ${endHour}:00 (làm trong ${interval} giờ)`;
+            
+            timesArray.push({ timeString, startHour, interval });
           }
+      
           return timesArray;
         };
-    
-        const interval = donHangData.dichVuChinh.thoiGian || 1;
+      
+        const interval = donHangData.dichVuChinh?.thoiGian || 1;
         const timeRanges = generateTimeRanges(interval);
         setDanhSachGioThucHien(timeRanges);
-      }, [donHangData.dichVuChinh.thoiGian]);
-
-
+      }, [donHangData.dichVuChinh]);
       
+      
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -99,7 +107,6 @@ const ThemDonHang = () => {
                 setDanhSachDichVuThem(dataDanhSachDichvuThem.data.DichVuThem);
                 const dataDanhSachDichVuChinh = await apiDanhSachDichVuChinh();
                 setDanhSachDichVuChinh(dataDanhSachDichVuChinh.data.DichVuCaLe);
-                console.log("dataDanhSachDichVuChinh", dataDanhSachDichVuChinh);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -135,9 +142,15 @@ const ThemDonHang = () => {
 
 
     const handleChangeDonHang = (e) => {
-        setDonHangData({
-            ...donHangData,
-            [e.target.name]: e.target.value
+        const { name, value } = e.target;
+
+        setDonHangData((prevData) => {
+            const newData = { ...prevData, [name]: value };
+            if (name === 'dichVuChinh') {
+                newData.gioBatDau = null;
+                newData.ngayBatDau = null;
+            }
+            return newData;
         });
     };
 
@@ -179,28 +192,38 @@ const ThemDonHang = () => {
     };
 
     const [selectedDichVu, setSelectedDichVu] = useState([]);
+      
 
-
-    const handleSelect = (id) => {
-        const newSelectedDichVu = [...selectedDichVu];
-        if (newSelectedDichVu.includes(id)) {
-            const index = newSelectedDichVu.indexOf(id);
-            newSelectedDichVu.splice(index, 1);
+    const handleSelect = (item) => {
+        if (selectedDichVu.includes(item)) {
+            setSelectedDichVu(selectedDichVu.filter((dichVu) => dichVu !== item));
         } else {
-            newSelectedDichVu.push(id);
+            if ((dichVuChinh.thoiGian || 0) + selectedDichVu.reduce((total, dichVu) => total + (dichVu.thoiGian || 0), 0) < 4 || item.thoiGian === null) {
+                setSelectedDichVu([...selectedDichVu, item]);
+            } else {
+                alert("Không thể thêm dịch vụ vì đã đạt tối đa thời gian.");
+            }
         }
-        setSelectedDichVu(newSelectedDichVu);
-
-        // Cập nhật danhSachDichVuThem
-        const newDanhSachDichVuThem = danhSachDichVuThem.map(dichVu => ({
-            ...dichVu,
-            selected: newSelectedDichVu.includes(dichVu.id)
-        }));
-        setDanhSachDichVuThem(newDanhSachDichVuThem);
     };
+    
+    useEffect(() => {
+        const totalThoiGian = (dichVuChinh?.thoiGian || 0) + selectedDichVu.reduce((total, dichVu) => total + (dichVu.thoiGian || 0), 0);
+        const dichVuChinhMoi = danhSachDichVuChinh.find(item => item.thoiGian === totalThoiGian);
+        setDonHangData((prevData) => ({
+            ...prevData,
+            dichVuChinh: dichVuChinhMoi
+        }));
+    }, [selectedDichVu]);
+    
 
 
-
+    useEffect(() => {
+            setDonHangData(prevData => ({
+                ...prevData,
+                dichVuChinh: dichVuChinh
+            }));
+            setSelectedDichVu([]);
+    }, [dichVuChinh]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -208,7 +231,7 @@ const ThemDonHang = () => {
     };
 
     return (
-        <Paper sx={{ padding: '20px', marginTop: '15px' }}>
+        <Paper sx={{ padding: '20px', marginTop: '15px' ,height: '93%', overflow: 'auto'}} >
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -219,7 +242,7 @@ const ThemDonHang = () => {
                             getOptionLabel={(option) => option.tenDichVu}
                             options={danhSachDichVuChinh}
                             value={donHangData.dichVuChinh}
-                            onChange={(event, newValue) => handleChangeDonHang({ target: { name: 'dichVuChinh', value: newValue } })}
+                            onChange={(event, newValue) => setDichVuChinh(newValue)}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -259,11 +282,11 @@ const ThemDonHang = () => {
                                         '&:hover': {
                                             backgroundColor: '#bec2cc',
                                         },
-                                    }} onClick={() => handleSelect(dichVu.id)}>
+                                    }} onClick={() => handleSelect(dichVu)}>
                                         <TableCell>
                                             <Checkbox
-                                                checked={selectedDichVu.includes(dichVu.id)}
-                                                onChange={() => handleSelect(dichVu.id)}
+                                                checked={selectedDichVu.includes(dichVu)}
+                                                onChange={() => handleSelect(dichVu)}
                                             />
                                         </TableCell>
                                         <TableCell>{dichVu.tenDichVu}</TableCell>
@@ -288,6 +311,29 @@ const ThemDonHang = () => {
                         />
                     </Grid>
                     <Grid item xs={6}>
+                        <TextField
+                            fullWidth
+                            label="Dịch vụ theo yêu cầu của khách hàng"
+                            name="dichVuTheoYeuCauCuaKhachHang"
+                            variant="outlined"
+                            size="small"
+                            value={donHangData.dichVuTheoYeuCauCuaKhachHang}
+                            onChange={handleChangeDonHang}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            fullWidth
+                            label="Giá DV theo yêu cầu của khách hàng"
+                            name="giaDichVuTheoYeuCauCuaKhachHang"
+                            variant="outlined"
+                            size="small"
+                            type='number'
+                            value={donHangData.giaDichVuTheoYeuCauCuaKhachHang}
+                            onChange={handleChangeDonHang}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
                         <Autocomplete
                             options={danhSachNgayThucHien}
                             value={donHangData.ngayBatDau}
@@ -305,14 +351,31 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
-                            // getOptionLabel={(option) => option.tenDichVu}
+                            getOptionLabel={(option) => option.timeString}
                             options={danhSachGioThucHien}
-                            // value={donHangData.dichVuChinh}
-                            // onChange={(event, newValue) => handleChangeDonHang({ target: { name: 'dichVuChinh', value: newValue } })}
+                            value={donHangData.gioBatDau}
+                            onChange={(event, newValue) => handleChangeDonHang({ target: { name: 'gioBatDau', value: newValue } })}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
                                     label="Chọn giờ bắt đầu và kết thúc"
+                                    variant="outlined"
+                                    size="small"
+                                    fullWidth
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Autocomplete
+                            getOptionLabel={(option) => option.label}
+                            options={danhSachThangLapLai}
+                            value={donHangData.soThangLapLai}
+                            onChange={(event, newValue) => handleChangeDonHang({ target: { name: 'soThangLapLai', value: newValue } })}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Chọn số tháng lặp lại"
                                     variant="outlined"
                                     size="small"
                                     fullWidth
