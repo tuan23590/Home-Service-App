@@ -25,7 +25,19 @@ const DichVuSchema = new mongoose.Schema({
     },
     iconSelected:{
         type: String
-    }
+    },
+    dichVuTheoYeuCauCuaKhachHang:{
+        type: String
+    },
+    giaDichVuTheoYeuCauCuaKhachHang:{
+        type: Number
+    },
+    soThangLapLai:{
+        type: Number
+    },
+    dichVuChinh:{
+        type: String
+    },
 },{timestamps: true});
 
 const DichVuModel = mongoose.model('DichVu',DichVuSchema);

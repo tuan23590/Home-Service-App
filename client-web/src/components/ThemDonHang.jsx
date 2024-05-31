@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Grid, Typography, Paper, Select, MenuItem, FormControl, InputLabel, Autocomplete, Table, TableHead, TableRow, TableCell, TableBody, Checkbox } from '@mui/material';
+import { TextField, Button, Grid, Typography, Paper, Select, MenuItem, FormControl, InputLabel, Autocomplete, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Box } from '@mui/material';
 import { apiQuanHuyen, apiTinhTP, apiXaPhuong } from '../../utils/DiaChiUtil';
 import { dichVuLoader, apiDanhSachDichVuChinh } from '../../utils/DichVuUtils';
+import { apiThemDonHang } from '../../utils/DonHangUtils';
 
 const ThemDonHang = () => {
     const [donHangData, setDonHangData] = useState({
-        soGioThucHien: '',
-        danhSachLichThucHien: [''],
+        danhSachLichThucHien: [],
         khachHang: '',
         dichVuChinh: null,
-        danhSachDichVuThem: [''],
+        danhSachDichVuThem: [],
         ngayBatDau: null,
         gioBatDau: null,
         soThangLapLai: null,
         vatNuoi: '',
         ghiChu: '',
-        uuTienTasker: '',
         diaChi: '',
         tongTien: 0,
         dichVuTheoYeuCauCuaKhachHang: '',
-        giaDichVuTheoYeuCauCuaKhachHang: '',
+        giaDichVuTheoYeuCauCuaKhachHang: 0,
     });
     const [khachHangData, setKhachHangData] = useState({
         tenKhachHang: '',
@@ -32,6 +31,10 @@ const ThemDonHang = () => {
         xaPhuong: null,
         soNhaTenDuong: '',
         ghiChu: ''
+    });
+    const [lichThucHienData, setLichThucHienData] = useState({
+        ngayThucHien: '',
+        gioThucHien: ''
     });
 
     const [danhSachDichVuChinh, setDanhSachDichVuChinh] = useState([]);
@@ -48,7 +51,7 @@ const ThemDonHang = () => {
 
     useEffect(() => {
         const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-    
+      
         // Function to generate an array of the next 30 days with day of the week
         const generateNext30Days = () => {
           const today = new Date();
@@ -57,21 +60,21 @@ const ThemDonHang = () => {
             const nextDay = new Date(today);
             nextDay.setDate(today.getDate() + i + 1);
             const dayOfWeek = daysOfWeek[nextDay.getDay()];
-    
+      
             // Format date to dd-MM-yyyy
             const day = nextDay.getDate().toString().padStart(2, '0');
             const month = (nextDay.getMonth() + 1).toString().padStart(2, '0');
             const year = nextDay.getFullYear();
             const formattedDate = `${day}-${month}-${year} (${dayOfWeek})`;
-            daysArray.push(formattedDate);
+      
+            daysArray.push({ formattedDate, nextDay });
           }
           return daysArray;
         };
-    
+      
         const next30Days = generateNext30Days();
         setDanhSachNgayThucHien(next30Days);
       }, []);
-
 
       useEffect(() => {
         const generateTimeRanges = (interval) => {
@@ -204,6 +207,7 @@ const ThemDonHang = () => {
                 alert("Không thể thêm dịch vụ vì đã đạt tối đa thời gian.");
             }
         }
+        
     };
     
     useEffect(() => {
@@ -211,11 +215,19 @@ const ThemDonHang = () => {
         const dichVuChinhMoi = danhSachDichVuChinh.find(item => item.thoiGian === totalThoiGian);
         setDonHangData((prevData) => ({
             ...prevData,
-            dichVuChinh: dichVuChinhMoi
+            dichVuChinh: dichVuChinhMoi,
+            danhSachDichVuThem: selectedDichVu,
+            gioBatDau: null,
         }));
     }, [selectedDichVu]);
     
-
+    useEffect(() => {
+        const tongTien = (parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)+donHangData.dichVuChinh?.gia || 0) + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0);
+        setDonHangData((prevData) => ({
+            ...prevData,
+            tongTien: tongTien
+        }));
+    }, [donHangData.dichVuChinh,donHangData.danhSachDichVuThem,donHangData.soThangLapLai,donHangData.giaDichVuTheoYeuCauCuaKhachHang]);
 
     useEffect(() => {
             setDonHangData(prevData => ({
@@ -225,11 +237,56 @@ const ThemDonHang = () => {
             setSelectedDichVu([]);
     }, [dichVuChinh]);
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        setDonHangData(prevData => ({
+            ...prevData,
+            diaChi: diaChiData,
+            khachHang: khachHangData
+        }));
+    }, [diaChiData,diaChiData]);
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Thực hiện logic khi submit form
+        // const data = await apiThemDonHang(donHangData);
+        // console.log(data);
     };
 
+    const formatDate = (epochTime) => {
+        const daysOfWeek = [
+          'CN', 'T2', 'T3', 'T4',
+          'T5', 'T6', 'T7'
+        ];
+        const date = new Date(epochTime * 1000);
+        const dayOfWeek = daysOfWeek[date.getDay()];
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0 nên cần cộng thêm 1
+        const year = date.getFullYear();
+        const formattedDateTime = `${dayOfWeek}, ${day}/${month}/${year} - ${hours}:${minutes}`;
+        return formattedDateTime;
+      };
+
+    useEffect(() => {
+        const combineDateAndTime = (dateString, hourString) => {
+            const date = new Date(dateString);
+            date.setHours(hourString);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            return date;
+        };
+        
+        const combinedDateTime = combineDateAndTime(donHangData.ngayBatDau?.nextDay, donHangData.gioBatDau?.startHour);
+        console.log(combinedDateTime);
+        const epochDate = combinedDateTime.getTime();
+       //console.log(formatDate(epochDate));
+    }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value]);
+    
+    
+    
+    
+    
+      
     return (
         <Paper sx={{ padding: '20px', marginTop: '15px' ,height: '93%', overflow: 'auto'}} >
             <form onSubmit={handleSubmit}>
@@ -239,6 +296,7 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
+                            required
                             getOptionLabel={(option) => option.tenDichVu}
                             options={danhSachDichVuChinh}
                             value={donHangData.dichVuChinh}
@@ -336,6 +394,7 @@ const ThemDonHang = () => {
                     <Grid item xs={6}>
                         <Autocomplete
                             options={danhSachNgayThucHien}
+                            getOptionLabel={(option) => option.formattedDate}
                             value={donHangData.ngayBatDau}
                             onChange={(event, newValue) => handleChangeDonHang({ target: { name: 'ngayBatDau', value: newValue } })}
                             renderInput={(params) => (
@@ -351,6 +410,7 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
+                            required
                             getOptionLabel={(option) => option.timeString}
                             options={danhSachGioThucHien}
                             value={donHangData.gioBatDau}
@@ -368,6 +428,7 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
+                            required
                             getOptionLabel={(option) => option.label}
                             options={danhSachThangLapLai}
                             value={donHangData.soThangLapLai}
@@ -392,6 +453,7 @@ const ThemDonHang = () => {
                     <Grid item xs={6}>
                         <TextField
                             fullWidth
+                            required
                             label="Tên khách hàng"
                             name="tenKhachHang"
                             variant="outlined"
@@ -403,6 +465,7 @@ const ThemDonHang = () => {
                     <Grid item xs={6}>
                         <TextField
                             fullWidth
+                            required
                             label="Số điện thoại"
                             name="soDienThoai"
                             variant="outlined"
@@ -414,6 +477,7 @@ const ThemDonHang = () => {
                     <Grid item xs={6}>
                         <TextField
                             fullWidth
+                            required
                             label="Email"
                             name="email"
                             variant="outlined"
@@ -447,6 +511,7 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
+                        required
                             options={danhSachQuanHuyen}
                             getOptionLabel={(option) => option.name_with_type}
                             value={diaChiData.quanHuyen}
@@ -464,6 +529,7 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <Autocomplete
+                        required
                             options={danhSachXaPhuong}
                             getOptionLabel={(option) => option.name_with_type}
                             value={diaChiData.xaPhuong}
@@ -481,6 +547,7 @@ const ThemDonHang = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
+                        required
                             fullWidth
                             label="Số nhà/Tên đường"
                             name="soNhaTenDuong"
@@ -503,7 +570,10 @@ const ThemDonHang = () => {
                     </Grid>
                 </Grid>
                 <br />
-                <Button type="submit" variant="contained" color="primary">Submit</Button>
+                <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <Typography variant='h5' sx={{color: 'red'}}>Tổng tiền: {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
+                <Button  type="submit" variant="contained" color='success'>Tạo đơn hàng</Button>
+                </Box>
             </form>
         </Paper>
     );

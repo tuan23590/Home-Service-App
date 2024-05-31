@@ -54,6 +54,7 @@ export const DBDataDichVu = async () => {
   export const apiDanhSachDichVuChinh = async () => {
     const query = `query DichVuCaLe {
       DichVuCaLe {
+        id
         tenDichVu
         khoiLuongCongViec
         gia

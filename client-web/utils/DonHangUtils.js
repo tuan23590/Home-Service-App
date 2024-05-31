@@ -283,23 +283,14 @@ export const TrangThaiLoader = async ()=> {
 }
 
 
-export const themDonHang = async (formData) => {
-  const query = `mutation Mutation(
-    $maDonHang: String, 
-    $makhachHang: String, 
-    $trangThaiDonHang: String = "", 
-    $tongTien: Int, 
-    $vatNuoi: String, 
-    $dichVu: String, $ghiChu: String) {
-    createDonHang(
-      data: {maDonHang: $maDonHang, makhachHang: $makhachHang, trangThaiDonHang: $trangThaiDonHang, tongTien: $tongTien, vatNuoi: $vatNuoi, dichVu: $dichVu, ghiChu: $ghiChu}
-    ) {
-      id
+export const apiThemDonHang = async (formData) => {
+  const query = `mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $uuTienTasker: Boolean, $diaChi: String, $tongTien: Float, $dichVuTheoYeuCauCuaKhachHang: String, $giaDichVuTheoYeuCauCuaKhachHang: Float, $soThangLapLai: Int, $dichVuChinh: String) {
+    themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, uuTienTasker: $uuTienTasker, diaChi: $diaChi, tongTien: $tongTien, dichVuTheoYeuCauCuaKhachHang: $dichVuTheoYeuCauCuaKhachHang, giaDichVuTheoYeuCauCuaKhachHang: $giaDichVuTheoYeuCauCuaKhachHang, soThangLapLai: $soThangLapLai, dichVuChinh: $dichVuChinh) {
+      maDonHang
     }
   }
-  
   `;
-  const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
+  const res = await fetch(GRAPHQL_SERVER, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -308,44 +299,24 @@ export const themDonHang = async (formData) => {
     body: JSON.stringify({
       query,
       variables: {
-        maDonHang: formData.maDonHang,
-        makhachHang: formData.khachHang,
-        trangThaiDonHang: formData.trangThaiDonHang,
-        tongTien: parseInt(formData.tongTien),
+        soGioThucHien: formData.dichVuChinh.thoiGian,
+        danhSachLichThucHien: null,
+        khachHang: JSON.stringify(formData.khachHang),
+        danhSachDichVu: formData.danhSachDichVuThem.map(dichVu => dichVu.id),
         vatNuoi: formData.vatNuoi,
-        dichVu: formData.dichVu,
+        ghiChu: formData.ghiChu,
+        uuTienTasker: null,
+        diaChi: JSON.stringify(formData.diaChi),
+        tongTien: formData.tongTien,
+        dichVuTheoYeuCauCuaKhachHang: formData.dichVuTheoYeuCauCuaKhachHang,
+        giaDichVuTheoYeuCauCuaKhachHang: null,
+        soThangLapLai: formData.soThangLapLai.value,
+        dichVuChinh: formData.dichVuChinh.id
       }
     })
   });
   
   const data = await res.json();
-  pushingDonHang(data.data.createDonHang.id);
-  return data;
-};
-
-export const pushingDonHang = async (ID) => {
-  const query = `mutation MyMutation($id: ID) {
-    publishDonHang(where: {id: $id}) {
-      id
-    }
-  }  
-  `;
-  const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        id: ID
-      }
-    })
-  });
-  
-  const data = await res.json();
-  console.log(data);
   return data;
 };
 
