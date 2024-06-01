@@ -21,7 +21,7 @@ import AuthProvider from "../context/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorPage from "../../pages/ErrorPage";
 import SignUp from "../../pages/SignUp";
-
+import ForgotPassword from "../../pages/ForgotPassword";
 
 
 import DanhSachDonHangChoDuyet from "../components/DanhSachDonHang/DanhSachDonHangChoDuyet";
@@ -168,6 +168,10 @@ export default createBrowserRouter([
                 element: <SignUp />,
                 path: '/dktk',
             },
+            {
+                element: <ForgotPassword />,
+                path: '/qmk',
+            }
         ],
     },
 ]);
