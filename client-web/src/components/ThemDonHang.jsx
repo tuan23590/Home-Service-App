@@ -244,12 +244,7 @@ const ThemDonHang = () => {
             khachHang: khachHangData
         }));
     }, [diaChiData,diaChiData]);
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const data = await apiThemDonHang(donHangData);
-        console.log(data);
-        alert('Tạo đơn hàng thành công');
-    };
+   
     useEffect(() => {
         const combineDateAndTime = (dateString, hourString) => {
             const date = new Date(dateString);
@@ -300,6 +295,17 @@ const ThemDonHang = () => {
         }));
     
     }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value]);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const data = await apiThemDonHang(donHangData);
+            console.log(data);
+            alert('Tạo đơn hàng thành công')
+        } catch (error) {
+            alert('Tạo đơn hàng thất bại')
+        }
+        ;
+    };
     return (
         <Paper sx={{ padding: '20px', marginTop: '15px' ,height: '93%', overflow: 'auto'}} >
             <form onSubmit={handleSubmit}>
