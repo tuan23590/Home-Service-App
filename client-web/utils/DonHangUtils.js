@@ -210,47 +210,6 @@ export const APIDanhSachDonHangChoDuyet = async ()=> {
           ngayKetThuc
           soGioThucHien
           trangThaiDonHang
-          vatNuoi
-          ghiChu
-          saoDanhGia
-          ghiChuDanhGia
-          khachHang {
-            tenKhachHang
-            soDienThoai
-            email
-          }
-          danhSachDichVu {
-            tenDichVu
-            gia
-            maDichVu
-            loaiDichVu
-            thoiGian
-            khoiLuongCongViec
-          }
-          uuTienTasker
-          tongTien
-          diaChi {
-            id
-            tinhTP
-            quanHuyen
-            xaPhuong
-            soNhaTenDuong
-            ghiChu
-          }
-          danhSachLichThucHien {
-            thoiGianBatDauLich
-            thoiGianKetThucLich
-            trangThaiLich
-          }
-      soThangLapLai
-      giaDichVuTheoYeuCauCuaKhachHang
-      dichVuTheoYeuCauCuaKhachHang
-      dichVuChinh {
-        tenDichVu
-        thoiGian
-        khoiLuongCongViec
-        loaiDichVu
-      }
     }
   }  
     `;
@@ -267,6 +226,104 @@ export const APIDanhSachDonHangChoDuyet = async ()=> {
   const data = await res.json();
   return data;
 }
+
+
+export const apiChiTietDonHang = async ({params})=> {
+  console.log(params.id);
+  const query = `query DonHangTheoId($idDonHang: String) {
+    DonHangTheoId(idDonHang: $idDonHang) {
+      danhSachDichVu {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+      }
+      danhSachLichThucHien {
+        id
+        lyDoDungLich
+        thoiGianBatDauLich
+        thoiGianKetThucLich
+        trangThaiLich
+      }
+      diaChi {
+        ghiChu
+        quanHuyen
+        soNhaTenDuong
+        tinhTP
+      }
+      dichVuChinh {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+      }
+      dichVuTheoYeuCauCuaKhachHang
+      ghiChu
+      giaDichVuTheoYeuCauCuaKhachHang
+      khachHang {
+        email
+        soDienThoai
+        tenKhachHang
+      }
+      lyDoDoiNhanVien
+      lyDoHuyDonHang
+      lyDoTuChoi
+      maDonHang
+      ngayBatDau
+      ngayDatHang
+      id
+      ngayKetThuc
+      nhanVien {
+        id
+        anhDaiDien
+        cccd
+        diaChi
+        email
+        ghiChu
+        gioiTinh
+        ngaySinh
+        soDienThoai
+        tenNhanVien
+        dichVu {
+          tenDichVu
+        }
+        danhGia
+      }
+      nhanVienCu {
+        anhDaiDien
+        cccd
+        diaChi
+        email
+        ghiChu
+        gioiTinh
+        ngaySinh
+        soDienThoai
+        tenNhanVien
+      }
+      soGioThucHien
+      soThangLapLai
+      tongTien
+      trangThaiDonHang
+      uuTienTasker
+      vatNuoi
+    }
+  }  
+    `;
+  const res = await fetch(GRAPHQL_SERVER,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+          query,variables: { "idDonHang" : params.id }
+      })
+  });
+  const data = await res.json();
+  return data;
+}
+
+
 
 export const TrangThaiLoader = async ()=> {
     const query = `{

@@ -1,6 +1,6 @@
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Tooltip, IconButton, Pagination, TextField, Input } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
+import { Outlet, useLoaderData, useNavigate, useOutletContext } from 'react-router-dom';
 import { apiHuyDonHang } from '../../../utils/DonHangUtils';
 import CloseIcon from '@mui/icons-material/Close';
 import { apiNgungLichThucHien, apiTiepTucLichThucHien } from '../../../utils/LichThucHienUtils';
@@ -9,10 +9,11 @@ import ThongTinKhachHang from './ThongTinKhachHang';
 import DanhSachNhanVienPhuHop from './DanhSachNhanVienPhuHop';
 import { apiThayDoiNhanVien } from '../../../utils/NhanVienUtils';
 
-const ChiThietDonHangChoDuyet = () => {
-  const data = useOutletContext();
-  const setSnackbar = data.setSnackbar;
-  const donHang = data.chonDonHang;
+const ChiThietDonHangChoDuyet = (vaiable) => {
+  const { setSnackbar } = useOutletContext();
+  const {data} = useLoaderData();
+  const donHang = data.DonHangTheoId;
+  console.log(donHang);
   const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
   const navigate = useNavigate();
 
@@ -79,6 +80,7 @@ const ChiThietDonHangChoDuyet = () => {
   };
   const dungLichThucHien = async () => {
     const data = await apiNgungLichThucHien(idLichNgung, lyDoDungLich);
+    console.log(data);
     if (data !== null) {
       setSnackbar({ open: true, message: 'Ngưng lịch thực hiện thành công', severity: 'success' });
       window.location.reload();

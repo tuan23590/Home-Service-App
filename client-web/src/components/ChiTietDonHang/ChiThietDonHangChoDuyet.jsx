@@ -1,6 +1,6 @@
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Divider, Paper, Typography, Box, Tooltip, IconButton, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom';
 import { apiTuChoiDonHang, themNhanVienVaoDonHang } from '../../../utils/DonHangUtils';
 import CloseIcon from '@mui/icons-material/Close';
 import ThongTinDonHang from './ThongTinDonHang';
@@ -8,9 +8,9 @@ import ThongTinKhachHang from './ThongTinKhachHang';
 import DanhSachNhanVienPhuHop from './DanhSachNhanVienPhuHop';
 
 const ChiThietDonHangChoDuyet = () => {
-  const data = useOutletContext();
-  const setSnackbar = data.setSnackbar;
-  const donHang = data.chonDonHang;
+  const {data} = useLoaderData();
+  const {setSnackbar} = useOutletContext();
+  const donHang = data.DonHangTheoId;
   const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
   const navigate = useNavigate();
 

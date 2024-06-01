@@ -235,7 +235,7 @@ export const resolvers = {
                 maDonHang: newMaDonHang,
                 ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
                 ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
-                ngayDatHang: Math.floor(Date.now() / 1000),
+                ngayDatHang: (Math.floor(Date.now() / 1000))*1000,
                 trangThaiDonHang: "Đang chờ duyệt"
             };
 

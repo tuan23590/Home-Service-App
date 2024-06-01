@@ -35,7 +35,7 @@ const DanhSachDonHangDaDuyet = () => {
 
   const handleRowClick = (item) => {
     setChonDonHang(item);
-    navigate('./ChiThietDonHangDaDuyet');
+    navigate(`./${item.id}`);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -104,7 +104,7 @@ const DanhSachDonHangDaDuyet = () => {
           labelRowsPerPage="Số hàng mỗi trang"
         />
       </TableContainer>
-      <Outlet context={{chonDonHang,setSnackbar}}/>
+      <Outlet context={{ setSnackbar }} />
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

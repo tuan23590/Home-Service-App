@@ -12,22 +12,13 @@ import {
   TablePagination
 } from '@mui/material';
 import { Snackbar, Alert } from '@mui/material';
+import { EPOCHTODATE } from './../../function/index';
 
 
 const DanhSachDonHangChoDuyet = () => {
   const { data } = useLoaderData();
   const danhSachDonHang = data.DonHangDangChoDuyet;
   const navigate = useNavigate();
-  const formatDate = (epochTime) => {
-    const date = new Date(epochTime * 1000);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    const formattedDateTime = `${hours}:${minutes} ${day}/${month}/${year}`;
-    return formattedDateTime;
-  };
 
   const [chonDonHang, setChonDonHang] = useState(danhSachDonHang[0]);
   const [page, setPage] = useState(0);
@@ -35,7 +26,8 @@ const DanhSachDonHangChoDuyet = () => {
 
   const handleRowClick = (item) => {
     setChonDonHang(item);
-    navigate('./ChiThietDonHangChoDuyet');
+    console.log(item);
+    navigate(`./${item.id}`);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -85,9 +77,9 @@ const DanhSachDonHangChoDuyet = () => {
                 >
                   <TableCell>{page * rowsPerPage + index + 1}</TableCell>
                   <TableCell>{row.maDonHang}</TableCell>
-                  <TableCell>{formatDate(row.ngayDatHang)}</TableCell>
-                  <TableCell>{formatDate(row.ngayBatDau)}</TableCell>
-                  <TableCell>{formatDate(row.ngayKetThuc)}</TableCell>
+                  <TableCell>{EPOCHTODATE(row.ngayDatHang)}</TableCell>
+                  <TableCell>{EPOCHTODATE(row.ngayBatDau)}</TableCell>
+                  <TableCell>{EPOCHTODATE(row.ngayKetThuc)}</TableCell>
                   <TableCell>{row.soGioThucHien} giờ</TableCell>
                   <TableCell>{row.trangThaiDonHang}</TableCell>
                 </TableRow>
@@ -105,7 +97,7 @@ const DanhSachDonHangChoDuyet = () => {
           labelRowsPerPage="Số hàng mỗi trang"
         />
       </TableContainer>
-      <Outlet context={{chonDonHang,setSnackbar}}/>
+      <Outlet context={{ setSnackbar }} />
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

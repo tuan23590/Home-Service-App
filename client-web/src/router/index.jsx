@@ -2,7 +2,7 @@ import { Outlet, createBrowserRouter } from "react-router-dom";
 import Login from "../../pages/Login";
 import Home from "../../pages/Home";
 import Test from "../../pages/Test";
-import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHangDaTuChoi, DonHangLoader } from "../../utils/DonHangUtils";
+import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHangDaTuChoi, DonHangLoader, apiChiTietDonHang } from "../../utils/DonHangUtils";
 import Detal from "../../pages/Detal";
 import OrderBrowser from "../../pages/OrderBrowser";
 import ServiceRegistration from "../../pages/ServiceRegistration"; 
@@ -84,7 +84,8 @@ export default createBrowserRouter([
                         children: [
                             {
                                 element: <ChiThietDonHangChoDuyet />,
-                                path: `/QuanLyDonHang/DanhSachDonHangChoDuyet/ChiThietDonHangChoDuyet`,
+                                path: `/QuanLyDonHang/DanhSachDonHangChoDuyet/:id`,
+                                loader: apiChiTietDonHang,
                             },
                         ]
                     },
@@ -95,7 +96,8 @@ export default createBrowserRouter([
                         children: [
                             {
                                 element: <ChiThietDonHangDaDuyet />,
-                                path: `/QuanLyDonHang/DanhSachDonHangDaDuyet/ChiThietDonHangDaDuyet`,
+                                path: `/QuanLyDonHang/DanhSachDonHangDaDuyet/:id`,
+                                loader: apiChiTietDonHang,
                             },
                         ],
                     },
@@ -106,7 +108,8 @@ export default createBrowserRouter([
                         children: [
                             {
                                 element: <ChiThietDonHangDaTuChoi />,
-                                path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi/ChiThietDonHangDaTuChoi`,
+                                path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi/:id`,
+                                loader: apiChiTietDonHang,
                             },
                         ],
                     },
