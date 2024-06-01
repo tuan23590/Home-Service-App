@@ -2,6 +2,22 @@ import { Box, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer,
 import React from 'react';
 
 const ThongTinDonHang = ({donHang}) => {
+
+  const formatDate2 = (epochDate) => {
+    const date = new Date(epochDate);
+    const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+    const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
+    const dayOfWeek = weekdays[date.getDay()];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${dayOfWeek}, ${day}/${month}/${year} - ${hours}:${minutes}`;
+};
+
     const formatDate = (epochTime) => {
         const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
         const date = new Date(epochTime * 1000);
@@ -34,7 +50,7 @@ const ThongTinDonHang = ({donHang}) => {
               <strong>Thời gian bắt đầu: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {formatDate(donHang.ngayBatDau)}
+              {formatDate2(donHang.ngayBatDau)}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -42,7 +58,7 @@ const ThongTinDonHang = ({donHang}) => {
               <strong>Tên dịch vụ: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].tenDichVu}
+              {donHang.dichVuChinh.tenDichVu}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -50,7 +66,7 @@ const ThongTinDonHang = ({donHang}) => {
               <strong>Thời gian kết thúc: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {formatDate(donHang.ngayKetThuc)}
+              {formatDate2(donHang.ngayKetThuc)}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -58,7 +74,7 @@ const ThongTinDonHang = ({donHang}) => {
               <strong>Khối lượng CV: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].khoiLuongCongViec}
+              {donHang.dichVuChinh.khoiLuongCongViec}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -85,6 +101,24 @@ const ThongTinDonHang = ({donHang}) => {
               {donHang.trangThaiDonHang}
             </Typography>
           </Grid>
+
+          <Grid item xs={6} sx={{ display: 'flex' }}>
+            <Typography sx={{ width: '20%' }}>
+              <strong>DV theo yêu cầu: </strong>
+            </Typography>
+            <Typography sx={{ width: '80%' }}>
+              {donHang.dichVuTheoYeuCauCuaKhachHang} giờ
+            </Typography>
+          </Grid>
+          <Grid item xs={6} sx={{ display: 'flex' }}>
+            <Typography sx={{ width: '20%' }}>
+              <strong>Giá DV theo YC: </strong>
+            </Typography>
+            <Typography sx={{ width: '80%' }}>
+              {donHang.giaDichVuTheoYeuCauCuaKhachHang.toLocaleString('vi-VN')} VND
+            </Typography>
+          </Grid>
+
           <Grid item xs={6} sx={{ display: 'flex' }}>
             <Typography sx={{ width: '20%' }}>
               <strong>Số giờ thực hiện: </strong>
@@ -163,8 +197,8 @@ const ThongTinDonHang = ({donHang}) => {
                 <TableBody>
                   {donHang.danhSachLichThucHien.map((schedule, index) => (
                     <TableRow key={index}>
-                      <TableCell>{formatDate(schedule.thoiGianBatDauLich)}</TableCell>
-                      <TableCell>{formatDate(schedule.thoiGianKetThucLich)}</TableCell>
+                      <TableCell>{formatDate2(schedule.thoiGianBatDauLich)}</TableCell>
+                      <TableCell>{formatDate2(schedule.thoiGianKetThucLich)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

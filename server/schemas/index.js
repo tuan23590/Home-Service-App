@@ -45,17 +45,17 @@ export const typeDefs = `#graphql
     },
     type LichThucHien {
         id: String,
-        thoiGianBatDauLich: Int,
-        thoiGianKetThucLich: Int,
+        thoiGianBatDauLich: Float,
+        thoiGianKetThucLich: Float,
         trangThaiLich: String,
         lyDoDungLich: String
     },
     type DonHang {
         id: String,
         maDonHang:  String,
-        ngayDatHang: Int,
-        ngayBatDau: Int,
-        ngayKetThuc: Int,
+        ngayDatHang: Float,
+        ngayBatDau: Float,
+        ngayKetThuc: Float,
         soGioThucHien: Int,
         trangThaiDonHang: String,
         danhSachLichThucHien: [LichThucHien],

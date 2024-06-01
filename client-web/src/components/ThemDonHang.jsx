@@ -225,9 +225,9 @@ const ThemDonHang = () => {
         const tongTien = (parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)+donHangData.dichVuChinh?.gia || 0) + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0);
         setDonHangData((prevData) => ({
             ...prevData,
-            tongTien: tongTien
+            tongTien: tongTien * donHangData.danhSachLichThucHien.length || tongTien
         }));
-    }, [donHangData.dichVuChinh,donHangData.danhSachDichVuThem,donHangData.soThangLapLai,donHangData.giaDichVuTheoYeuCauCuaKhachHang]);
+    }, [donHangData.dichVuChinh,donHangData.danhSachDichVuThem,donHangData.soThangLapLai,donHangData.giaDichVuTheoYeuCauCuaKhachHang, donHangData.danhSachLichThucHien]);
 
     useEffect(() => {
             setDonHangData(prevData => ({
@@ -246,26 +246,10 @@ const ThemDonHang = () => {
     }, [diaChiData,diaChiData]);
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // const data = await apiThemDonHang(donHangData);
-        // console.log(data);
+        const data = await apiThemDonHang(donHangData);
+        console.log(data);
+        alert('Tạo đơn hàng thành công');
     };
-
-    const formatDate = (epochTime) => {
-        const daysOfWeek = [
-          'CN', 'T2', 'T3', 'T4',
-          'T5', 'T6', 'T7'
-        ];
-        const date = new Date(epochTime * 1000);
-        const dayOfWeek = daysOfWeek[date.getDay()];
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0 nên cần cộng thêm 1
-        const year = date.getFullYear();
-        const formattedDateTime = `${dayOfWeek}, ${day}/${month}/${year} - ${hours}:${minutes}`;
-        return formattedDateTime;
-      };
-
     useEffect(() => {
         const combineDateAndTime = (dateString, hourString) => {
             const date = new Date(dateString);
@@ -275,18 +259,47 @@ const ThemDonHang = () => {
             date.setMilliseconds(0);
             return date;
         };
-        
+    
+        const getDatesWithSameDayOfWeek = (startDate, dayOfWeek, days, workingHours) => {
+            const dates = [];
+            const currentDate = new Date(startDate);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + days);
+    
+            
+            while (currentDate <= endDate) {
+                if (currentDate.getDay() === dayOfWeek) {
+                    const startTime = currentDate.getTime();
+                    const endTime = startTime + workingHours * 3600000; 
+                    dates.push({
+                        thoiGianBatDau: startTime,
+                        thoiGianKetThuc: endTime
+                    });
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+    
+            return dates;
+        };
+    
         const combinedDateTime = combineDateAndTime(donHangData.ngayBatDau?.nextDay, donHangData.gioBatDau?.startHour);
-        console.log(combinedDateTime);
-        const epochDate = combinedDateTime.getTime();
-       //console.log(formatDate(epochDate));
+        
+        
+        const dayOfWeek = combinedDateTime.getDay();
+    
+        
+        const soGioLamViec = donHangData.dichVuChinh?.thoiGian || 1;
+    
+        
+        const matchingDates = getDatesWithSameDayOfWeek(combinedDateTime, dayOfWeek, donHangData.soThangLapLai?.value*30, soGioLamViec);
+    
+        console.log(matchingDates); 
+        setDonHangData(prevData => ({
+            ...prevData,
+            danhSachLichThucHien: matchingDates
+        }));
+    
     }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value]);
-    
-    
-    
-    
-    
-      
     return (
         <Paper sx={{ padding: '20px', marginTop: '15px' ,height: '93%', overflow: 'auto'}} >
             <form onSubmit={handleSubmit}>

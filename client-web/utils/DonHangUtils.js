@@ -242,7 +242,16 @@ export const APIDanhSachDonHangChoDuyet = async ()=> {
             thoiGianKetThucLich
             trangThaiLich
           }
-        }
+      soThangLapLai
+      giaDichVuTheoYeuCauCuaKhachHang
+      dichVuTheoYeuCauCuaKhachHang
+      dichVuChinh {
+        tenDichVu
+        thoiGian
+        khoiLuongCongViec
+        loaiDichVu
+      }
+    }
   }  
     `;
   const res = await fetch(GRAPHQL_SERVER,{
@@ -300,7 +309,7 @@ export const apiThemDonHang = async (formData) => {
       query,
       variables: {
         soGioThucHien: formData.dichVuChinh.thoiGian,
-        danhSachLichThucHien: null,
+        danhSachLichThucHien: JSON.stringify(formData.danhSachLichThucHien),
         khachHang: JSON.stringify(formData.khachHang),
         danhSachDichVu: formData.danhSachDichVuThem.map(dichVu => dichVu.id),
         vatNuoi: formData.vatNuoi,
@@ -309,7 +318,7 @@ export const apiThemDonHang = async (formData) => {
         diaChi: JSON.stringify(formData.diaChi),
         tongTien: formData.tongTien,
         dichVuTheoYeuCauCuaKhachHang: formData.dichVuTheoYeuCauCuaKhachHang,
-        giaDichVuTheoYeuCauCuaKhachHang: null,
+        giaDichVuTheoYeuCauCuaKhachHang: parseFloat(formData.giaDichVuTheoYeuCauCuaKhachHang),
         soThangLapLai: formData.soThangLapLai.value,
         dichVuChinh: formData.dichVuChinh.id
       }

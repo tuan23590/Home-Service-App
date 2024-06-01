@@ -143,6 +143,10 @@ export const resolvers = {
         diaChi: async (parent) => {
             const data = await DiaChiModel.findById({ _id: parent.diaChi });
             return data;
+        },
+        dichVuChinh: async (parent) => {
+            const data = await DichVuModel.findById({ _id: parent.dichVuChinh });
+            return data;
         }
     },
     KhachHang: {
@@ -171,61 +175,73 @@ export const resolvers = {
         },
         themDonHang: async (parent, args) => {
 
-            console.log(args);
+            const danhSachLichThucHien = JSON.parse(args.danhSachLichThucHien);
+            const danhSachIdLichThucHien = [];
+            for (let i = 0; i < danhSachLichThucHien.length; i++) {
+                const lichThucHien = danhSachLichThucHien[i];
+
+                const danhSachLichThucHienMoi = new LichThucHienModel({
+                    thoiGianBatDauLich: lichThucHien.thoiGianBatDau,
+                    thoiGianKetThucLich: lichThucHien.thoiGianKetThuc,
+                    trangThaiLich: "Đang thực hiện"
+                });
+                const resLichThucHien = await danhSachLichThucHienMoi.save();
+                danhSachIdLichThucHien.push(resLichThucHien._id);
+            }
+
+            const diaChi = JSON.parse(args.diaChi);
+            const diaChiMoi = new DiaChiModel({
+                tinhTP: diaChi.tinhTp.name_with_type,
+                quanHuyen: diaChi.quanHuyen.name_with_type,
+                xaPhuong: diaChi.xaPhuong.name_with_type,
+                soNhaTenDuong: diaChi.soNhaTenDuong,
+                ghiChu: diaChi.ghiChu
+            });
+            const resDiaChi = await diaChiMoi.save();
+            const idDiaChi = resDiaChi._id;
+
+            const khachHang = JSON.parse(args.khachHang);
+            const khachHangMoi = new KhachHangModel({
+                tenKhachHang: khachHang.tenKhachHang,
+                soDienThoai: khachHang.soDienThoai,
+                email: khachHang.email,
+                danhSachDiaChi: [idDiaChi]
+            });
+            const resKhachHang = await khachHangMoi.save();
+            const idKhachHang = resKhachHang._id;
 
 
 
-            // const diaChi = JSON.parse(args.diaChi);
-            // const diaChiMoi = new DiaChiModel({
-            //     tinhTP: diaChi.tinhTp.name_with_type,
-            //     quanHuyen: diaChi.quanHuyen.name_with_type,
-            //     xaPhuong: diaChi.xaPhuong.name_with_type,
-            //     soNhaTenDuong: diaChi.soNhaTenDuong,
-            //     ghiChu: diaChi.ghiChu
-            // });
-            // const resDiaChi = await diaChiMoi.save();
-            // const idDiaChi = resDiaChi._id;
-            
-            // const khachHang = JSON.parse(args.khachHang);
-            // const khachHangMoi = new KhachHangModel({
-            //     tenKhachHang: khachHang.tenKhachHang,
-            //     soDienThoai: khachHang.soDienThoai,
-            //     email: khachHang.email,
-            //     danhSachDiaChi: [idDiaChi]
-            // });
-            // const resKhachHang = await khachHangMoi.save();
-            // const idKhachHang = resKhachHang._id;
-            // console.log(args.danhSachDichVu);
 
+            const lastDonHang = await DonHangModel.findOne().sort({ _id: -1 }).exec();
+            const ngayBatDauMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[0]);
+            const ngayKetThucMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[danhSachIdLichThucHien.length - 1]);
 
+            let newMaDonHang;
+            if (lastDonHang) {
+                const lastMaDonHang = lastDonHang.maDonHang;
+                const lastNumber = parseInt(lastMaDonHang.replace("DH", ""), 10);
+                console.log(lastDonHang);
+                newMaDonHang = "DH" + (lastNumber + 1);
+            } else {
+                newMaDonHang = "DH1";
+            }
 
+            const donHangMoi = {
+                ...args,
+                khachHang: idKhachHang,
+                diaChi: idDiaChi,
+                danhSachLichThucHien: danhSachIdLichThucHien,
+                maDonHang: newMaDonHang,
+                ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
+                ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
+                ngayDatHang: Math.floor(Date.now() / 1000),
+                trangThaiDonHang: "Đang chờ duyệt"
+            };
 
-            // const lastDonHang = await DonHangModel.findOne().sort({ _id: -1 }).exec();
-            // const ngayBatDauMoi = await LichThucHienModel.findById(args.danhSachLichThucHien[0]);
-            // const ngayKetThucMoi = await LichThucHienModel.findById(args.danhSachLichThucHien[args.danhSachLichThucHien.length - 1]);
-
-            // let newMaDonHang;
-            // if (lastDonHang) {
-            //     const lastMaDonHang = lastDonHang.maDonHang;
-            //     const lastNumber = parseInt(lastMaDonHang.replace("DH", ""), 10);
-            //     console.log(lastDonHang);
-            //     newMaDonHang = "DH" + (lastNumber + 1);
-            // } else {
-            //     newMaDonHang = "DH1";
-            // }
-
-            // const donHangMoi = {
-            //     ...args,
-            //     maDonHang: newMaDonHang,
-            //     ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
-            //     ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
-            //     ngayDatHang: Math.floor(Date.now() / 1000),
-            //     trangThaiDonHang: "Đang chờ duyệt"
-            // };
-
-            // const DonHang = new DonHangModel(donHangMoi);
-            // await DonHang.save();
-            // return DonHang;
+            const DonHang = new DonHangModel(donHangMoi);
+            await DonHang.save();
+            return DonHang;
         },
         themKhachHang: async (parent, args) => {
             const khachHangMoi = args;
