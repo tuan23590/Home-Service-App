@@ -11,7 +11,7 @@ const ThongTinKhachHang = ({data}) => {
             try {
                 const dsKhachHang = await apiDanhSachKhachHang();
                 setDanhSachKhachHang(dsKhachHang.data.KhachHangs);
-                dsKhachHang.data.KhachHangs.unshift({tenKhachHang: 'Khách hàng mới'});
+                dsKhachHang.data.KhachHangs.unshift({tenKhachHang: 'Thêm khách hàng mới'});
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -33,6 +33,7 @@ const ThongTinKhachHang = ({data}) => {
             tenKhachHang: value.tenKhachHang,
             soDienThoai: value.soDienThoai,
             email: value.email,
+            danhSachDiaChi: value.danhSachDiaChi
         });
     }
     return (
@@ -43,14 +44,21 @@ const ThongTinKhachHang = ({data}) => {
         <Grid item xs={12}>
                 <Autocomplete
                     required
-                    getOptionLabel={(option) => option.soDienThoai ? `Tên KH: ${option.tenKhachHang} - SĐT: ${option.soDienThoai}` : `Tên KH: ${option.tenKhachHang}`}
+                    getOptionLabel={(option) => {
+                        if (!option.tenKhachHang) {
+                            return '';
+                        }
+                        return option.soDienThoai 
+                            ? `Tên KH: ${option.tenKhachHang} - SĐT: ${option.soDienThoai}` 
+                            : `${option.tenKhachHang}`;
+                    }}
                     options={danhSachKhachHang}
                     value={khachHangData}
                     onChange={(event,value) => handleChangeAutocompleteKhachHang(event,value)}
                     renderInput={(params) => (
                         <TextField
                             {...params}
-                            label="Dịch vụ chính"
+                            label="Danh sách khách hàng"
                             variant="outlined"
                             size="small"
                             fullWidth

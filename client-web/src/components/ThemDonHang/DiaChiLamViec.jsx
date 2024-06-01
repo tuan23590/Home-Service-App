@@ -3,23 +3,25 @@ import React, { useEffect, useState } from 'react';
 import { apiQuanHuyen, apiTinhTP, apiXaPhuong } from '../../../utils/DiaChiUtil';
 
 const DiaChiLamViec = ({data}) => {
-    const {diaChiData,setDiaChiData} = data;
+    const {diaChiData,setDiaChiData,khachHangData} = data;
     const [danhSachTinhTp, setDanhSachTinhTp] = useState([]);
     const [danhSachQuanHuyen, setDanhSachQuanHuyen] = useState([]);
     const [danhSachXaPhuong, setDanhSachXaPhuong] = useState([]);
+    const [diaChiSelected,setDiaChiSelected] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const { data } = await apiTinhTP();
                 setDanhSachTinhTp(data.DanhSachTinhTp)
+                const dsDiaChiCuaKhachHang = khachHangData.danhSachDiaChi;
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
         fetchData();
+        console.log(khachHangData.danhSachDiaChi)
     }, []);
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -83,6 +85,24 @@ const DiaChiLamViec = ({data}) => {
         <Grid item xs={12}>
             <Typography variant="h6">Địa chỉ làm việc</Typography>
         </Grid>
+        <Grid item xs={12}>
+                <Autocomplete
+                    required
+                    getOptionLabel={(option) => option.tinhTP}
+                    options={diaChiData}
+                    value={khachHangData?.danhSachDiaChi}
+                    //onChange={(event,value) => handleChangeAutocompleteKhachHang(event,value)}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Danh sách địa chỉ của khách hàng"
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                        />
+                    )}
+                />
+            </Grid>
         <Grid item xs={6}>
             <Autocomplete
                 options={danhSachTinhTp}

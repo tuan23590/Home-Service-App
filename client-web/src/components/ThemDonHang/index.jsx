@@ -123,7 +123,7 @@ const ThemDonHang = () => {
                 <br />
                 <ThongTinKhachHang data={{ khachHangData, setKhachHangData }} />
                 <br />
-                <DiaChiLamViec data={{ diaChiData, setDiaChiData }} />
+                <DiaChiLamViec data={{ diaChiData, setDiaChiData,khachHangData }} />
                 <br />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant='h5' sx={{ color: 'red' }}>Tổng tiền: {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
