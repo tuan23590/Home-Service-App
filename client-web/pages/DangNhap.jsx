@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Button, TextField, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,7 +14,6 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Redirect to home page after successful login
     } catch (error) {
       setError(error.message);
     }
@@ -28,7 +26,6 @@ const Login = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log('Google Sign In:', user);
-      // Redirect to home page after successful login with Google
     } catch (error) {
       setError(error.message);
     }

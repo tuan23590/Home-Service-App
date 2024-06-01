@@ -1,5 +1,5 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
-import Login from "../../pages/Login";
+import DangNhap from "../../pages/DangNhap";
 import Home from "../../pages/Home";
 import Test from "../../pages/Test";
 import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHangDaTuChoi, DonHangLoader, apiChiTietDonHang } from "../../utils/DonHangUtils";
@@ -49,8 +49,8 @@ export default createBrowserRouter([
         errorElement:<ErrorPage />,
         children: [
             {
-                element: <Login />,
-                path: '/login',
+                element: <DangNhap />,
+                path: '/DangNhap',
             },
             {
                     element: <ProtectedRoute />,
