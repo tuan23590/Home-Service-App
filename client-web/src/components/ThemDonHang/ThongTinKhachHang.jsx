@@ -46,15 +46,13 @@ const ThongTinKhachHang = ({data}) => {
                 <Autocomplete
                     required
                     getOptionLabel={(option) => {
-                        if (!option.tenKhachHang) {
-                            return '';
+                        if (option.id !== undefined) {
+                            return `Tên KH: ${option.tenKhachHang} - SĐT: ${option.soDienThoai}`;
+                        } else {
+                            return `${option.tenKhachHang}`;
                         }
-                        return option.soDienThoai 
-                            ? `Tên KH: ${option.tenKhachHang} - SĐT: ${option.soDienThoai}` 
-                            : `${option.tenKhachHang}`;
                     }}
                     options={danhSachKhachHang}
-                    value={khachHangData}
                     onChange={(event,value) => handleChangeAutocompleteKhachHang(event,value)}
                     renderInput={(params) => (
                         <TextField
@@ -67,7 +65,7 @@ const ThongTinKhachHang = ({data}) => {
                     )}
                 />
             </Grid>
-        {khachHangData.tenKhachHang === 'Thêm khách hàng mới' && (
+        {khachHangData.id === undefined && (
             <>
              <Grid item xs={6}>
             <TextField

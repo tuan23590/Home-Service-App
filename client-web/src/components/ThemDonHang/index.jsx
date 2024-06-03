@@ -24,10 +24,10 @@ const ThemDonHang = () => {
         giaDichVuTheoYeuCauCuaKhachHang: undefined,
     });
     const [khachHangData, setKhachHangData] = useState({
-        id: '',
-        tenKhachHang: '',
-        soDienThoai: '',
-        email: ''
+        id: null,
+        tenKhachHang: null,
+        soDienThoai: null,
+        email: null
     });
     const [diaChiData, setDiaChiData] = useState({
         tinhTp: null,
@@ -108,6 +108,7 @@ const ThemDonHang = () => {
         try {
             const data = await apiThemDonHang(donHangData);
             alert('Tạo đơn hàng thành công')
+            console.log(data);
         } catch (error) {
             alert('Tạo đơn hàng thất bại')
         }

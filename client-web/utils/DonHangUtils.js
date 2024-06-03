@@ -325,28 +325,28 @@ export const apiChiTietDonHang = async ({params})=> {
 
 
 
-export const TrangThaiLoader = async ()=> {
-    const query = `{
-        __type(name: "TrangThai") {
-          enumValues {
-            name
-          }
-        }
-      }              
-      `;
-    const res = await fetch(GRAPHQL_SERVER,{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            query
-        })
-    });
-    const data = await res.json();
-    return data;
-}
+// export const TrangThaiLoader = async ()=> {
+//     const query = `{
+//         __type(name: "TrangThai") {
+//           enumValues {
+//             name
+//           }
+//         }
+//       }              
+//       `;
+//     const res = await fetch(GRAPHQL_SERVER,{
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Accept': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             query
+//         })
+//     });
+//     const data = await res.json();
+//     return data;
+// }
 
 
 export const apiThemDonHang = async (formData) => {

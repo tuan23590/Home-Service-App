@@ -190,17 +190,24 @@ export const resolvers = {
             }
 
             const diaChi = JSON.parse(args.diaChi);
-            const diaChiMoi = new DiaChiModel({
-                tinhTP: diaChi.tinhTp.name_with_type,
-                quanHuyen: diaChi.quanHuyen.name_with_type,
-                xaPhuong: diaChi.xaPhuong.name_with_type,
-                soNhaTenDuong: diaChi.soNhaTenDuong,
-                ghiChu: diaChi.ghiChu
-            });
-            const resDiaChi = await diaChiMoi.save();
-            const idDiaChi = resDiaChi._id;
+            let idDiaChi;
+            if (diaChi.id === null) {
+                const diaChiMoi = new DiaChiModel({
+                    tinhTP: diaChi.tinhTp.name_with_type,
+                    quanHuyen: diaChi.quanHuyen.name_with_type,
+                    xaPhuong: diaChi.xaPhuong.name_with_type,
+                    soNhaTenDuong: diaChi.soNhaTenDuong,
+                    ghiChu: diaChi.ghiChu
+                });
+                const resDiaChi = await diaChiMoi.save();
+                idDiaChi = resDiaChi._id;
+            } else {
+                idDiaChi = diaChi.id;
+            }
 
             const khachHang = JSON.parse(args.khachHang);
+            let idKhachHang;
+            if (khachHang.id === null) {
             const khachHangMoi = new KhachHangModel({
                 tenKhachHang: khachHang.tenKhachHang,
                 soDienThoai: khachHang.soDienThoai,
@@ -208,8 +215,10 @@ export const resolvers = {
                 danhSachDiaChi: [idDiaChi]
             });
             const resKhachHang = await khachHangMoi.save();
-            const idKhachHang = resKhachHang._id;
-
+            idKhachHang = resKhachHang._id;
+            } else {
+                idKhachHang = khachHang.id;
+            }
 
 
 
