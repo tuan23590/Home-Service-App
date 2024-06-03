@@ -218,9 +218,11 @@ export const resolvers = {
             const resKhachHang = await khachHangMoi.save();
             idKhachHang = resKhachHang._id;
             } else {
-                const KH = await KhachHangModel.findById(khachHang.id);
-                KH.danhSachDiaChi.push(idDiaChi);
-                await KH.save();
+                if(diaChi.id === undefined) {
+                    const KH = await KhachHangModel.findById(khachHang.id);
+                    KH.danhSachDiaChi.push(idDiaChi);
+                    await KH.save();
+                }
                 idKhachHang = khachHang.id;
             }
 

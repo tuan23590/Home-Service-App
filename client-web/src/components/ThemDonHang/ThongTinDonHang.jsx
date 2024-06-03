@@ -1,9 +1,9 @@
-import { Autocomplete, Grid, Table, TableBody, TableCell, Checkbox, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Autocomplete, Grid, Table, TableBody, TableCell, Checkbox, TableHead, TableRow, TextField, Typography, Box, FormControlLabel, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { apiDanhSachDichVuChinh, dichVuLoader } from '../../../utils/DichVuUtils';
-
+import {EPOCHTODATE, EPOCHTODATETIME} from '../../function/index';
 const ThongTinDonHang = ({ data }) => {
-    const { donHangData, setDonHangData} = data;
+    const { donHangData, setDonHangData,chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan} = data;
     const [danhSachDichVuChinh, setDanhSachDichVuChinh] = useState([]);
     const [danhSachDichVuThem, setDanhSachDichVuThem] = useState([]);
     const [selectedDichVu, setSelectedDichVu] = useState([]);
@@ -22,49 +22,47 @@ const ThongTinDonHang = ({ data }) => {
     useEffect(() => {
         const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
         const generateNext30Days = () => {
-          const today = new Date();
-          const daysArray = [];
-          for (let i = 0; i < 30; i++) {
-            const nextDay = new Date(today);
-            nextDay.setDate(today.getDate() + i + 1);
-            const dayOfWeek = daysOfWeek[nextDay.getDay()];
-      
-            
-            const day = nextDay.getDate().toString().padStart(2, '0');
-            const month = (nextDay.getMonth() + 1).toString().padStart(2, '0');
-            const year = nextDay.getFullYear();
-            const formattedDate = `${day}-${month}-${year} (${dayOfWeek})`;
-      
-            daysArray.push({ formattedDate, nextDay });
-          }
-          return daysArray;
+            const today = new Date();
+            const daysArray = [];
+            for (let i = 0; i < 30; i++) {
+                const nextDay = new Date(today);
+                nextDay.setDate(today.getDate() + i + 1);
+
+                const day = nextDay.getDate().toString().padStart(2, '0');
+                const month = (nextDay.getMonth() + 1).toString().padStart(2, '0');
+                const year = nextDay.getFullYear();
+                const formattedDate = `${day}-${month}-${year}`;
+
+                daysArray.push({ formattedDate, nextDay });
+            }
+            return daysArray;
         };
-      
+
         const next30Days = generateNext30Days();
         setDanhSachNgayThucHien(next30Days);
-      }, []);
-      useEffect(() => {
+    }, []);
+    useEffect(() => {
         const generateTimeRanges = (interval) => {
-          const timesArray = [];
-          const businessStart = 9; 
-          const businessEnd = 17; 
-          for (let hour = businessStart; hour + interval <= businessEnd; hour++) {
-            const startHour = hour.toString().padStart(2, '0');
-            const endHour = (hour + interval).toString().padStart(2, '0');
-      
-            const timeString = `${startHour}:00 đến ${endHour}:00 (làm trong ${interval} giờ)`;
-            
-            timesArray.push({ timeString, startHour, interval });
-          }
-      
-          return timesArray;
+            const timesArray = [];
+            const businessStart = 9;
+            const businessEnd = 17;
+            for (let hour = businessStart; hour + interval <= businessEnd; hour++) {
+                const startHour = hour.toString().padStart(2, '0');
+                const endHour = (hour + interval).toString().padStart(2, '0');
+
+                const timeString = `${startHour}:00 đến ${endHour}:00 (làm trong ${interval} giờ)`;
+
+                timesArray.push({ timeString, startHour, interval });
+            }
+
+            return timesArray;
         };
-      
+
         const interval = donHangData.dichVuChinh?.thoiGian || 1;
         const timeRanges = generateTimeRanges(interval);
         setDanhSachGioThucHien(timeRanges);
-      }, [donHangData.dichVuChinh]);
-      useEffect(() => {
+    }, [donHangData.dichVuChinh]);
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const dataDanhSachDichvuThem = await dichVuLoader();
@@ -111,7 +109,16 @@ const ThongTinDonHang = ({ data }) => {
                 alert("Không thể thêm dịch vụ vì đã đạt tối đa thời gian.");
             }
         }
-        
+
+    };
+    const handleButtonClick = (day) => {
+        if (chonNgayLamViecTrongTuan.includes(day)) {
+            // Nếu ngày đã được chọn, loại bỏ khỏi danh sách
+            setChonNgayLamViecTrongTuan(prevSelectedDays => prevSelectedDays.filter(item => item !== day));
+        } else {
+            // Nếu ngày chưa được chọn, thêm vào danh sách
+            setChonNgayLamViecTrongTuan(prevSelectedDays => [...prevSelectedDays, day]);
+        }
     };
     return (
         <Grid container spacing={2}>
@@ -215,6 +222,15 @@ const ThongTinDonHang = ({ data }) => {
                     onChange={handleChangeDonHang}
                 />
             </Grid>
+            <Grid container item xs={6} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button variant={chonNgayLamViecTrongTuan.includes("Monday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Monday")}>T2</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes("Tuesday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Tuesday")}>T3</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes("Wednesday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Wednesday")}>T4</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes("Thursday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Thursday")}>T5</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes("Friday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Friday")}>T6</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes("Saturday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Saturday")}>T7</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes("Sunday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Sunday")}>CN</Button>
+            </Grid>
             <Grid item xs={6}>
                 <Autocomplete
                     options={danhSachNgayThucHien}
@@ -267,6 +283,35 @@ const ThongTinDonHang = ({ data }) => {
                         />
                     )}
                 />
+            </Grid>
+            <Grid item xs={12}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Ngày bắt đầu</TableCell>
+                            <TableCell>Ngày kết thúc</TableCell>
+                            <TableCell>Thao tác</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {donHangData.danhSachLichThucHien.map((lichThucHien) => (
+                            <TableRow key={lichThucHien.thoiGianBatDau} sx={{
+                                cursor: 'pointer',
+                                '&:hover': {
+                                    backgroundColor: '#bec2cc',
+                                },
+                            }} 
+                            // onClick={() => handleSelect(dichVu)}
+                            >
+                                <TableCell>{EPOCHTODATETIME(lichThucHien.thoiGianBatDau)}</TableCell>
+                                <TableCell>{EPOCHTODATETIME(lichThucHien.thoiGianKetThuc)}</TableCell>
+                                <TableCell>
+                                    <Button variant='contained' color='error'>Xóa</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </Grid>
         </Grid>
     );

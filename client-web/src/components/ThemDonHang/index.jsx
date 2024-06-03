@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Grid, Typography, Paper, Select, MenuItem, FormControl, InputLabel, Autocomplete, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Box } from '@mui/material';
-import { apiQuanHuyen, apiTinhTP, apiXaPhuong } from '../../../utils/DiaChiUtil';
-import { dichVuLoader, apiDanhSachDichVuChinh } from '../../../utils/DichVuUtils';
 import { apiThemDonHang } from '../../../utils/DonHangUtils';
 import ThongTinKhachHang from './ThongTinKhachHang';
 import DiaChiLamViec from './DiaChiLamViec';
@@ -36,7 +34,7 @@ const ThemDonHang = () => {
         soNhaTenDuong: '',
         ghiChu: ''
     });
-
+    const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
     useEffect(() => {
         const tongTien = (parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang) + donHangData.dichVuChinh?.gia || 0) + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0);
         setDonHangData((prevData) => ({
@@ -124,7 +122,7 @@ const ThemDonHang = () => {
     return (
         <Paper sx={{ padding: '20px', marginTop: '15px', height: '93%', overflow: 'auto' }} >
             <form onSubmit={handleSubmit}>
-                <ThongTinDonHang data={{ donHangData, setDonHangData }} />
+                <ThongTinDonHang data={{ donHangData, setDonHangData,chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan }} />
                 <br />
                 <ThongTinKhachHang data={{ khachHangData, setKhachHangData }} />
                 <br />
