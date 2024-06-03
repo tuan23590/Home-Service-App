@@ -7,8 +7,7 @@ const DiaChiLamViec = ({data}) => {
     const [danhSachTinhTp, setDanhSachTinhTp] = useState([]);
     const [danhSachQuanHuyen, setDanhSachQuanHuyen] = useState([]);
     const [danhSachXaPhuong, setDanhSachXaPhuong] = useState([]);
-    const [diaChiSelected,setDiaChiSelected] = useState(null);
-
+    const [refreshKey, setRefreshKey] = useState(0);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -48,6 +47,7 @@ const DiaChiLamViec = ({data}) => {
         fetchData();
     }, [diaChiData.quanHuyen]);
     useEffect(() => {
+        setRefreshKey(prevKey => prevKey + 1);
         setDiaChiData({
             ...diaChiData,
             id: null,
@@ -106,9 +106,10 @@ const DiaChiLamViec = ({data}) => {
         <Grid item xs={12}>
                 <Autocomplete
                     required
+                    key={refreshKey}
                     getOptionLabel={(option) => {
                         if (option.id !== undefined) {
-                            return `${option.soNhaTenDuong}, ${option.xaPhuong}, ${option.quanHuyen}, ${option.TP}` ;
+                            return `${option.soNhaTenDuong}, ${option.xaPhuong}, ${option.quanHuyen}, ${option.tinhTP}` ;
                         } else {
                             return `${option.ghiChu}`;
                         }
@@ -117,7 +118,6 @@ const DiaChiLamViec = ({data}) => {
                         ? [{ ghiChu: 'Thêm địa chỉ mới' } , ...khachHangData.danhSachDiaChi]
                         : [{ ghiChu: 'Thêm địa chỉ mới' }]
                     }
-                    //value={diaChiData}
                     onChange={(event,value) => handleChangeAutocompleteDiaChi(event,value)}
                     renderInput={(params) => (
                         <TextField

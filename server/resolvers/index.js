@@ -191,7 +191,7 @@ export const resolvers = {
 
             const diaChi = JSON.parse(args.diaChi);
             let idDiaChi;
-            if (diaChi.id === null) {
+            if (diaChi.id === undefined) {
                 const diaChiMoi = new DiaChiModel({
                     tinhTP: diaChi.tinhTp.name_with_type,
                     quanHuyen: diaChi.quanHuyen.name_with_type,
@@ -204,10 +204,11 @@ export const resolvers = {
             } else {
                 idDiaChi = diaChi.id;
             }
-
+            console.log(idDiaChi);
             const khachHang = JSON.parse(args.khachHang);
+
             let idKhachHang;
-            if (khachHang.id === null) {
+            if (khachHang.id === undefined) {
             const khachHangMoi = new KhachHangModel({
                 tenKhachHang: khachHang.tenKhachHang,
                 soDienThoai: khachHang.soDienThoai,
@@ -217,6 +218,9 @@ export const resolvers = {
             const resKhachHang = await khachHangMoi.save();
             idKhachHang = resKhachHang._id;
             } else {
+                const KH = await KhachHangModel.findById(khachHang.id);
+                KH.danhSachDiaChi.push(idDiaChi);
+                await KH.save();
                 idKhachHang = khachHang.id;
             }
 
@@ -352,7 +356,6 @@ export const resolvers = {
             return lichThucHien;
         },
         doiNhanVien: async (parent, args) => {
-            console.log(args);
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.lyDoDoiNhanVien = args.lyDoDoiNhanVien;
             donHang.nhanVienCu = args.idNhanVienCu;

@@ -103,6 +103,13 @@ const ThemDonHang = () => {
         }));
 
     }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value]);
+
+    useEffect(() => {
+        if (diaChiData.id === undefined) {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    }, [diaChiData]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
