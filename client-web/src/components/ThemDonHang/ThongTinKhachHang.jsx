@@ -25,6 +25,7 @@ const ThongTinKhachHang = ({data}) => {
             ...khachHangData,
             [e.target.name]: e.target.value
         });
+        
     }
     const handleChangeAutocompleteKhachHang = (event,value) => {
         setKhachHangData({
@@ -66,7 +67,7 @@ const ThongTinKhachHang = ({data}) => {
                     )}
                 />
             </Grid>
-        {khachHangData.tenKhachHang === 'Khách hàng mới' && (
+        {khachHangData.tenKhachHang === 'Thêm khách hàng mới' && (
             <>
              <Grid item xs={6}>
             <TextField
@@ -77,7 +78,7 @@ const ThongTinKhachHang = ({data}) => {
                 name="tenKhachHang"
                 variant="outlined"
                 size="small"
-                value={khachHangData.tenKhachHang === 'Khách hàng mới' ? '' : khachHangData.tenKhachHang}
+                value={khachHangData.tenKhachHang === 'Thêm khách hàng mới' ? '' : khachHangData.tenKhachHang}
                 onChange={handleChangeKhachHang}
             />
         </Grid>

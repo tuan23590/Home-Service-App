@@ -14,15 +14,13 @@ const DiaChiLamViec = ({data}) => {
             try {
                 const { data } = await apiTinhTP();
                 setDanhSachTinhTp(data.DanhSachTinhTp)
-                const dsDiaChiCuaKhachHang = khachHangData.danhSachDiaChi;
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
         fetchData();
-        console.log(khachHangData.danhSachDiaChi)
+        
     }, []);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -49,8 +47,17 @@ const DiaChiLamViec = ({data}) => {
         };
         fetchData();
     }, [diaChiData.quanHuyen]);
-
-
+    useEffect(() => {
+        setDiaChiData({
+            ...diaChiData,
+            id: null,
+            tinhTP: null,
+            quanHuyen: null,
+            xaPhuong: null,
+            soNhaTenDuong: null,
+            ghiChu: null,
+        });
+    }, [khachHangData]);
     const handleChangeDiaChi = (event) => {
         const { name, value } = event.target;
 
@@ -80,6 +87,17 @@ const DiaChiLamViec = ({data}) => {
             return newData;
         });
     };
+    const handleChangeAutocompleteDiaChi = (event,value) => {
+        setDiaChiData({
+            ...diaChiData,
+            id: value.id,
+            tinhTP: value.tinhTP,
+            quanHuyen: value.quanHuyen,
+            xaPhuong: value.xaPhuong,
+            soNhaTenDuong: value.soNhaTenDuong,
+            ghiChu: value.ghiChu
+        });
+    }
     return (
         <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -88,10 +106,19 @@ const DiaChiLamViec = ({data}) => {
         <Grid item xs={12}>
                 <Autocomplete
                     required
-                    getOptionLabel={(option) => option.tinhTP}
-                    options={diaChiData}
-                    value={khachHangData?.danhSachDiaChi}
-                    //onChange={(event,value) => handleChangeAutocompleteKhachHang(event,value)}
+                    getOptionLabel={(option) => 
+                        option.ghiChu === 'Thêm địa chỉ mới' 
+                            ? option.ghiChu 
+                            : option.id !== null 
+                            ? `${option.soNhaTenDuong || ''}, ${option.xaPhuong || ''}, ${option.quanHuyen || ''}, ${option.tinhTP || ''}` 
+                            : ''
+                    }                    
+                    options={Array.isArray(khachHangData.danhSachDiaChi) 
+                        ? [{ ghiChu: 'Thêm địa chỉ mới' } , ...khachHangData.danhSachDiaChi]
+                        : [{ ghiChu: 'Thêm địa chỉ mới' }]
+                    }
+                    value={diaChiData}
+                    onChange={(event,value) => handleChangeAutocompleteDiaChi(event,value)}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -103,7 +130,9 @@ const DiaChiLamViec = ({data}) => {
                     )}
                 />
             </Grid>
-        <Grid item xs={6}>
+       {diaChiData.ghiChu === 'Thêm địa chỉ mới' && (
+        <>
+         <Grid item xs={6}>
             <Autocomplete
                 options={danhSachTinhTp}
                 getOptionLabel={(option) => option.name_with_type}
@@ -179,6 +208,8 @@ const DiaChiLamViec = ({data}) => {
                 onChange={handleChangeDiaChi}
             />
         </Grid>
+        </>
+       )}
     </Grid>
     );
 };

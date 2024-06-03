@@ -97,8 +97,6 @@ const ThemDonHang = () => {
 
 
         const matchingDates = getDatesWithSameDayOfWeek(combinedDateTime, dayOfWeek, donHangData.soThangLapLai?.value * 30, soGioLamViec);
-
-        console.log(matchingDates);
         setDonHangData(prevData => ({
             ...prevData,
             danhSachLichThucHien: matchingDates
@@ -109,7 +107,6 @@ const ThemDonHang = () => {
         e.preventDefault();
         try {
             const data = await apiThemDonHang(donHangData);
-            console.log(data);
             alert('Tạo đơn hàng thành công')
         } catch (error) {
             alert('Tạo đơn hàng thất bại')
@@ -123,7 +120,7 @@ const ThemDonHang = () => {
                 <br />
                 <ThongTinKhachHang data={{ khachHangData, setKhachHangData }} />
                 <br />
-                <DiaChiLamViec data={{ diaChiData, setDiaChiData,khachHangData }} />
+                <DiaChiLamViec data={{ diaChiData, setDiaChiData,khachHangData}} />
                 <br />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant='h5' sx={{ color: 'red' }}>Tổng tiền: {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
