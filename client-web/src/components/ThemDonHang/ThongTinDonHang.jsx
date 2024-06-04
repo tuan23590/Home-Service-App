@@ -1,17 +1,24 @@
 import { Autocomplete, Grid, Table, TableBody, TableCell, Checkbox, TableHead, TableRow, TextField, Typography, Box, FormControlLabel, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { apiDanhSachDichVuChinh, dichVuLoader } from '../../../utils/DichVuUtils';
-import {EPOCHTODATE, EPOCHTODATETIME} from '../../function/index';
+import { EPOCHTODATE, EPOCHTODATETIME } from '../../function/index';
+
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import dayjs from 'dayjs';
+import 'dayjs/locale/vi';
 const ThongTinDonHang = ({ data }) => {
-    const { donHangData, setDonHangData,chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan} = data;
+    const { donHangData, setDonHangData, chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan } = data;
     const [danhSachDichVuChinh, setDanhSachDichVuChinh] = useState([]);
     const [danhSachDichVuThem, setDanhSachDichVuThem] = useState([]);
     const [selectedDichVu, setSelectedDichVu] = useState([]);
-    const [danhSachNgayThucHien, setDanhSachNgayThucHien] = useState([]);
+    const [doiGio, setDoiGio] = useState(false);
     const [danhSachGioThucHien, setDanhSachGioThucHien] = useState([]);
     const [dichVuChinh, setDichVuChinh] = useState(null);
-    const danhSachThangLapLai = [{ value: 1, label: '1 tháng' }, { value: 2, label: '2 tháng' }, { value: 3, label: '3 tháng' }, { value: 4, label: '4 tháng' }, { value: 5, label: '5 tháng' }, { value: 6, label: '6 tháng' }, { value: 7, label: '7 tháng' }, { value: 8, label: '8 tháng' }, { value: 9, label: '9 tháng' }, { value: 10, label: '10 tháng' }, { value: 11, label: '11 tháng' }, { value: 12, label: '12 tháng' }];
+    const danhSachThangLapLai = [{ label: 'Không lập lại' }, { value: 1, label: '1 tháng' }, { value: 2, label: '2 tháng' }, { value: 3, label: '3 tháng' }, { value: 4, label: '4 tháng' }, { value: 5, label: '5 tháng' }, { value: 6, label: '6 tháng' }, { value: 7, label: '7 tháng' }, { value: 8, label: '8 tháng' }, { value: 9, label: '9 tháng' }, { value: 10, label: '10 tháng' }, { value: 11, label: '11 tháng' }, { value: 12, label: '12 tháng' }];
 
+    dayjs.locale('vi');
     useEffect(() => {
         setDonHangData(prevData => ({
             ...prevData,
@@ -19,28 +26,6 @@ const ThongTinDonHang = ({ data }) => {
         }));
         setSelectedDichVu([]);
     }, [dichVuChinh]);
-    useEffect(() => {
-        const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-        const generateNext30Days = () => {
-            const today = new Date();
-            const daysArray = [];
-            for (let i = 0; i < 30; i++) {
-                const nextDay = new Date(today);
-                nextDay.setDate(today.getDate() + i + 1);
-
-                const day = nextDay.getDate().toString().padStart(2, '0');
-                const month = (nextDay.getMonth() + 1).toString().padStart(2, '0');
-                const year = nextDay.getFullYear();
-                const formattedDate = `${day}-${month}-${year}`;
-
-                daysArray.push({ formattedDate, nextDay });
-            }
-            return daysArray;
-        };
-
-        const next30Days = generateNext30Days();
-        setDanhSachNgayThucHien(next30Days);
-    }, []);
     useEffect(() => {
         const generateTimeRanges = (interval) => {
             const timesArray = [];
@@ -120,6 +105,67 @@ const ThongTinDonHang = ({ data }) => {
             setChonNgayLamViecTrongTuan(prevSelectedDays => [...prevSelectedDays, day]);
         }
     };
+    const handleDateChange = (date) => {
+        const currentDate = new Date();
+
+        // endDate;
+
+        if (date.$d <= currentDate.setDate(currentDate.getDate() - 1)) {
+            alert("Ngày không thể nhỏ hơn ngày hiện tại.");
+        } else {
+            setDonHangData((prevData) => ({
+                ...prevData,
+                ngayBatDau: date
+            }));
+        }
+    };
+    const xoaLich = (index) => {
+        const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa không?");
+        if (isConfirmed) {
+            setDonHangData((prevData) => ({
+                ...prevData,
+                danhSachLichThucHien: prevData.danhSachLichThucHien.filter((lichThucHien, i) => i !== index)
+            }));
+        }
+    }
+    const doiGioThucHien = (index, value) => {
+        // Lấy giờ từ value.startHour và chuyển thành số nguyên
+        const startHour = parseInt(value.startHour);
+    
+        // Lấy thời gian bắt đầu hiện tại từ donHangData
+        const thoiGianBatDau = donHangData.danhSachLichThucHien[index].thoiGianBatDau;
+    
+        // Tính toán thời gian kết thúc mới bằng cách cộng thêm số giờ từ value.interval
+       
+    
+        // Thiết lập thời gian bắt đầu mới
+        const thoiGianBatDauMoi = new Date(thoiGianBatDau);
+        thoiGianBatDauMoi.setHours(startHour);
+        const thoiGianKetThuc = new Date(thoiGianBatDauMoi);
+        thoiGianKetThuc.setHours(thoiGianKetThuc.getHours() + value.interval);
+        // Cập nhật dữ liệu
+        const updatedData = {
+            ...donHangData,
+            danhSachLichThucHien: donHangData.danhSachLichThucHien.map((lich, idx) => {
+                if (idx === index) {
+                    return {
+                        ...lich,
+                        thoiGianBatDau: thoiGianBatDauMoi.getTime(), // Chuyển thành milliseconds
+                        thoiGianKetThuc: thoiGianKetThuc.getTime() // Chuyển thành milliseconds
+                    };
+                }
+                return lich;
+            })
+        };
+    
+        // Cập nhật state
+        setDonHangData(updatedData);
+    
+        // Tắt chế độ đổi giờ
+        setDoiGio(false);
+    }
+    
+    
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -223,30 +269,13 @@ const ThongTinDonHang = ({ data }) => {
                 />
             </Grid>
             <Grid container item xs={6} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button variant={chonNgayLamViecTrongTuan.includes("Monday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Monday")}>T2</Button>
-                <Button variant={chonNgayLamViecTrongTuan.includes("Tuesday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Tuesday")}>T3</Button>
-                <Button variant={chonNgayLamViecTrongTuan.includes("Wednesday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Wednesday")}>T4</Button>
-                <Button variant={chonNgayLamViecTrongTuan.includes("Thursday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Thursday")}>T5</Button>
-                <Button variant={chonNgayLamViecTrongTuan.includes("Friday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Friday")}>T6</Button>
-                <Button variant={chonNgayLamViecTrongTuan.includes("Saturday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Saturday")}>T7</Button>
-                <Button variant={chonNgayLamViecTrongTuan.includes("Sunday") ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick("Sunday")}>CN</Button>
-            </Grid>
-            <Grid item xs={6}>
-                <Autocomplete
-                    options={danhSachNgayThucHien}
-                    getOptionLabel={(option) => option.formattedDate}
-                    value={donHangData.ngayBatDau}
-                    onChange={(event, newValue) => handleChangeDonHang({ target: { name: 'ngayBatDau', value: newValue } })}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Chọn ngày thực hiện"
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                        />
-                    )}
-                />
+                <Button variant={chonNgayLamViecTrongTuan.includes(1) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(1)}>T2</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes(2) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(2)}>T3</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes(3) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(3)}>T4</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes(4) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(4)}>T5</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes(5) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(5)}>T6</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes(6) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(6)}>T7</Button>
+                <Button variant={chonNgayLamViecTrongTuan.includes(0) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(0)}>CN</Button>
             </Grid>
             <Grid item xs={6}>
                 <Autocomplete
@@ -267,6 +296,25 @@ const ThongTinDonHang = ({ data }) => {
                 />
             </Grid>
             <Grid item xs={6}>
+                <Typography>Chọn ngày bắt đầu làm việc</Typography>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateCalendar
+                        value={donHangData.ngayBatDau}
+                        onChange={handleDateChange}
+                        dayOfWeekFormatter={(_day, weekday) => {
+                            if (_day.$W === 1) {
+                                return 'CN';
+                            } else if (_day.$W === 0) {
+                                return 'T7';
+                            } else {
+                                return 'T' + _day.$W;
+                            }
+                        }}
+                    />
+                </LocalizationProvider>
+            </Grid>
+
+            <Grid item xs={6}>
                 <Autocomplete
                     required
                     getOptionLabel={(option) => option.label}
@@ -285,28 +333,53 @@ const ThongTinDonHang = ({ data }) => {
                 />
             </Grid>
             <Grid item xs={12}>
+                <Typography><strong>Tổng số ngày thực hiện: {donHangData.danhSachLichThucHien?.length}</strong></Typography>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Ngày bắt đầu</TableCell>
-                            <TableCell>Ngày kết thúc</TableCell>
+                            <TableCell>Thời gian bắt đầu</TableCell>
+                            <TableCell>Thời gian kết thúc</TableCell>
                             <TableCell>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {donHangData.danhSachLichThucHien.map((lichThucHien) => (
+                        {donHangData.danhSachLichThucHien.map((lichThucHien, index) => (
                             <TableRow key={lichThucHien.thoiGianBatDau} sx={{
                                 cursor: 'pointer',
                                 '&:hover': {
                                     backgroundColor: '#bec2cc',
                                 },
-                            }} 
+                            }}
                             // onClick={() => handleSelect(dichVu)}
                             >
                                 <TableCell>{EPOCHTODATETIME(lichThucHien.thoiGianBatDau)}</TableCell>
                                 <TableCell>{EPOCHTODATETIME(lichThucHien.thoiGianKetThuc)}</TableCell>
                                 <TableCell>
-                                    <Button variant='contained' color='error'>Xóa</Button>
+                                    {doiGio ? (
+                                        <Box>
+                                            <Autocomplete
+                                                required
+                                                sx={{width: '400px'}}
+                                                getOptionLabel={(option) => option.timeString}
+                                                options={danhSachGioThucHien}
+                                                onChange={(event, newValue) => doiGioThucHien(index,newValue)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Chọn giờ bắt đầu và kết thúc"
+                                                        variant="outlined"
+                                                        size="small"
+                                                        fullWidth
+                                                    />
+                                                )}
+                                            />
+                                        </Box>
+                                    ) : (
+                                        <>
+                                            <Button sx={{ marginInline: '10px' }} variant='contained' color='warning' onClick={() => setDoiGio(true)}>Đổi giờ</Button>
+                                            <Button sx={{ marginInline: '10px' }} variant='contained' color='error' onClick={() => xoaLich(index)}>Xóa lịch</Button>
+                                        </>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

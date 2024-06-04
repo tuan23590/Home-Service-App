@@ -36,7 +36,7 @@ const ThemDonHang = () => {
     });
     const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
     useEffect(() => {
-        const tongTien = (parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang) + donHangData.dichVuChinh?.gia || 0) + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0);
+        const tongTien = donHangData.dichVuChinh?.gia || 0 + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0) + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang);
         setDonHangData((prevData) => ({
             ...prevData,
             tongTien: tongTien * donHangData.danhSachLichThucHien.length || tongTien
@@ -63,17 +63,16 @@ const ThemDonHang = () => {
             return date;
         };
 
-        const getDatesWithSameDayOfWeek = (startDate, dayOfWeek, days, workingHours) => {
+        const getDatesWithSameDaysOfWeek = (startDate, daysOfWeek, days, workingHours) => {
             const dates = [];
             const currentDate = new Date(startDate);
             const endDate = new Date(startDate);
             endDate.setDate(endDate.getDate() + days);
 
-
             while (currentDate <= endDate) {
-                if (currentDate.getDay() === dayOfWeek) {
+                if (daysOfWeek.includes(currentDate.getDay())) {
                     const startTime = currentDate.getTime();
-                    const endTime = startTime + workingHours * 3600000;
+                    const endTime = startTime + workingHours * 3600000; // 3600000 ms = 1 hour
                     dates.push({
                         thoiGianBatDau: startTime,
                         thoiGianKetThuc: endTime
@@ -85,22 +84,24 @@ const ThemDonHang = () => {
             return dates;
         };
 
-        const combinedDateTime = combineDateAndTime(donHangData.ngayBatDau?.nextDay, donHangData.gioBatDau?.startHour);
+        const combinedDateTime = combineDateAndTime(donHangData.ngayBatDau, donHangData.gioBatDau?.startHour);
 
-
-        const dayOfWeek = combinedDateTime.getDay();
-
+        const daysOfWeek = chonNgayLamViecTrongTuan;
 
         const soGioLamViec = donHangData.dichVuChinh?.thoiGian || 1;
 
+        const daysToRepeat = donHangData.soThangLapLai?.value ? donHangData.soThangLapLai.value * 30 : 6;
 
-        const matchingDates = getDatesWithSameDayOfWeek(combinedDateTime, dayOfWeek, donHangData.soThangLapLai?.value * 30, soGioLamViec);
-        setDonHangData(prevData => ({
-            ...prevData,
-            danhSachLichThucHien: matchingDates
-        }));
+        const matchingDates = getDatesWithSameDaysOfWeek(combinedDateTime, daysOfWeek, daysToRepeat, soGioLamViec);
+        if(donHangData.ngayBatDau !== null){
+            setDonHangData(prevData => ({
+                ...prevData,
+                danhSachLichThucHien: matchingDates
+            }));
+        }
 
-    }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value]);
+    }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value, chonNgayLamViecTrongTuan]);
+
 
     useEffect(() => {
         if (diaChiData.id === undefined) {
@@ -122,11 +123,11 @@ const ThemDonHang = () => {
     return (
         <Paper sx={{ padding: '20px', marginTop: '15px', height: '93%', overflow: 'auto' }} >
             <form onSubmit={handleSubmit}>
-                <ThongTinDonHang data={{ donHangData, setDonHangData,chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan }} />
+                <ThongTinDonHang data={{ donHangData, setDonHangData, chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan }} />
                 <br />
                 <ThongTinKhachHang data={{ khachHangData, setKhachHangData }} />
                 <br />
-                <DiaChiLamViec data={{ diaChiData, setDiaChiData,khachHangData}} />
+                <DiaChiLamViec data={{ diaChiData, setDiaChiData, khachHangData }} />
                 <br />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant='h5' sx={{ color: 'red' }}>Tổng tiền: {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
