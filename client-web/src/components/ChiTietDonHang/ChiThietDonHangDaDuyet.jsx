@@ -422,7 +422,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
               ) : (
                 <Box>
                   <Button variant="contained" color='success' sx={{ marginInline: '20px' }} onClick={() => setTrangThaiDoiNhanVien(!trangThaiDoiNhanVien)}>Thay đổi nhân viên</Button>
-                  <Button variant="contained" onClick={xyLyMoLyDoHuyDon}>hủy đơn hàng</Button>
+                  {/* <Button variant="contained" onClick={xyLyMoLyDoHuyDon}>hủy đơn hàng</Button> */}
                 </Box>
               )
               }

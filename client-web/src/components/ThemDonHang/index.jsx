@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Grid, Typography, Paper, Select, MenuItem, FormControl, InputLabel, Autocomplete, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Box } from '@mui/material';
+import { TextField, Button, Grid, Typography, Paper, Select, MenuItem, FormControl, InputLabel, Autocomplete, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Box, Snackbar, Alert } from '@mui/material';
 import { apiThemDonHang } from '../../../utils/DonHangUtils';
 import ThongTinKhachHang from './ThongTinKhachHang';
 import DiaChiLamViec from './DiaChiLamViec';
@@ -36,7 +36,7 @@ const ThemDonHang = () => {
     });
     const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
     useEffect(() => {
-        const tongTien = donHangData.dichVuChinh?.gia || 0 + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0) + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang);
+        const tongTien = donHangData.dichVuChinh?.gia || 0 + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0) + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)||0;
         setDonHangData((prevData) => ({
             ...prevData,
             tongTien: tongTien * donHangData.danhSachLichThucHien.length || tongTien
@@ -93,7 +93,7 @@ const ThemDonHang = () => {
         const daysToRepeat = donHangData.soThangLapLai?.value ? donHangData.soThangLapLai.value * 30 : 6;
 
         const matchingDates = getDatesWithSameDaysOfWeek(combinedDateTime, daysOfWeek, daysToRepeat, soGioLamViec);
-        if(donHangData.ngayBatDau !== null){
+        if (donHangData.ngayBatDau !== null) {
             setDonHangData(prevData => ({
                 ...prevData,
                 danhSachLichThucHien: matchingDates
@@ -102,6 +102,11 @@ const ThemDonHang = () => {
 
     }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value, chonNgayLamViecTrongTuan]);
 
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+    const handleCloseSnackbar = () => {
+      setSnackbar({ ...snackbar, open: false });
+    };
 
     useEffect(() => {
         if (diaChiData.id === undefined) {
@@ -115,6 +120,7 @@ const ThemDonHang = () => {
             const data = await apiThemDonHang(donHangData);
             alert('Tạo đơn hàng thành công')
             console.log(data);
+            window.location.reload();
         } catch (error) {
             alert('Tạo đơn hàng thất bại')
         }
@@ -123,7 +129,7 @@ const ThemDonHang = () => {
     return (
         <Paper sx={{ padding: '20px', marginTop: '15px', height: '93%', overflow: 'auto' }} >
             <form onSubmit={handleSubmit}>
-                <ThongTinDonHang data={{ donHangData, setDonHangData, chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan }} />
+                <ThongTinDonHang data={{ donHangData, setDonHangData, chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan,setSnackbar}} />
                 <br />
                 <ThongTinKhachHang data={{ khachHangData, setKhachHangData }} />
                 <br />
@@ -134,6 +140,16 @@ const ThemDonHang = () => {
                     <Button type="submit" variant="contained" color='success'>Tạo đơn hàng</Button>
                 </Box>
             </form>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Paper>
     );
 };
