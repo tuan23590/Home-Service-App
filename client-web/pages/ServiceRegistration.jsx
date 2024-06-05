@@ -25,7 +25,7 @@ import {
 import { Link } from 'react-router-dom';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { DonHangContext } from '../src/context/DonHangProvider';
-import { NhanVienLoader } from '../utils/NhanVienUtils';
+// import { NhanVienLoader , apiThongTinNhanVien} from '../utils/NhanVienUtils';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import { dichVuLoader } from './../utils/DichVuUtils';
 
@@ -91,20 +91,20 @@ const ServiceRegistration = () => {
   }, []);
   
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await NhanVienLoader();
-        setNhanViens(data.nhanViens);
-      } catch (error) {
-        console.error('Error fetching employee data:', error);
-        setError('Error fetching employee data');
-      } finally {
-        setLoadingEmployees(false);
-      }
-    };
-    fetchData();
-  }, [setNhanViens]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const { data } = await NhanVienLoader();
+  //       setNhanViens(data.nhanViens);
+  //     } catch (error) {
+  //       console.error('Error fetching employee data:', error);
+  //       setError('Error fetching employee data');
+  //     } finally {
+  //       setLoadingEmployees(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [setNhanViens]);
 
   useEffect(() => {
     calculateTotalPrice();

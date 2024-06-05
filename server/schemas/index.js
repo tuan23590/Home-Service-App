@@ -48,7 +48,9 @@ export const typeDefs = `#graphql
         thoiGianBatDauLich: Float,
         thoiGianKetThucLich: Float,
         trangThaiLich: String,
-        lyDoDungLich: String
+        lyDoDungLich: String,
+        nhanVienHoanThanh: String,
+        donHang: DonHang
     },
     type DonHang {
         id: String,

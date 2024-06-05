@@ -21,7 +21,7 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import './TotalCleaning.css';
 import { DonHangContext } from '../src/context/DonHangProvider';
-import { NhanVienLoader } from '../utils/NhanVienUtils';
+// import { NhanVienLoader } from '../utils/NhanVienUtils';
 
 export default function TotalCleaning() {
   const [selectedArea, setSelectedArea] = useState('');
@@ -50,11 +50,11 @@ export default function TotalCleaning() {
   };
 
   
-  const loadNhanViens = async () => {
-    const nhanViensData = await NhanVienLoader();
-    setNhanViens(nhanViensData);
-    console.log(["data : ", nhanViensData ]);
-  };
+  // const loadNhanViens = async () => {
+  //   const nhanViensData = await NhanVienLoader();
+  //   setNhanViens(nhanViensData);
+  //   console.log(["data : ", nhanViensData ]);
+  // };
 
   const handleAreaChange = (event) => {
     setSelectedArea(event.target.value);

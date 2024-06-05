@@ -10,9 +10,15 @@ const LichThucHienSchema = new mongoose.Schema({
     trangThaiLich: {
         type: String
     },
-    lyDoDungLich: {
+    lyDoDungLich:{
         type: String
     },
+    nhanVienHoanThanh: {
+        type: String
+    },
+    donHang:{
+        type:String
+    }
 },{timestamps: true});
 
 const LichThucHienModel = mongoose.model('LichThucHien',LichThucHienSchema);

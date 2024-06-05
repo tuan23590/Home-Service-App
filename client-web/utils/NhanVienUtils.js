@@ -88,7 +88,7 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({ query,variables: {idNhanVien:'6656a534a06300b51a80064e'} })
+      body: JSON.stringify({ query,variables: {idNhanVien:'6656aa8da06300b51a800659'} })
     });
 
     const data = await res.json();
