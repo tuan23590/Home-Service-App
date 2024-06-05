@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { apiThongTinNhanVien } from '../utils/NhanVienUtils';
 import { Box, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import ThongTinNhanVien from '../src/components/ChiTietDonHang/ThongTinNhanVien';
 
 export default function LichLamViec() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [open, setOpen] = useState(false);
     const [lichLamViec, setLichLamViec] = useState([]);
+    const [thongTinNhanVien,setThongTinNhanVien] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await apiThongTinNhanVien();
+            const { data } = await apiThongTinNhanVien('6656a528a06300b51a80064c');
             setLichLamViec(data.NhanVienTheoId.lichLamViec);
+            setThongTinNhanVien(data.NhanVienTheoId);
         };
         fetchData();
     }, []);
 
-    console.log(lichLamViec);
+    console.log(thongTinNhanVien);
 
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
@@ -27,6 +30,10 @@ export default function LichLamViec() {
 
     const handleNextMonth = () => {
         setCurrentDate(prevDate => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1));
+    };
+
+    const handleToday = () => {
+        setCurrentDate(new Date());
     };
 
     const handleClickOpen = (day) => {
@@ -60,6 +67,8 @@ export default function LichLamViec() {
     };
 
     return (
+        <>
+        <ThongTinNhanVien nhanVienDaChon={thongTinNhanVien} />
         <Box sx={{ flexGrow: 1, padding: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
                 <Typography variant="h5" align="center">
@@ -73,17 +82,17 @@ export default function LichLamViec() {
                     </Grid>
                 ))}
             </Grid>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{height: '57vh'}}>
                 {days.map((day, index) => (
                     <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}>
                         <Box
                             sx={{
-                                height: 50,
+                                height: 70,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: day 
-                                    ? isHighlighted(day) 
+                                backgroundColor: day
+                                    ? isHighlighted(day)
                                         ? '#ffc107' // Màu nổi bật cho ngày có lịch
                                         : (day === today.getDate() && month === today.getMonth() && year === today.getFullYear() ? '#90caf9' : '#f0f0f0')
                                     : 'transparent',
@@ -95,9 +104,21 @@ export default function LichLamViec() {
                     </Grid>
                 ))}
             </Grid>
-            <Box sx={{display: 'flex', justifyContent:'space-between',marginTop: '20px'}}>
-            <Button variant="contained" onClick={handlePreviousMonth}>Tháng Trước</Button>
-            <Button variant="contained" onClick={handleNextMonth}>Tháng Sau</Button>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                <Button sx={{
+                    marginInline: '5px', backgroundColor: '#000000 !important', '&:hover': {
+                        backgroundColor: '#000000 !important',
+                        opacity: 0.9
+                    },
+                }} variant="contained" onClick={handlePreviousMonth}>Tháng Trước</Button>
+                <Button sx={{ marginInline: '5px' }} variant="contained" onClick={handleToday}>Ngày Hiện Tại</Button>
+                <Button sx={{
+                    marginInline: '5px', backgroundColor: '#000000 !important', '&:hover': {
+                        backgroundColor: '#000000 !important',
+                        opacity: 0.9
+                    },
+                }} variant="contained" onClick={handleNextMonth}>Tháng Sau</Button>
+
             </Box>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Thông Tin Ngày</DialogTitle>
@@ -109,5 +130,6 @@ export default function LichLamViec() {
                 </DialogActions>
             </Dialog>
         </Box>
+        </>
     );
 }
