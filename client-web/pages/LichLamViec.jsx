@@ -8,7 +8,7 @@ export default function LichLamViec() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [open, setOpen] = useState(false);
     const [lichLamViec, setLichLamViec] = useState([]);
-    const [thongTinNhanVien,setThongTinNhanVien] = useState([]);
+    const [thongTinNhanVien, setThongTinNhanVien] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,8 +18,6 @@ export default function LichLamViec() {
         };
         fetchData();
     }, []);
-
-    console.log(thongTinNhanVien);
 
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
@@ -68,68 +66,95 @@ export default function LichLamViec() {
 
     return (
         <>
-        <ThongTinNhanVien nhanVienDaChon={thongTinNhanVien} />
-        <Box sx={{ flexGrow: 1, padding: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
-                <Typography variant="h5" align="center">
-                    <strong>Lịch làm việc {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</strong>
-                </Typography>
-            </Box>
-            <Grid container spacing={2}>
-                {['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map((day, index) => (
-                    <Grid item xs={1.71} key={index}>
-                        <Typography variant="h6" align="center">{day}</Typography>
-                    </Grid>
-                ))}
-            </Grid>
-            <Grid container spacing={2} sx={{height: '57vh'}}>
-                {days.map((day, index) => (
-                    <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}>
-                        <Box
-                            sx={{
-                                height: 70,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: day
-                                    ? isHighlighted(day)
-                                        ? '#ffc107' // Màu nổi bật cho ngày có lịch
-                                        : (day === today.getDate() && month === today.getMonth() && year === today.getFullYear() ? '#90caf9' : '#f0f0f0')
-                                    : 'transparent',
-                                cursor: day ? 'pointer' : 'default'
-                            }}
-                        >
-                            {day && <Typography>{day}</Typography>}
-                        </Box>
-                    </Grid>
-                ))}
-            </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                <Button sx={{
-                    marginInline: '5px', backgroundColor: '#000000 !important', '&:hover': {
-                        backgroundColor: '#000000 !important',
-                        opacity: 0.9
-                    },
-                }} variant="contained" onClick={handlePreviousMonth}>Tháng Trước</Button>
-                <Button sx={{ marginInline: '5px' }} variant="contained" onClick={handleToday}>Ngày Hiện Tại</Button>
-                <Button sx={{
-                    marginInline: '5px', backgroundColor: '#000000 !important', '&:hover': {
-                        backgroundColor: '#000000 !important',
-                        opacity: 0.9
-                    },
-                }} variant="contained" onClick={handleNextMonth}>Tháng Sau</Button>
+            <ThongTinNhanVien nhanVienDaChon={thongTinNhanVien} />
+            <Box sx={{ flexGrow: 1, padding: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+                    <Typography variant="h5" align="center">
+                        <strong>Lịch làm việc {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</strong>
+                    </Typography>
+                </Box>
+                <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
+                    {['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'].map((day, index) => (
+                        <Grid item xs={1.71} key={index}>
+                            <Typography variant="h6" align="center">{day}</Typography>
+                        </Grid>
+                    ))}
+                </Grid>
+                <Grid container spacing={2} sx={{ height: '55vh' }}>
+                    {days.map((day, index) => {
+                        const dayDate = new Date(year, month, day);
+                        const formattedDate = dayDate.toLocaleDateString();
+                        const lichLamViecOfDay = lichLamViec.filter(lich => new Date(lich.thoiGianBatDauLich).toLocaleDateString() === formattedDate);
 
+                        return (
+                            <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}>
+                                <Box
+                                    sx={{
+                                        height: 70,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        boxSizing: 'border-box',
+                                        border: day ? '1px solid #000000' : '',
+                                        borderRadius: '10px',
+                                        '&:hover': {
+                                            backgroundColor: day ? '#90caf9' : 'transparent'
+                                        },
+                                        backgroundColor: day
+                                            ? isHighlighted(day)
+                                                ? '#4dabf5' // Màu nổi bật cho ngày có lịch
+                                                : (day === today.getDate() && month === today.getMonth() && year === today.getFullYear() ? '#33ab9f' : '')
+                                            : 'transparent',
+                                        cursor: day ? 'pointer' : 'default'
+                                    }}
+                                >
+                                    {day && (
+                                        <>
+                                            <Typography variant='h5'>{day}</Typography>
+                                            {lichLamViecOfDay && (
+                                                <>
+                                                    {lichLamViecOfDay.map((lich, index) => (
+                                                        <Typography key={index} variant="body2">
+                                                            {new Date(lich.thoiGianBatDauLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianBatDauLich).getMinutes().toString().padStart(2, '0')} - {new Date(lich.thoiGianKetThucLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianKetThucLich).getMinutes().toString().padStart(2, '0')}
+                                                        </Typography>
+                                                    ))}
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </Box>
+                            </Grid>
+                        );
+                    })}
+                </Grid>
+
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                    <Button sx={{
+                        marginInline: '5px', backgroundColor: '#000000 !important', '&:hover': {
+                            backgroundColor: '#000000 !important',
+                            opacity: 0.9
+                        },
+                    }} variant="contained" onClick={handlePreviousMonth}>Tháng Trước</Button>
+                    <Button color='inherit' sx={{ marginInline: '5px', borderColor: '#000000 !important' }} variant='outlined' onClick={handleToday}>Ngày Hiện Tại</Button>
+                    <Button sx={{
+                        marginInline: '5px', backgroundColor: '#000000 !important', '&:hover': {
+                            backgroundColor: '#000000 !important',
+                            opacity: 0.9
+                        },
+                    }} variant="contained" onClick={handleNextMonth}>Tháng Sau</Button>
+
+                </Box>
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Thông Tin Ngày</DialogTitle>
+                    <DialogContent>
+                        <Typography>{selectedDate && selectedDate.toDateString()}</Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Đóng</Button>
+                    </DialogActions>
+                </Dialog>
             </Box>
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Thông Tin Ngày</DialogTitle>
-                <DialogContent>
-                    <Typography>{selectedDate && selectedDate.toDateString()}</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Đóng</Button>
-                </DialogActions>
-            </Dialog>
-        </Box>
         </>
     );
 }

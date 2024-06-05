@@ -68,7 +68,7 @@ const ThongTinNhanVien = ({nhanVienDaChon}) => {
                   <strong>Chuyên môn: </strong>
                 </Typography>
                 <Typography sx={{ width: '80%' }}>
-                  {nhanVienDaChon.dichVu.map(dv => dv.tenDichVu).join(', ')}
+                  {nhanVienDaChon.dichVu?.map(dv => dv.tenDichVu).join(', ')}
                 </Typography>
               </Grid>
               <Grid item xs={6} sx={{ display: 'flex' }}>
