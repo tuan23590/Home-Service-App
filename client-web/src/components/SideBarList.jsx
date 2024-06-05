@@ -4,10 +4,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const SideBarList = ({ listItem }) => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const navigate = useNavigate();
     const handleItemClick = (index) => {
         setSelectedItem(index);
     };
     const selectedPath = useLocation().pathname.split('/')[2];
+    useEffect(() => {
+        if (!selectedPath) navigate(`./${listItem[0].link}`);
+    }, [selectedPath]);
     return (
         <List
             sx={{

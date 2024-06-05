@@ -324,32 +324,6 @@ export const apiChiTietDonHang = async ({params})=> {
   return data;
 }
 
-
-
-// export const TrangThaiLoader = async ()=> {
-//     const query = `{
-//         __type(name: "TrangThai") {
-//           enumValues {
-//             name
-//           }
-//         }
-//       }              
-//       `;
-//     const res = await fetch(GRAPHQL_SERVER,{
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Accept': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             query
-//         })
-//     });
-//     const data = await res.json();
-//     return data;
-// }
-
-
 export const apiThemDonHang = async (formData) => {
   const query = `mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $uuTienTasker: Boolean, $diaChi: String, $tongTien: Float, $dichVuTheoYeuCauCuaKhachHang: String, $giaDichVuTheoYeuCauCuaKhachHang: Float, $soThangLapLai: Int, $dichVuChinh: String) {
     themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, uuTienTasker: $uuTienTasker, diaChi: $diaChi, tongTien: $tongTien, dichVuTheoYeuCauCuaKhachHang: $dichVuTheoYeuCauCuaKhachHang, giaDichVuTheoYeuCauCuaKhachHang: $giaDichVuTheoYeuCauCuaKhachHang, soThangLapLai: $soThangLapLai, dichVuChinh: $dichVuChinh) {
