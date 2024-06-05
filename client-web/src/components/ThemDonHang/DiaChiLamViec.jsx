@@ -8,6 +8,10 @@ const DiaChiLamViec = ({data}) => {
     const [danhSachQuanHuyen, setDanhSachQuanHuyen] = useState([]);
     const [danhSachXaPhuong, setDanhSachXaPhuong] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0);
+    const danhSachDiaChi = Array.isArray(khachHangData.danhSachDiaChi) 
+    ? [{ ghiChu: 'Thêm địa chỉ mới' } , ...khachHangData.danhSachDiaChi]
+    : [{ ghiChu: 'Thêm địa chỉ mới' }]
+    const [diaChi, setDiaChi] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -57,6 +61,16 @@ const DiaChiLamViec = ({data}) => {
             soNhaTenDuong: null,
             ghiChu: null,
         });
+        if(khachHangData.tenKhachHang === "Thêm khách hàng mới"){
+            setDiaChi(danhSachDiaChi[0])
+            setDiaChiData({
+               id: undefined,
+               ghiChu: 'Thêm địa chỉ mới'
+           });
+           }
+           else{
+               setDiaChi(danhSachDiaChi[1]);
+           }
     }, [khachHangData]);
     const handleChangeDiaChi = (event) => {
         const { name, value } = event.target;
@@ -113,11 +127,9 @@ const DiaChiLamViec = ({data}) => {
                         } else {
                             return `${option.ghiChu}`;
                         }
-                    }}                    
-                    options={Array.isArray(khachHangData.danhSachDiaChi) 
-                        ? [{ ghiChu: 'Thêm địa chỉ mới' } , ...khachHangData.danhSachDiaChi]
-                        : [{ ghiChu: 'Thêm địa chỉ mới' }]
-                    }
+                    }}    
+                    value={diaChi}              
+                    options={danhSachDiaChi}
                     onChange={(event,value) => handleChangeAutocompleteDiaChi(event,value)}
                     renderInput={(params) => (
                         <TextField
