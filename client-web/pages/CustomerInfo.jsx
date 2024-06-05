@@ -12,7 +12,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { DonHangContext } from '../src/context/DonHangProvider';
-import { DBDataDichVu } from '../utils/DichVuUtils';
+import { apiDanhSachDichVu } from '../utils/DichVuUtils';
 import { Link } from 'react-router-dom';
 import './CustomerInfo.css';
 
@@ -45,7 +45,7 @@ const CustomerInfo = () => {
     console.log('[dichVus]: ', dichVus);
     const fetchData = async () => {
       try {
-        const { data } = await DBDataDichVu();
+        const { data } = await apiDanhSachDichVu();
         console.log('Fetched dichVus:', data.dichVus);
         setDichVus(data.dichVus);
       } catch (error) {

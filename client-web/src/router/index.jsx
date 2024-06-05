@@ -4,7 +4,6 @@ import Home from "../../pages/Home";
 import Test from "../../pages/Test";
 import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHangDaTuChoi, DonHangLoader, apiChiTietDonHang } from "../../utils/DonHangUtils";
 import Detal from "../../pages/Detal";
-import OrderBrowser from "../../pages/OrderBrowser";
 import ServiceRegistration from "../../pages/ServiceRegistration"; 
 import ThemDonHang from "../../src/components/ThemDonHang/index";
 import DangKyNhanViec from "../../pages/DangKyNhanViec";
@@ -31,6 +30,9 @@ import ChiThietDonHangChoDuyet from "../components/ChiTietDonHang/ChiThietDonHan
 import ChiThietDonHangDaDuyet from "../components/ChiTietDonHang/ChiThietDonHangDaDuyet";
 import ChiThietDonHangDaTuChoi from "../components/ChiTietDonHang/ChiThietDonHangDaTuChoi";
 import QuanLyDonHang from "../../pages/QuanLyDonHang";
+import QuanLyDichVu from "../components/QuanLyDichVu";
+import { apiDanhSachDichVu } from "../../utils/DichVuUtils";
+import LichLamViec from "../../pages/LichLamViec";
 const AuthLayout = () => {
    return  <DonHangProvider>
      <Outlet />
@@ -116,8 +118,17 @@ export default createBrowserRouter([
                     {
                         element: <ThemDonHang />,
                         path: `/QuanLyDonHang/ThemDonHang`,
+                    },
+                    {
+                        element: <QuanLyDichVu />,
+                        path: `/QuanLyDonHang/QuanLyDichVu`,
+                        loader: apiDanhSachDichVu,
                     }
                 ],
+            },
+            {
+                element:   <LichLamViec />,
+                path: '/LichLamViec',
             },
             {
                 element:   <ServiceRegistration />,

@@ -1,7 +1,17 @@
-import { Box, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import React from 'react';
+import { Box, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import {EPOCHTODATE, EPOCHTODATETIME} from '../../function/index'
 const ThongTinDonHang = ({ donHang }) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   return (
 
     <Paper elevation={3} sx={{ padding: '20px' }}>
@@ -54,7 +64,7 @@ const ThongTinDonHang = ({ donHang }) => {
             <strong>Vật nuôi: </strong>
           </Typography>
           <Typography sx={{ width: '80%' }}>
-            {donHang.vatNuoi}
+            {donHang.vatNuoi||'Không có vật nuôi'}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -114,7 +124,7 @@ const ThongTinDonHang = ({ donHang }) => {
             <strong>Ghi chú ĐH: </strong>
           </Typography>
           <Typography sx={{ width: '80%' }}>
-            {donHang.ghiChu}
+            {donHang.ghiChu || 'Không có ghi chú'}
           </Typography>
         </Grid>
       </Grid>
@@ -142,8 +152,11 @@ const ThongTinDonHang = ({ donHang }) => {
                           {service.tenDichVu}
                         </TableCell>
                         <TableCell>
-                          {service.gia?.toLocaleString('vi-VN')} VNĐ
-                        </TableCell>
+                                {service.gia 
+                                    ? `+ ${service.gia.toLocaleString('vi-VN')} VNĐ` 
+                                    : ''} 
+                                {service.thoiGian ? `+ ${service.thoiGian} giờ` : ''}
+                            </TableCell>
                       </TableRow>
                     )
                   ))
@@ -164,19 +177,40 @@ const ThongTinDonHang = ({ donHang }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>TG bắt đầu</TableCell>
-                  <TableCell>TG kết thúc</TableCell>
+                  <TableCell>Thời gian bắt đầu</TableCell>
+                  <TableCell>Thời gian kết thúc</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {donHang.danhSachLichThucHien.map((schedule, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{EPOCHTODATETIME(schedule.thoiGianBatDauLich)}</TableCell>
-                    <TableCell>{EPOCHTODATETIME(schedule.thoiGianKetThucLich)}</TableCell>
-                  </TableRow>
-                ))}
+                {donHang.danhSachLichThucHien
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, index) => (
+                <TableRow
+                  //key={row.id}
+                  //onClick={() => handleRowClick(row)}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: '#bec2cc',
+                    },
+                  }}
+                >
+                  <TableCell>{EPOCHTODATETIME(row.thoiGianBatDauLich)}</TableCell>
+                    <TableCell>{EPOCHTODATETIME(row.thoiGianKetThucLich)}</TableCell>
+                </TableRow>
+              ))}
               </TableBody>
             </Table>
+            <TablePagination
+          component="div"
+          count={donHang.danhSachLichThucHien.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[10,15,20,30,50,100]}
+          labelRowsPerPage="Số hàng mỗi trang"
+        />
           </TableContainer>
         </Box>
       </Box>

@@ -11,7 +11,6 @@ const DiaChiLamViec = ({data}) => {
     const danhSachDiaChi = Array.isArray(khachHangData.danhSachDiaChi) 
     ? [{ ghiChu: 'Thêm địa chỉ mới' } , ...khachHangData.danhSachDiaChi]
     : [{ ghiChu: 'Thêm địa chỉ mới' }]
-    const [diaChi, setDiaChi] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -61,16 +60,12 @@ const DiaChiLamViec = ({data}) => {
             soNhaTenDuong: null,
             ghiChu: null,
         });
-        if(khachHangData.tenKhachHang === "Thêm khách hàng mới"){
-            setDiaChi(danhSachDiaChi[0])
-            setDiaChiData({
-               id: undefined,
-               ghiChu: 'Thêm địa chỉ mới'
-           });
-           }
-           else{
-               setDiaChi(danhSachDiaChi[1]);
-           }
+        if(khachHangData.tenKhachHang === "Thêm khách hàng mới")
+            {
+                setDiaChiData({
+                    ghiChu: 'Thêm địa chỉ mới',
+                });
+            }
     }, [khachHangData]);
     const handleChangeDiaChi = (event) => {
         const { name, value } = event.target;
@@ -117,7 +112,8 @@ const DiaChiLamViec = ({data}) => {
         <Grid item xs={12}>
             <Typography variant="h6">Địa chỉ làm việc</Typography>
         </Grid>
-        <Grid item xs={12}>
+        {khachHangData.tenKhachHang !== "Thêm khách hàng mới" && (<>
+            <Grid item xs={12}>
                 <Autocomplete
                     required
                     key={refreshKey}
@@ -127,8 +123,7 @@ const DiaChiLamViec = ({data}) => {
                         } else {
                             return `${option.ghiChu}`;
                         }
-                    }}    
-                    value={diaChi}              
+                    }}                
                     options={danhSachDiaChi}
                     onChange={(event,value) => handleChangeAutocompleteDiaChi(event,value)}
                     renderInput={(params) => (
@@ -142,6 +137,8 @@ const DiaChiLamViec = ({data}) => {
                     )}
                 />
             </Grid>
+        </>)}
+       
        {diaChiData.id === undefined && (
         <>
          <Grid item xs={6}>

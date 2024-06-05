@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { Link, Outlet, useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -18,10 +18,6 @@ import SideBarList from '../src/components/SideBarList';
 
 
 export default function QuanLyDonHang() {
-  const data = useLoaderData(); 
-  const navigate = useNavigate();
-
-
   return (
     <>
         <Grid container sx={{
@@ -34,11 +30,11 @@ export default function QuanLyDonHang() {
             {'link':'DanhSachDonHangDaDuyet','text':'Danh sách đã duyệt'},
             {'link':'DanhSachDonHangDaTuChoi','text':'Danh sách đã từ chối'},
             {'link':'ThemDonHang','text':'Thêm đơn hàng'},
-            {'link':'','text':'Quản lý dịch vụ'},
+            {'link':'QuanLyDichVu','text':'Quản lý dịch vụ'},
             {'link':'','text':'Quản lý người dùng'},
             ]} />
     </Grid>
-    <Grid item xs={10} sx={{height: '100%'}}>
+    <Grid item xs={10} sx={{height: '101%', paddingTop: '15px',paddingRight: '15px'}}>
     <Outlet />
     </Grid>
     </Grid>

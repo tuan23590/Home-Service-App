@@ -1,16 +1,19 @@
-const API_URL = 'http://localhost:4000/graphql'
+import { GRAPHQL_SERVER } from "./constants";
 
-export const DBDataDichVu = async () => {
-    const query = `query Query {
-      dichVus {
+export const apiDanhSachDichVu = async () => {
+    const query = `query DichVus {
+      DichVus {
         id
         tenDichVu
-        thoiGianLamViec
-        giaTien
-        }
-      }`;
+        maDichVu
+        khoiLuongCongViec
+        gia
+        thoiGian
+        loaiDichVu
+      }
+    }`;
     
-    const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
+    const res = await fetch(GRAPHQL_SERVER, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,7 +38,7 @@ export const DBDataDichVu = async () => {
       }
     }`;
     
-    const res = await fetch(API_URL, {
+    const res = await fetch(GRAPHQL_SERVER, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +66,7 @@ export const DBDataDichVu = async () => {
       }
     }`;
     
-    const res = await fetch(API_URL, {
+    const res = await fetch(GRAPHQL_SERVER, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

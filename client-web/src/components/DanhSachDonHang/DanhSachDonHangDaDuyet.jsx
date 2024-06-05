@@ -54,7 +54,7 @@ const DanhSachDonHangDaDuyet = () => {
   };
   
   return (
-    <Box sx={{ margin: '15px' }}>
+    <Box>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

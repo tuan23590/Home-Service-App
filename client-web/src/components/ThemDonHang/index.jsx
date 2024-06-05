@@ -35,8 +35,9 @@ const ThemDonHang = () => {
         ghiChu: ''
     });
     const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
+    const tongTien = donHangData.danhSachDichVuThem.reduce((acc, curr) => acc + curr.gia, 0)+ donHangData.dichVuChinh?.gia || 0 + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)||0;
     useEffect(() => {
-        const tongTien = donHangData.dichVuChinh?.gia || 0 + donHangData.danhSachDichVuThem.reduce((total, dichVu) => total + (dichVu.gia || 0), 0) + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)||0;
+        console.log();
         setDonHangData((prevData) => ({
             ...prevData,
             tongTien: tongTien * donHangData.danhSachLichThucHien.length || tongTien
@@ -127,16 +128,22 @@ const ThemDonHang = () => {
         ;
     };
     return (
-        <Paper sx={{ padding: '20px', marginTop: '15px', height: '93%', overflow: 'auto' }} >
+        <Paper sx={{ padding: '20px', height: '93%', overflow: 'auto' }} >
             <form onSubmit={handleSubmit}>
+                <Paper sx={{padding: '20px'}}>
                 <ThongTinDonHang data={{ donHangData, setDonHangData, chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan,setSnackbar}} />
+                </Paper>
                 <br />
+                <Paper sx={{padding: '20px'}}>
                 <ThongTinKhachHang data={{ khachHangData, setKhachHangData }} />
+                </Paper>
                 <br />
+                <Paper sx={{padding: '20px'}}>
                 <DiaChiLamViec data={{ diaChiData, setDiaChiData, khachHangData }} />
+                </Paper>
                 <br />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant='h5' sx={{ color: 'red' }}>Tổng tiền: {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
+                    <Typography variant='h5' sx={{ color: 'red' }}>Tổng tiền: {tongTien.toLocaleString('vi-VN')} VNĐ x {donHangData.danhSachLichThucHien.length||1} ngày = {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
                     <Button type="submit" variant="contained" color='success'>Tạo đơn hàng</Button>
                 </Box>
             </form>

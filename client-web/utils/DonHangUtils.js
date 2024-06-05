@@ -237,6 +237,7 @@ export const apiChiTietDonHang = async ({params})=> {
         khoiLuongCongViec
         loaiDichVu
         tenDichVu
+        thoiGian
       }
       danhSachLichThucHien {
         id

@@ -1,13 +1,13 @@
 import { Card, CardContent, List, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const SideBarList = ({ listItem }) => {
     const [selectedItem, setSelectedItem] = useState(null);
-    const navagate = useNavigate();
     const handleItemClick = (index) => {
         setSelectedItem(index);
     };
+    const selectedPath = useLocation().pathname.split('/')[2];
     return (
         <List
             sx={{
@@ -35,7 +35,7 @@ const SideBarList = ({ listItem }) => {
                     <Card
                         sx={{
                             mb: '5px',
-                            background: selectedItem === index ? 'linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232))' : '#000000',
+                            background: selectedPath == link ? 'linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232))' : '#000000',
                         }}
                     >
                         <CardContent sx={{ '&:last-child': { pb: '10px' }, textAlign: 'center' }}>

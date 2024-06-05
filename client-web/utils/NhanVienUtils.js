@@ -1,34 +1,4 @@
-export const NhanVienLoader = async () => {
-    const query = `query MyQuery {
-      nhanViens {
-        id
-        ten
-        }
-      }
-    }`;
-
-    const res = await fetch('https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ query })
-    });
-
-    const data = await res.json();
-    return data;
-  };
-
-  const fetchNhanViens = async () => {
-    try {
-      const responseData = await NhanVienLoader();
-      setNhanViens(responseData.data.nhanViens);
-    } catch (error) {
-      console.error('Error fetching employee data:', error);
-    }
-  };
-  import { GRAPHQL_SERVER } from "./constants";
+import { GRAPHQL_SERVER } from "./constants";
 
 export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     const query = `query DanhSachNhanVienTrongViec($idDonHang: String) {
@@ -83,4 +53,44 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     const data = await res.json();
     return data;
   };
-  
+  export const apiThongTinNhanVien = async (idNhanVien) => {
+    const query = `query NhanVienTheoId($idNhanVien: String) {
+      NhanVienTheoId(idNhanVien: $idNhanVien) {
+        id
+        tenNhanVien
+        gioiTinh
+        ngaySinh
+        diaChi
+        soDienThoai
+        email
+        cccd
+        dichVu {
+          tenDichVu
+        }
+        ghiChu
+        trangThaiTaiKhoan
+        danhGia
+        trangThaiHienTai
+        lichLamViec {
+          id
+          thoiGianBatDauLich
+          thoiGianKetThucLich
+          trangThaiLich
+          lyDoDungLich
+        }
+        anhDaiDien
+      }
+    }`;
+
+    const res = await fetch(GRAPHQL_SERVER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ query,variables: {idNhanVien:'6656a534a06300b51a80064e'} })
+    });
+
+    const data = await res.json();
+    return data;
+  };
