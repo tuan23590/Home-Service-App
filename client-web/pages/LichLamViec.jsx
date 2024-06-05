@@ -90,7 +90,7 @@ export default function LichLamViec() {
                             <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}>
                                 <Box
                                     sx={{
-                                        height: 70,
+                                        height: 80,
                                         display: 'flex',
                                         flexDirection: 'column',
                                         alignItems: 'center',
@@ -111,12 +111,12 @@ export default function LichLamViec() {
                                 >
                                     {day && (
                                         <>
-                                            <Typography variant='h5'>{day}</Typography>
+                                            <Typography variant='h6'>{day}</Typography>
                                             {lichLamViecOfDay && (
                                                 <>
                                                     {lichLamViecOfDay.map((lich, index) => (
                                                         <Typography key={index} variant="body2">
-                                                            {new Date(lich.thoiGianBatDauLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianBatDauLich).getMinutes().toString().padStart(2, '0')} - {new Date(lich.thoiGianKetThucLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianKetThucLich).getMinutes().toString().padStart(2, '0')}
+                                                            {new Date(lich.thoiGianBatDauLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianBatDauLich).getMinutes().toString().padStart(2, '0')} - {new Date(lich.thoiGianKetThucLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianKetThucLich).getMinutes().toString().padStart(2, '0')} ({lich.trangThaiLich})
                                                         </Typography>
                                                     ))}
                                                 </>

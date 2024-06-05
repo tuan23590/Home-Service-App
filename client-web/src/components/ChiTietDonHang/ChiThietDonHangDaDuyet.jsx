@@ -215,7 +215,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                     <strong>Tên dịch vụ: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
-                    {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].tenDichVu}
+                    {donHang.dichVuChinh.tenDichVu}
                   </Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -231,7 +231,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                     <strong>Khối lượng CV: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
-                    {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].khoiLuongCongViec}
+                    {donHang.dichVuChinh.khoiLuongCongViec}
                   </Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -312,11 +312,11 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                       </TableHead>
                       <TableBody>
                         {donHang && Array.isArray(donHang.danhSachDichVu) ? (
-                          donHang.danhSachDichVu.map((service, index) => (
+                          donHang.danhSachDichVu?.map((service, index) => (
                             service.loaiDichVu === "DichVuThem" && (
                               <TableRow key={index}>
                                 <TableCell>
-                                  {service.tenDichVu}
+                                  {service?.tenDichVu}
                                 </TableCell>
                                 <TableCell>
                                   {service.gia === null ? `+ ${service.thoiGian} Giờ` : `+ ${service.gia.toLocaleString('vi-VN')} VNĐ`}

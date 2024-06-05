@@ -121,7 +121,7 @@ const ThemDonHang = () => {
             const data = await apiThemDonHang(donHangData);
             alert('Tạo đơn hàng thành công')
             console.log(data);
-            window.location.reload();
+            //window.location.reload();
         } catch (error) {
             alert('Tạo đơn hàng thất bại')
         }

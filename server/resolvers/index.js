@@ -169,6 +169,12 @@ export const resolvers = {
             return data;
         }
     },
+    LichThucHien: {
+        donHang: async (parent) => {
+            const data = await DonHangModel.findOne({ _id: parent.donHang });
+            return data;
+        }
+    },
 
     Mutation: {
         themDichVu: async (parent, args) => {
@@ -178,20 +184,8 @@ export const resolvers = {
             return DichVu;
         },
         themDonHang: async (parent, args) => {
-
             const danhSachLichThucHien = JSON.parse(args.danhSachLichThucHien);
             const danhSachIdLichThucHien = [];
-            for (let i = 0; i < danhSachLichThucHien.length; i++) {
-                const lichThucHien = danhSachLichThucHien[i];
-
-                const danhSachLichThucHienMoi = new LichThucHienModel({
-                    thoiGianBatDauLich: lichThucHien.thoiGianBatDau,
-                    thoiGianKetThucLich: lichThucHien.thoiGianKetThuc,
-                    trangThaiLich: "Đang thực hiện"
-                });
-                const resLichThucHien = await danhSachLichThucHienMoi.save();
-                danhSachIdLichThucHien.push(resLichThucHien._id);
-            }
 
             const diaChi = JSON.parse(args.diaChi);
             let idDiaChi;
@@ -250,7 +244,6 @@ export const resolvers = {
                 ...args,
                 khachHang: idKhachHang,
                 diaChi: idDiaChi,
-                danhSachLichThucHien: danhSachIdLichThucHien,
                 maDonHang: newMaDonHang,
                 ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
                 ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
@@ -260,6 +253,23 @@ export const resolvers = {
 
             const DonHang = new DonHangModel(donHangMoi);
             await DonHang.save();
+
+            
+            for (let i = 0; i < danhSachLichThucHien.length; i++) {
+                const lichThucHien = danhSachLichThucHien[i];
+
+                const danhSachLichThucHienMoi = new LichThucHienModel({
+                    thoiGianBatDauLich: lichThucHien.thoiGianBatDau,
+                    thoiGianKetThucLich: lichThucHien.thoiGianKetThuc,
+                    trangThaiLich: "Đang thực hiện",
+                    donHang: DonHang._id
+                });
+                const resLichThucHien = await danhSachLichThucHienMoi.save();
+                danhSachIdLichThucHien.push(resLichThucHien._id);
+            }
+            DonHang.danhSachLichThucHien = danhSachIdLichThucHien;
+            await DonHang.save();
+            
             return DonHang;
         },
         themKhachHang: async (parent, args) => {
