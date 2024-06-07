@@ -7,14 +7,13 @@ export default function LichLamViec() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [open, setOpen] = useState(false);
-    const [lichLamViec, setLichLamViec] = useState([]);
     const [thongTinNhanVien, setThongTinNhanVien] = useState([]);
+    const lichLamViec = thongTinNhanVien.lichLamViec || [];
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await apiThongTinNhanVien('6656a528a06300b51a80064c');
-            setLichLamViec(data.NhanVienTheoId.lichLamViec);
-            setThongTinNhanVien(data.NhanVienTheoId);
+            const data = await apiThongTinNhanVien('6656a528a06300b51a80064c');
+            setThongTinNhanVien(data);
         };
         fetchData();
     }, []);
