@@ -19,9 +19,9 @@ const DanhSachNhanVienPhuHop = ({data}) => {
         const fetchData = async () => {
           if (donHang && donHang.id) {
             try {
-              const { data } = await apiDanhSachNhanVienNhanDonHang(donHang.id);
-              setDanhSachNhanVienNhanDonHang(data.DanhSachNhanVienTrongViec);
-              setNhanVienDaChon(data.DanhSachNhanVienTrongViec[0]);
+              const data = await apiDanhSachNhanVienNhanDonHang(donHang.id);
+              setDanhSachNhanVienNhanDonHang(data);
+              setNhanVienDaChon(data[0]);
             } catch (error) {
               console.error('Error fetching data:', error);
             }

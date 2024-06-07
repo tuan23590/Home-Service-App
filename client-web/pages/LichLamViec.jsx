@@ -4,6 +4,7 @@ import { Box, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, Dial
 import ThongTinNhanVien from '../src/components/ChiTietDonHang/ThongTinNhanVien';
 import ThongTinTaiKhoan from '../src/components/ThongTinTaiKhoan';
 import { AuthContext } from '../src/context/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function LichLamViec() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -11,7 +12,9 @@ export default function LichLamViec() {
     const [open, setOpen] = useState(false);
     const [thongTinNhanVien, setThongTinNhanVien] = useState([]);
     const lichLamViec = thongTinNhanVien.lichLamViec || [];
-    const {nhanVien} = useContext(AuthContext);
+    const {user,nhanVien} = useContext(AuthContext);
+    const navigate = useNavigate();
+    
     useEffect(() => {
         const fetchData = async () => {
             const data = await apiThongTinNhanVien(nhanVien.id);
@@ -21,7 +24,6 @@ export default function LichLamViec() {
         fetchData();
         }
     }, [nhanVien]);
-
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 

@@ -55,7 +55,7 @@ export const resolvers = {
         DanhSachNhanVienTrongViec: async (parent, args) => {
             const data = await DonHangModel.findOne({ _id: args.idDonHang });
             const thoiGianBatDauDonHang = data.ngayBatDau;
-            const danhSachNhanVien = await NhanVienModel.find();
+            const danhSachNhanVien = await NhanVienModel.find({phanQuyen:'Tasker'});
             const nhanVienKhongTrungLich = [];
 
             for (let i = 0; i < danhSachNhanVien.length; i++) {
