@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { apiThongTinNhanVien } from '../utils/NhanVienUtils';
 import { Box, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import ThongTinNhanVien from '../src/components/ChiTietDonHang/ThongTinNhanVien';
 import ThongTinTaiKhoan from '../src/components/ThongTinTaiKhoan';
+import { AuthContext } from '../src/context/AuthProvider';
 
 export default function LichLamViec() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -10,14 +11,16 @@ export default function LichLamViec() {
     const [open, setOpen] = useState(false);
     const [thongTinNhanVien, setThongTinNhanVien] = useState([]);
     const lichLamViec = thongTinNhanVien.lichLamViec || [];
-
+    const {nhanVien} = useContext(AuthContext);
     useEffect(() => {
         const fetchData = async () => {
-            const data = await apiThongTinNhanVien('6656a528a06300b51a80064c');
+            const data = await apiThongTinNhanVien(nhanVien.id);
             setThongTinNhanVien(data);
         };
+        if(nhanVien?.id) {
         fetchData();
-    }, []);
+        }
+    }, [nhanVien]);
 
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();

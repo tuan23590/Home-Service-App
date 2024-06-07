@@ -8,7 +8,7 @@ const QuanLyDonHangProtected = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     if (!user?.uid) {
-        navigate('/');
+        navigate('/DangNhap');
     }
     useEffect(() => {
         if (nhanVien) {

@@ -17,6 +17,14 @@ export default function AuthProvider({ children }) {
             if (user?.uid) {
                 setUser(user);
                 localStorage.setItem('accessToken', user.accessToken);
+                const data = await apiTimNhanVienTheoEmail(user.email);
+                if (!data) {
+                  alert('Tài khoản của bạn không có quyền truy cập vào hệ thống 1');
+                  user.auth.signOut();
+                  return;
+                }
+                setNhanVien(data);
+                console.log(data);
                 return;
             }
             setUser({});
@@ -27,20 +35,6 @@ export default function AuthProvider({ children }) {
             unsubscribed();
         };
     }, [auth]);
-    useEffect( () => {
-        const fetchNhanVien = async () => {
-          const data = await apiTimNhanVienTheoEmail(user.email);
-        if (!data) {
-          alert('Tài khoản của bạn không có quyền truy cập vào hệ thống 1');
-          user.auth.signOut();
-          return;
-        }
-        setNhanVien(data);
-        };
-        if(user?.email) {
-          fetchNhanVien();
-        }
-      }, [user]);
     return (
         <AuthContext.Provider value={{ user, setUser,nhanVien,setNhanVien }}>
             {children}
