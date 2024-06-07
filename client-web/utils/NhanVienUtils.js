@@ -68,3 +68,35 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     const {NhanVienTheoId} = await GraphQLrequest({query,variables: {idNhanVien}})
     return NhanVienTheoId;
   };
+  export const apiTimNhanVienTheoEmail = async (email) => {
+    const query = `query TimNhanVienTheoEmail($email: String) {
+  TimNhanVienTheoEmail(email: $email) {
+     id
+        tenNhanVien
+        gioiTinh
+        ngaySinh
+        diaChi
+        soDienThoai
+        phanQuyen
+        email
+        cccd
+        dichVu {
+          tenDichVu
+        }
+        ghiChu
+        trangThaiTaiKhoan
+        danhGia
+        trangThaiHienTai
+        lichLamViec {
+          id
+          thoiGianBatDauLich
+          thoiGianKetThucLich
+          trangThaiLich
+          lyDoDungLich
+        }
+        anhDaiDien
+  }
+}`;
+    const {TimNhanVienTheoEmail} = await GraphQLrequest({query,variables: {email}})
+    return TimNhanVienTheoEmail;
+  };

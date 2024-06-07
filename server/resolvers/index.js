@@ -125,6 +125,10 @@ export const resolvers = {
         NhanVienTheoId: async (parent, args) => {
             const data = await NhanVienModel.findOne({ _id: args.idNhanVien });
             return data;
+        },
+        TimNhanVienTheoEmail: async (parent, args) => {
+            const data = await NhanVienModel.findOne({ email: args.email });
+            return data;
         }
     },
     DonHang: {

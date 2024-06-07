@@ -7,6 +7,7 @@ import 'react-slideshow-image/dist/styles.css';
 import { getAuth } from 'firebase/auth';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'; // Import GoogleMap, LoadScript và Marker từ react-google-maps/api
 import './Home.css';
+import ThongTinTaiKhoan from '../src/components/ThongTinTaiKhoan';
 
 export default function Home() {
   const [anchorElAboutUs, setAnchorElAboutUs] = useState(null);
@@ -185,18 +186,8 @@ export default function Home() {
             </Menu>
 
           </div>
-                <div>
-            {isLoggedIn ? (
-              <div>
-                <Typography variant="body1" style={{ color: 'white' }}>Xin chào, {currentUser.displayName}</Typography>
-                <Button onClick={handleLogout} className="logout-button">Đăng xuất</Button>
-              </div>
-            ) : (
-              <div>
-                <Button component={Link} to="/login" className="login-button">Đăng Nhập</Button>
-              </div>
-            )}
-          </div>
+                <ThongTinTaiKhoan/>
+             
 
         </Toolbar>
       </AppBar>

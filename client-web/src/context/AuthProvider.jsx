@@ -2,41 +2,47 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-// Rename the context to avoid conflict
+import { apiTimNhanVienTheoEmail } from '../../utils/NhanVienUtils';
+
 export const AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export default function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [nhanVien,setNhanVien] = useState(null);
     const navigate = useNavigate();
-
-
     const auth = getAuth();
-
     useEffect(() => {
-        const unsubscribed = auth.onIdTokenChanged((user) => {
-            console.log('[From AuthProvider]', { user });
-            if(user?.uid){
-            setUser(user);
-            localStorage.setItem('accessToken',user.accessToken);
-            navigate('/');
-            return;
+        const unsubscribed = auth.onIdTokenChanged(async (user) => {
+            if (user?.uid) {
+                setUser(user);
+                localStorage.setItem('accessToken', user.accessToken);
+                return;
             }
-            /// reset user info
             setUser({});
             localStorage.clear();
-            // navigate('/login');
         });
-        
+
         return () => {
             unsubscribed();
         };
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth]);
-
+    useEffect( () => {
+        const fetchNhanVien = async () => {
+          const data = await apiTimNhanVienTheoEmail(user.email);
+        if (!data) {
+          alert('Tài khoản của bạn không có quyền truy cập vào hệ thống 1');
+          user.auth.signOut();
+          return;
+        }
+        setNhanVien(data);
+        };
+        if(user?.email) {
+          fetchNhanVien();
+        }
+      }, [user]);
     return (
-        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ user, setUser,nhanVien,setNhanVien }}>
             {children}
         </AuthContext.Provider>
     );

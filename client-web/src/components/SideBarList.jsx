@@ -1,6 +1,7 @@
 import { Card, CardContent, List, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import ThongTinTaiKhoan from './ThongTinTaiKhoan';
 
 const SideBarList = ({ listItem }) => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -24,7 +25,7 @@ const SideBarList = ({ listItem }) => {
             }}
             subheader={
                 <>
-                    <Typography variant='h5' style={{ color: 'white', textAlign: 'center', marginBottom: '10px' }}>Admin</Typography>
+                    <ThongTinTaiKhoan />
                     <hr></hr>
                 </>
             }

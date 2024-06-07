@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiThongTinNhanVien } from '../utils/NhanVienUtils';
 import { Box, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import ThongTinNhanVien from '../src/components/ChiTietDonHang/ThongTinNhanVien';
+import ThongTinTaiKhoan from '../src/components/ThongTinTaiKhoan';
 
 export default function LichLamViec() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -72,6 +73,7 @@ export default function LichLamViec() {
                         <strong>Lịch làm việc {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</strong>
                     </Typography>
                 </Box>
+                <ThongTinTaiKhoan />
                 <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
                     {['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'].map((day, index) => (
                         <Grid item xs={1.71} key={index}>
@@ -86,7 +88,7 @@ export default function LichLamViec() {
                         const lichLamViecOfDay = lichLamViec.filter(lich => new Date(lich.thoiGianBatDauLich).toLocaleDateString() === formattedDate);
 
                         return (
-                            <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}>
+                            <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}> 
                                 <Box
                                     sx={{
                                         height: 80,

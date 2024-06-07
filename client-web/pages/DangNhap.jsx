@@ -1,91 +1,131 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
-import { Button, TextField, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import './DangNhap.css'; 
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import GoogleIcon from '@mui/icons-material/Google';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { AuthContext } from '../src/context/AuthProvider';
+import { apiTimNhanVienTheoEmail } from '../utils/NhanVienUtils';
+import { useNavigate } from 'react-router-dom';
+const defaultTheme = createTheme();
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
-
-  const auth = getAuth();
-
-  const handleLogin = async () => {
-    if (!email || !password) {
-      setError('Vui lòng điền thông tin tài khoản');
-      return;
-    }
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      if (error.code === 'auth/invalid-email') {
-        setError('Email không hợp lệ');
-      } else if (error.code === 'auth/wrong-password') {
-        setError('Mật khẩu không đúng');
-      } else {
-        setError('Đã có lỗi xảy ra khi đăng nhập');
-      }
-    }
-  };
-
+export default function DangNhap() {
+  const navigate = useNavigate();
+  const { user,nhanVien } = React.useContext(AuthContext);
   const handleLoginWithGoogle = async () => {
+    const auth = getAuth();
+
     const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log('Google Sign In:', user);
-    } catch (error) {
-      setError('Đã có lỗi xảy ra khi đăng nhập bằng Google');
-    }
+    const result = await signInWithPopup(auth, provider);
+    navigate('/');
   };
-
   return (
-    <div className="login-container">
-      <div className="image-container">
-        <img src="/Image/girl.jpg" alt="Login background image" />
-      </div>
-      <div className="form-container">
-        <Typography variant="h6" sx={{ fontFamily: 'Tahoma', fontWeight: 'bold' }}>
-          ĐĂNG NHẬP
-        </Typography>
-      <div className="form">
-        <TextField
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="TextField-root"
-          fullWidth
-          required
+    <ThemeProvider theme={defaultTheme}>
+      <Grid container component="main" sx={{ height: '100vh' }}>
+        <CssBaseline />
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: (t) =>
+              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         />
-        <TextField
-          label="Mật khẩu"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="TextField-root"
-          fullWidth
-          required
-        />
-      </div>
-      {error && <Typography className="error">{error}</Typography>}
-
-      <Typography className="link" variant="body2">
-        <Link to="/qmk">Quên mật khẩu?</Link>
-      </Typography>
-      
-      <div className="button-group">
-        <Button variant="contained" onClick={handleLogin} className="primary" sx={{ mt: 2, mb: 1 }}>Đăng nhập</Button>    
-        <Button variant="contained" onClick={handleLoginWithGoogle} className="google" sx={{ mt: 1, mb: 2, bgcolor: '#DB4437', color: 'white' }}>Đăng nhập bằng Google</Button>
-      </div>     
-      <Typography className="link" variant="body2">
-        Chưa có tài khoản? <Link to="/dktk">Đăng ký ngay</Link>
-      </Typography>
-       </div>
-    </div>
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: '#2196f3' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Đăng Nhập
+            </Typography>
+            <Box component="form" noValidate onSubmit={null} sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+              <Box>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    backgroundColor: '#2196f3 !important',
+                    '&:hover': {
+                      backgroundColor: '#2196f3 !important',
+                      opacity: 0.9
+                    },
+                    marginY: '10px'
+                  }}
+                  backgroundColor="#2196f3 !important"
+                >
+                  Sign In
+                </Button>
+                <Button variant='outlined' fullWidth onClick={handleLoginWithGoogle} className="google">
+                  <GoogleIcon sx={{ marginRight: '10px' }} />
+                  Đăng nhập bằng Google
+                </Button>
+              </Box>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="#" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+    </ThemeProvider>
   );
-};
-
-export default Login;
+}
