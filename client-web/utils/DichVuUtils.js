@@ -1,4 +1,4 @@
-import { GRAPHQL_SERVER } from "./constants";
+import { GraphQLrequest } from "./request";
 
 export const apiDanhSachDichVu = async () => {
     const query = `query DichVus {
@@ -12,23 +12,11 @@ export const apiDanhSachDichVu = async () => {
         loaiDichVu
       }
     }`;
-    
-    const res = await fetch(GRAPHQL_SERVER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        query
-      })
-    });
-  
-    const data = await res.json();
-    return data;
+    const {DichVus} = await GraphQLrequest({query});
+    return DichVus;
   };
 
-  export const dichVuLoader = async () => {
+  export const apiDanhSachDichVuThem = async () => {
     const query = `query DichVuThem {
       DichVuThem {
         id
@@ -37,20 +25,9 @@ export const apiDanhSachDichVu = async () => {
         thoiGian
       }
     }`;
-    
-    const res = await fetch(GRAPHQL_SERVER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        query
-      })
-    });
-  
-    const data = await res.json();
-    return data;
+
+    const {DichVuThem} = await GraphQLrequest({query});
+    return DichVuThem;
   };
 
 
@@ -65,18 +42,6 @@ export const apiDanhSachDichVu = async () => {
         loaiDichVu
       }
     }`;
-    
-    const res = await fetch(GRAPHQL_SERVER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        query
-      })
-    });
-  
-    const data = await res.json();
-    return data;
+    const {DichVuCaLe} = await GraphQLrequest({query});
+    return DichVuCaLe;
   };

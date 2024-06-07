@@ -227,8 +227,7 @@ export const resolvers = {
 
 
             const lastDonHang = await DonHangModel.findOne().sort({ _id: -1 }).exec();
-            const ngayBatDauMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[0]);
-            const ngayKetThucMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[danhSachIdLichThucHien.length - 1]);
+           
 
             let newMaDonHang;
             if (lastDonHang) {
@@ -245,8 +244,6 @@ export const resolvers = {
                 khachHang: idKhachHang,
                 diaChi: idDiaChi,
                 maDonHang: newMaDonHang,
-                ngayBatDau: ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
-                ngayKetThuc: ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
                 ngayDatHang: (Math.floor(Date.now() / 1000))*1000,
                 trangThaiDonHang: "Đang chờ duyệt"
             };
@@ -267,6 +264,12 @@ export const resolvers = {
                 const resLichThucHien = await danhSachLichThucHienMoi.save();
                 danhSachIdLichThucHien.push(resLichThucHien._id);
             }
+
+            const ngayBatDauMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[0]);
+            const ngayKetThucMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[danhSachIdLichThucHien.length - 1]);
+
+            DonHang.ngayBatDau = ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
+            DonHang.ngayKetThuc = ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
             DonHang.danhSachLichThucHien = danhSachIdLichThucHien;
             await DonHang.save();
             

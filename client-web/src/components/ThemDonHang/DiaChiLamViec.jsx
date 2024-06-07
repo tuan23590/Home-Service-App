@@ -14,8 +14,8 @@ const DiaChiLamViec = ({data}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data } = await apiTinhTP();
-                setDanhSachTinhTp(data.DanhSachTinhTp)
+                const data  = await apiTinhTP();
+                setDanhSachTinhTp(data)
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -27,8 +27,8 @@ const DiaChiLamViec = ({data}) => {
         const fetchData = async () => {
             try {
                 if (diaChiData.tinhTp?.code) {
-                    const { data } = await apiQuanHuyen(diaChiData.tinhTp?.code);
-                    setDanhSachQuanHuyen(data.DanhSachQuanHuyen)
+                    const data = await apiQuanHuyen(diaChiData.tinhTp?.code);
+                    setDanhSachQuanHuyen(data)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -40,8 +40,8 @@ const DiaChiLamViec = ({data}) => {
         const fetchData = async () => {
             try {
                 if (diaChiData.quanHuyen?.code) {
-                    const { data } = await apiXaPhuong(diaChiData.quanHuyen?.code);
-                    setDanhSachXaPhuong(data.DanhSachXaPhuong)
+                    const data = await apiXaPhuong(diaChiData.quanHuyen?.code);
+                    setDanhSachXaPhuong(data)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);

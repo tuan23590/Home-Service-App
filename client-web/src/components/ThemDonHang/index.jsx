@@ -35,12 +35,12 @@ const ThemDonHang = () => {
         ghiChu: ''
     });
     const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
-    const tongTien = donHangData.danhSachDichVuThem.reduce((acc, curr) => acc + curr.gia, 0)+ donHangData.dichVuChinh?.gia || 0 + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)||0;
+    const tongTien = (donHangData.danhSachDichVuThem.reduce((acc, curr) => acc + curr.gia, 0)+ donHangData.dichVuChinh?.gia || 0) + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)||0;
     useEffect(() => {
         console.log();
         setDonHangData((prevData) => ({
             ...prevData,
-            tongTien: tongTien * donHangData.danhSachLichThucHien.length || tongTien
+            tongTien: tongTien * donHangData.danhSachLichThucHien.length || 0
         }));
     }, [donHangData.dichVuChinh, donHangData.danhSachDichVuThem, donHangData.soThangLapLai, donHangData.giaDichVuTheoYeuCauCuaKhachHang, donHangData.danhSachLichThucHien]);
 
@@ -143,7 +143,7 @@ const ThemDonHang = () => {
                 </Paper>
                 <br />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant='h5' sx={{ color: 'red' }}>Tổng tiền: {tongTien.toLocaleString('vi-VN')} VNĐ x {donHangData.danhSachLichThucHien.length||1} ngày = {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
+                    <Typography variant='h5' sx={{ color: 'red' }}>Tổng tiền: {tongTien.toLocaleString('vi-VN')} VNĐ x {donHangData.danhSachLichThucHien.length||0} ngày = {donHangData.tongTien.toLocaleString('vi-VN')} VNĐ</Typography>
                     <Button type="submit" variant="contained" color='success'>Tạo đơn hàng</Button>
                 </Box>
             </form>

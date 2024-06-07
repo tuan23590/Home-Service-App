@@ -10,8 +10,8 @@ const ThongTinKhachHang = ({data}) => {
         const fetchData = async () => {
             try {
                 const dsKhachHang = await apiDanhSachKhachHang();
-                setDanhSachKhachHang(dsKhachHang.data.KhachHangs);
-                dsKhachHang.data.KhachHangs.unshift({tenKhachHang: 'Thêm khách hàng mới'});
+                setDanhSachKhachHang(dsKhachHang);
+                dsKhachHang.unshift({tenKhachHang: 'Thêm khách hàng mới'});
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

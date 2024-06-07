@@ -8,9 +8,8 @@ import ThongTinKhachHang from './ThongTinKhachHang';
 import DanhSachNhanVienPhuHop from './DanhSachNhanVienPhuHop';
 
 const ChiThietDonHangChoDuyet = () => {
-  const {data} = useLoaderData();
   const {setSnackbar} = useOutletContext();
-  const donHang = data.DonHangTheoId;
+  const donHang = useLoaderData();
   const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
   const navigate = useNavigate();
 

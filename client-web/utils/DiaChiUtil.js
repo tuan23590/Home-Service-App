@@ -1,5 +1,4 @@
-const API_URL = 'http://localhost:4000/graphql'
-
+import { GraphQLrequest } from "./request";
 export const apiTinhTP = async () => {
     const query = `query DanhSachTinhTp {
         DanhSachTinhTp {
@@ -7,20 +6,8 @@ export const apiTinhTP = async () => {
           code
         }
       }`;
-
-    const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            query
-        })
-    });
-
-    const data = await res.json();
-    return data;
+    const {DanhSachTinhTp} = await GraphQLrequest({query});
+    return DanhSachTinhTp;
 };
 
 export const apiXaPhuong = async (idQuanHuyen) => {
@@ -30,21 +17,8 @@ export const apiXaPhuong = async (idQuanHuyen) => {
           code
         }
       }`;
-
-    const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            query,
-            variables: { idQuanHuyen }
-        })
-    });
-
-    const data = await res.json();
-    return data;
+    const {DanhSachXaPhuong} = await GraphQLrequest({query, variables: {idQuanHuyen}});
+    return DanhSachXaPhuong;
 };
 
 export const apiQuanHuyen = async (idTinhTp) => {
@@ -54,19 +28,6 @@ export const apiQuanHuyen = async (idTinhTp) => {
           code
         }
       }`;
-
-    const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            query,
-            variables: { idTinhTp }
-        })
-    });
-
-    const data = await res.json();
-    return data;
+    const {DanhSachQuanHuyen} = await GraphQLrequest({query, variables: {idTinhTp}});
+    return DanhSachQuanHuyen;
 };

@@ -12,12 +12,11 @@ import {
   TablePagination
 } from '@mui/material';
 import { Snackbar, Alert } from '@mui/material';
-import { EPOCHTODATE } from './../../function/index';
+import { EPOCHTODATE } from '../function/index';
 
 
 const DanhSachDonHangChoDuyet = () => {
-  const { data } = useLoaderData();
-  const danhSachDonHang = data.DonHangDangChoDuyet;
+  const danhSachDonHang = useLoaderData();
   const navigate = useNavigate();
 
   const [chonDonHang, setChonDonHang] = useState(danhSachDonHang[0]);

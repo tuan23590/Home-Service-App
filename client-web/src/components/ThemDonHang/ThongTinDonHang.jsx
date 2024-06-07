@@ -1,6 +1,6 @@
 import { Autocomplete, Grid, Table, TableBody, TableCell, Checkbox, TableHead, TableRow, TextField, Typography, Box, FormControlLabel, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TablePagination } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { apiDanhSachDichVuChinh, dichVuLoader } from '../../../utils/DichVuUtils';
+import { apiDanhSachDichVuChinh, apiDanhSachDichVuThem } from '../../../utils/DichVuUtils';
 import { EPOCHTODATE, EPOCHTODATETIME } from '../../function/index';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,6 +17,7 @@ const ThongTinDonHang = ({ data }) => {
     const [danhSachGioThucHien, setDanhSachGioThucHien] = useState([]);
     const [dichVuChinh, setDichVuChinh] = useState(null);
     const danhSachThangLapLai = [{ label: 'Không lập lại' }, { value: 1, label: '1 tháng' }, { value: 2, label: '2 tháng' }, { value: 3, label: '3 tháng' }, { value: 4, label: '4 tháng' }, { value: 5, label: '5 tháng' }, { value: 6, label: '6 tháng' }, { value: 7, label: '7 tháng' }, { value: 8, label: '8 tháng' }, { value: 9, label: '9 tháng' }, { value: 10, label: '10 tháng' }, { value: 11, label: '11 tháng' }, { value: 12, label: '12 tháng' }];
+    const danhSachGiaDichVuTheoYeuCau = [{label: '0 VNĐ', price:0},{label: '50.000 VNĐ', price:50000},{label: '100.000 VNĐ', price:100000},{label: '150.000 VNĐ', price:150000},{label: '200.000 VNĐ', price:200000},{label: '250.000 VNĐ', price:250000},{label: '300.000 VNĐ', price:300000},{label: '350.000 VNĐ', price:350000},{label: '400.000 VNĐ', price:400000},{label: '450.000 VNĐ', price:450000},{label: '500.000 VNĐ', price:500000},{label: '550.000 VNĐ', price:550000},{label: '600.000 VNĐ', price:600000},{label: '650.000 VNĐ', price:650000},{label: '700.000 VNĐ', price:700000},{label: '750.000 VNĐ', price:750000},{label: '800.000 VNĐ', price:800000},{label: '850.000 VNĐ', price:850000},{label: '900.000 VNĐ', price:900000},{label: '950.000 VNĐ', price:950000},{label: '1.000.000 VNĐ', price:1000000}]; 
     const [vatNuoi, setVatNuoi] = useState('');
     const [danhSachVatNuoi, setDanhSachVatNuoi] = useState(['Chó', 'Mèo', 'Khác']);
     const [gioDoiDaChon, setGioDoiDaChon] = useState(null);
@@ -28,10 +29,15 @@ const ThongTinDonHang = ({ data }) => {
         setDonHangData(prevData => ({
             ...prevData,
             dichVuChinh: dichVuChinh,
-            vatNuoi: vatNuoi
         }));
         setSelectedDichVu([]);
-    }, [dichVuChinh, vatNuoi]);
+    }, [dichVuChinh]);
+    useEffect(() => {
+        setDonHangData(prevData => ({
+            ...prevData,
+            vatNuoi: vatNuoi
+        }));
+    }, [vatNuoi]);
 
     useEffect(() => {
         const generateTimeRanges = (interval) => {
@@ -57,10 +63,10 @@ const ThongTinDonHang = ({ data }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const dataDanhSachDichvuThem = await dichVuLoader();
-                setDanhSachDichVuThem(dataDanhSachDichvuThem.data.DichVuThem);
-                const dataDanhSachDichVuChinh = await apiDanhSachDichVuChinh();
-                setDanhSachDichVuChinh(dataDanhSachDichVuChinh.data.DichVuCaLe);
+                const dataDVThem = await apiDanhSachDichVuThem();
+                setDanhSachDichVuThem(dataDVThem);
+                const dataDVChinh = await apiDanhSachDichVuChinh();
+                setDanhSachDichVuChinh(dataDVChinh);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -291,15 +297,22 @@ const ThongTinDonHang = ({ data }) => {
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        label="Giá DV theo yêu cầu của khách hàng"
-                        name="giaDichVuTheoYeuCauCuaKhachHang"
-                        variant="outlined"
-                        size="small"
-                        type='number'
-                        value={donHangData.giaDichVuTheoYeuCauCuaKhachHang}
-                        onChange={handleChangeDonHang}
+                    <Autocomplete
+                        required
+                        options={danhSachGiaDichVuTheoYeuCau}
+                        onChange={(event, newValue) => setDonHangData((prevData) => ({
+                            ...prevData,
+                            giaDichVuTheoYeuCauCuaKhachHang: newValue?.price ||0
+                        }))}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Giá DV theo yêu cầu của khách hàng"
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                            />
+                        )}
                     />
                 </Grid>
                 <Grid item xs={6}>

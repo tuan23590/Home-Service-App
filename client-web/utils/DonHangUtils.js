@@ -1,209 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 
 import { GRAPHQL_SERVER } from "./constants";
-
-export const DonHangLoader = async ()=> {
-    const query = `query DonHangDangChoDuyet {
-      DonHangDangChoDuyet {
-            id
-            maDonHang
-            ngayDatHang
-            ngayBatDau
-            ngayKetThuc
-            soGioThucHien
-            trangThaiDonHang
-            vatNuoi
-            ghiChu
-            saoDanhGia
-            ghiChuDanhGia
-            khachHang {
-              tenKhachHang
-              soDienThoai
-              email
-            }
-            danhSachDichVu {
-              tenDichVu
-              gia
-              maDichVu
-              loaiDichVu
-              thoiGian
-              moTaDichVu
-            }
-            uuTienTasker
-            tongTien
-            diaChi {
-              id
-              tinhTP
-              quanHuyen
-              xaPhuong
-              soNhaTenDuong
-              ghiChu
-            }
-            danhSachLichThucHien {
-              thoiGianBatDauLich
-              thoiGianKetThucLich
-              trangThaiLich
-            }
-          }
-    }  
-      `;
-    const res = await fetch(GRAPHQL_SERVER,{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            query
-        })
-    });
-    const data = await res.json();
-    return data;
-}
-
-export const APIDanhSachDonHangDaDuyet = async ()=> {
-  const query = `query DonHangDaDuyet {
-    DonHangDaDuyet {
-          id
-          maDonHang
-          ngayDatHang
-          ngayBatDau
-          ngayKetThuc
-          soGioThucHien
-          trangThaiDonHang
-          vatNuoi
-          ghiChu
-          saoDanhGia
-          ghiChuDanhGia
-          lyDoDoiNhanVien
-          khachHang {
-            tenKhachHang
-            soDienThoai
-            email
-          }
-          danhSachDichVu {
-            tenDichVu
-            gia
-            maDichVu
-            loaiDichVu
-            thoiGian
-            khoiLuongCongViec
-          }
-          uuTienTasker
-          tongTien
-          diaChi {
-            id
-            tinhTP
-            quanHuyen
-            xaPhuong
-            soNhaTenDuong
-            ghiChu
-          }
-          danhSachLichThucHien {
-            id
-            thoiGianBatDauLich
-            thoiGianKetThucLich
-            trangThaiLich
-            lyDoDungLich
-          }
-      nhanVien {
-        id
-        tenNhanVien
-        gioiTinh
-        ngaySinh
-        diaChi
-        soDienThoai
-        email
-        cccd
-        anhDaiDien
-        dichVu {
-          tenDichVu
-        }
-        ghiChu
-        trangThaiTaiKhoan
-        danhGia
-        trangThaiHienTai
-      }
-    }
-  }  
-    `;
-  const res = await fetch(GRAPHQL_SERVER,{
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-          query
-      })
-  });
-  const data = await res.json();
-  return data;
-}
-export const APIDanhSachDonHangDaTuChoi = async ()=> {
-  const query = `query DonHangDaTuChoi {
-    DonHangDaTuChoi {
-          id
-          maDonHang
-          ngayDatHang
-          ngayBatDau
-          ngayKetThuc
-          soGioThucHien
-          trangThaiDonHang
-          vatNuoi
-          ghiChu
-          saoDanhGia
-          ghiChuDanhGia
-          lyDoTuChoi
-          khachHang {
-            tenKhachHang
-            soDienThoai
-            email
-          }
-          danhSachDichVu {
-            tenDichVu
-            gia
-            maDichVu
-            loaiDichVu
-            thoiGian
-            khoiLuongCongViec
-          }
-          uuTienTasker
-          tongTien
-          diaChi {
-            id
-            tinhTP
-            quanHuyen
-            xaPhuong
-            soNhaTenDuong
-            ghiChu
-          }
-          danhSachLichThucHien {
-            thoiGianBatDauLich
-            thoiGianKetThucLich
-            trangThaiLich
-          }
-        }
-  }  
-    `;
-  const res = await fetch(GRAPHQL_SERVER,{
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-          query
-      })
-  });
-  const data = await res.json();
-  return data;
-}
+import { GraphQLrequest } from "./request";
 
 export const APIDanhSachDonHangChoDuyet = async ()=> {
   const query = `query DonHangDangChoDuyet {
     DonHangDangChoDuyet {
-          id
+           id
           maDonHang
           ngayDatHang
           ngayBatDau
@@ -213,23 +16,11 @@ export const APIDanhSachDonHangChoDuyet = async ()=> {
     }
   }  
     `;
-  const res = await fetch(GRAPHQL_SERVER,{
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-          query
-      })
-  });
-  const data = await res.json();
-  return data;
+  const {DonHangDangChoDuyet} = await GraphQLrequest({query})
+  return DonHangDangChoDuyet;
 }
 
-
 export const apiChiTietDonHang = async ({params})=> {
-  console.log(params.id);
   const query = `query DonHangTheoId($idDonHang: String) {
     DonHangTheoId(idDonHang: $idDonHang) {
       danhSachDichVu {
@@ -310,18 +101,42 @@ export const apiChiTietDonHang = async ({params})=> {
     }
   }  
     `;
-  const res = await fetch(GRAPHQL_SERVER,{
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-          query,variables: { "idDonHang" : params.id }
-      })
-  });
-  const data = await res.json();
-  return data;
+  const {DonHangTheoId} = await GraphQLrequest({query, variables: {idDonHang: params.id}});
+  return DonHangTheoId;
+}
+
+
+export const APIDanhSachDonHangDaDuyet = async ()=> {
+  const query = `query DonHangDaDuyet {
+    DonHangDaDuyet {
+          id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+    }
+  }  
+    `;
+  const {DonHangDaDuyet} = await GraphQLrequest({query})
+  return DonHangDaDuyet;
+}
+export const APIDanhSachDonHangDaTuChoi = async ()=> {
+  const query = `query DonHangDaTuChoi {
+    DonHangDaTuChoi {
+           id
+          maDonHang
+          ngayDatHang
+          ngayBatDau
+          ngayKetThuc
+          soGioThucHien
+          trangThaiDonHang
+    }
+  }  
+    `;
+  const {DonHangDaTuChoi} = await GraphQLrequest({query})
+  return DonHangDaTuChoi;
 }
 
 export const apiThemDonHang = async (formData) => {
@@ -331,34 +146,24 @@ export const apiThemDonHang = async (formData) => {
     }
   }
   `;
-  const res = await fetch(GRAPHQL_SERVER, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        soGioThucHien: formData.dichVuChinh.thoiGian,
-        danhSachLichThucHien: JSON.stringify(formData.danhSachLichThucHien),
-        khachHang: JSON.stringify(formData.khachHang),
-        danhSachDichVu: formData.danhSachDichVuThem.map(dichVu => dichVu.id),
-        vatNuoi: formData.vatNuoi,
-        ghiChu: formData.ghiChu,
-        uuTienTasker: null,
-        diaChi: JSON.stringify(formData.diaChi),
-        tongTien: formData.tongTien,
-        dichVuTheoYeuCauCuaKhachHang: formData.dichVuTheoYeuCauCuaKhachHang,
-        giaDichVuTheoYeuCauCuaKhachHang: parseFloat(formData.giaDichVuTheoYeuCauCuaKhachHang),
-        soThangLapLai: formData.soThangLapLai.value,
-        dichVuChinh: formData.dichVuChinh.id
-      }
-    })
-  });
-  
-  const data = await res.json();
-  return data;
+ 
+  const {ThemDonHang} = await GraphQLrequest ({query,
+    variables: {
+      soGioThucHien: formData.dichVuChinh.thoiGian,
+      danhSachLichThucHien: JSON.stringify(formData.danhSachLichThucHien),
+      khachHang: JSON.stringify(formData.khachHang),
+      danhSachDichVu: formData.danhSachDichVuThem.map(dichVu => dichVu.id),
+      vatNuoi: formData.vatNuoi,
+      ghiChu: formData.ghiChu,
+      uuTienTasker: null,
+      diaChi: JSON.stringify(formData.diaChi),
+      tongTien: formData.tongTien,
+      dichVuTheoYeuCauCuaKhachHang: formData.dichVuTheoYeuCauCuaKhachHang,
+      giaDichVuTheoYeuCauCuaKhachHang: parseFloat(formData.giaDichVuTheoYeuCauCuaKhachHang),
+      soThangLapLai: formData.soThangLapLai.value,
+      dichVuChinh: formData.dichVuChinh.id
+    }});
+  return ThemDonHang;
 };
 
 
@@ -369,24 +174,13 @@ export const themNhanVienVaoDonHang = async (idDonHang,idNhanVien) => {
       maDonHang
     }
   }
-  `;
-  const res = await fetch(GRAPHQL_SERVER, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        idNhanVien,
-        idDonHang
-      }
-    })
-  });
-  
-  const data = await res.json();
-  return data;
+  `;  
+  const {themNhanVienVaoDonHang} = await GraphQLrequest({ query,
+    variables: {
+      idNhanVien,
+      idDonHang
+    }})
+  return themNhanVienVaoDonHang;
 };
 
 export const apiTuChoiDonHang = async (idDonHang, lyDoTuChoi) => {
@@ -396,23 +190,12 @@ export const apiTuChoiDonHang = async (idDonHang, lyDoTuChoi) => {
     }
   }
   `;
-  const res = await fetch(GRAPHQL_SERVER, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        idDonHang,
-        lyDoTuChoi
-      }
-    })
-  });
-  
-  const data = await res.json();
-  return data;
+  const {TuChoiDonHang} = await GraphQLrequest({query,
+    variables: {
+      idDonHang,
+      lyDoTuChoi
+    }})
+  return TuChoiDonHang;
 };
 export const apiHuyDonHang = async (idDonHang, lyDoHuyDonHang) => {
   const query = `mutation HuyDonHang($idDonHang: String, $lyDoHuyDonHang: String) {

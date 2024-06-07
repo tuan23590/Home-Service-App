@@ -11,11 +11,11 @@ import {
 } from '@mui/material';
 
 const QuanLyDichVu = () => {
-    const { data } = useLoaderData();
+    const data = useLoaderData();
 
     // Filter services into main services and additional services
-    const dichVuChinh = data.DichVus.filter(dichVu => dichVu.loaiDichVu === 'CaLe');
-    const dichVuThem = data.DichVus.filter(dichVu => dichVu.loaiDichVu === 'DichVuThem');
+    const dichVuChinh = data.filter(dichVu => dichVu.loaiDichVu === 'CaLe');
+    const dichVuThem = data.filter(dichVu => dichVu.loaiDichVu === 'DichVuThem');
 
     const renderTable = (title, services) => (
         <Paper sx={{ width: '100%', overflow: 'hidden', marginBottom: '20px' }}>

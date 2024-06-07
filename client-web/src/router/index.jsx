@@ -1,9 +1,7 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import DangNhap from "../../pages/DangNhap";
 import Home from "../../pages/Home";
-import Test from "../../pages/Test";
-import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHangDaTuChoi, DonHangLoader, apiChiTietDonHang } from "../../utils/DonHangUtils";
-import Detal from "../../pages/Detal";
+import { APIDanhSachDonHangChoDuyet, APIDanhSachDonHangDaDuyet, APIDanhSachDonHangDaTuChoi, apiChiTietDonHang } from "../../utils/DonHangUtils";
 import ServiceRegistration from "../../pages/ServiceRegistration"; 
 import ThemDonHang from "../../src/components/ThemDonHang/index";
 import DangKyNhanViec from "../../pages/DangKyNhanViec";
@@ -23,9 +21,7 @@ import SignUp from "../../pages/SignUp";
 import ForgotPassword from "../../pages/ForgotPassword";
 
 
-import DanhSachDonHangChoDuyet from "../components/DanhSachDonHang/DanhSachDonHangChoDuyet";
-import DanhSachDonHangDaDuyet from "../components/DanhSachDonHang/DanhSachDonHangDaDuyet";
-import DanhSachDonHangDaTuChoi from "../components/DanhSachDonHang/DanhSachDonHangDaTuChoi";
+import DanhSachDonHang from "../components/DanhSachDonHang";
 import ChiThietDonHangChoDuyet from "../components/ChiTietDonHang/ChiThietDonHangChoDuyet";
 import ChiThietDonHangDaDuyet from "../components/ChiTietDonHang/ChiThietDonHangDaDuyet";
 import ChiThietDonHangDaTuChoi from "../components/ChiTietDonHang/ChiThietDonHangDaTuChoi";
@@ -63,24 +59,12 @@ export default createBrowserRouter([
                         },
                     ]
             },
-
-            {
-                element: <Test />,
-                path: '/test',
-                loader: DonHangLoader,
-                children: [
-                    {
-                        element: <Detal />,
-                        path: `DonHang/:maDonHang`,
-                    },
-                ],
-            },
             {
                 element: <QuanLyDonHang />,
                 path: '/QuanLyDonHang',
                 children: [
                     {
-                        element: <DanhSachDonHangChoDuyet />,
+                        element: <DanhSachDonHang />,
                         path: `/QuanLyDonHang/DanhSachDonHangChoDuyet`,
                         loader: APIDanhSachDonHangChoDuyet,
                         children: [
@@ -92,7 +76,7 @@ export default createBrowserRouter([
                         ]
                     },
                     {
-                        element: <DanhSachDonHangDaDuyet />,
+                        element: <DanhSachDonHang />,
                         path: `/QuanLyDonHang/DanhSachDonHangDaDuyet`,
                         loader: APIDanhSachDonHangDaDuyet,
                         children: [
@@ -104,7 +88,7 @@ export default createBrowserRouter([
                         ],
                     },
                     {
-                        element: <DanhSachDonHangDaTuChoi />,
+                        element: <DanhSachDonHang />,
                         path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi`,
                         loader: APIDanhSachDonHangDaTuChoi,
                         children: [

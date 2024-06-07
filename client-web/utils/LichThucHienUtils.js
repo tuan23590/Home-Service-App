@@ -1,4 +1,4 @@
-import { GRAPHQL_SERVER } from "./constants";
+import { GraphQLrequest } from "./request";
 
 export const apiNgungLichThucHien = async (idLichThucHien, lyDoDungLich) => {
     const query = `mutation DungLichThucHien($idLichThucHien: String, $lyDoDungLich: String) {
@@ -8,23 +8,14 @@ export const apiNgungLichThucHien = async (idLichThucHien, lyDoDungLich) => {
         }
       }
     `;
-    const res = await fetch(GRAPHQL_SERVER, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            query,
-            variables: {
-                idLichThucHien,
-                lyDoDungLich
-            }
-        })
+    const { dungLichThucHien } = await GraphQLrequest({
+        query,
+        variables: {
+            idLichThucHien,
+            lyDoDungLich
+        }
     });
-
-    const data = await res.json();
-    return data;
+    return dungLichThucHien;
 };
 
 
@@ -35,20 +26,11 @@ export const apiTiepTucLichThucHien = async (idLichThucHien) => {
         }
       }
     `;
-    const res = await fetch(GRAPHQL_SERVER, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            query,
-            variables: {
-                idLichThucHien
-            }
-        })
+    const { tiepTucLichThucHien } = await GraphQLrequest({
+        query,
+        variables: {
+            idLichThucHien
+        }
     });
-
-    const data = await res.json();
-    return data;
+    return tiepTucLichThucHien;
 };

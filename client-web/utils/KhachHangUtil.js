@@ -1,4 +1,5 @@
-import { GRAPHQL_SERVER } from './constants';
+import { GraphQLrequest } from "./request";
+
 export const apiDanhSachKhachHang = async () => {
     const query = `query KhachHangs {
         KhachHangs {
@@ -17,16 +18,8 @@ export const apiDanhSachKhachHang = async () => {
           uid
         }
       }`;
-    const res = await fetch(GRAPHQL_SERVER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ query })
-    });
-    
-    const data = await res.json();
-    return data;
+   
+    const {KhachHangs} = await GraphQLrequest({query});
+    return KhachHangs;
   };
   

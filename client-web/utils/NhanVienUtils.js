@@ -1,4 +1,5 @@
 import { GRAPHQL_SERVER } from "./constants";
+import { GraphQLrequest } from "./request";
 
 export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     const query = `query DanhSachNhanVienTrongViec($idDonHang: String) {
@@ -22,36 +23,19 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         anhDaiDien
       }
     }`;
-    const res = await fetch(GRAPHQL_SERVER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ query,variables:{ idDonHang }})
-    });
-    
-    const data = await res.json();
-    return data;
+    const {DanhSachNhanVienTrongViec} = await GraphQLrequest({query,variables:{ idDonHang }})
+    return DanhSachNhanVienTrongViec;
   };
   
   export const apiThayDoiNhanVien = async (idDonHang,idNhanVienCu,idNhanVienMoi,lyDoDoiNhanVien) => {
     const query = `mutation DoiNhanVien($idDonHang: String, $idNhanVienCu: String, $idNhanVienMoi: String, $lyDoDoiNhanVien: String) {
       doiNhanVien(idDonHang: $idDonHang, idNhanVienCu: $idNhanVienCu, idNhanVienMoi: $idNhanVienMoi, lyDoDoiNhanVien: $lyDoDoiNhanVien) {
         maDonHang
-      }
+      } 
     }`;
-    const res = await fetch(GRAPHQL_SERVER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ query,variables:{ idDonHang ,idNhanVienCu,idNhanVienMoi,lyDoDoiNhanVien}})
-    });
     
-    const data = await res.json();
-    return data;
+    const {doiNhanVien} = await GraphQLrequest({query,variables:{ idDonHang ,idNhanVienCu,idNhanVienMoi,lyDoDoiNhanVien}});
+    return doiNhanVien;
   };
   export const apiThongTinNhanVien = async (idNhanVien) => {
     const query = `query NhanVienTheoId($idNhanVien: String) {
@@ -81,16 +65,6 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         anhDaiDien
       }
     }`;
-
-    const res = await fetch(GRAPHQL_SERVER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ query,variables: {idNhanVien} })
-    });
-
-    const data = await res.json();
-    return data;
+    const {NhanVienTheoId} = await GraphQLrequest({query,variables: {idNhanVien}})
+    return NhanVienTheoId;
   };
