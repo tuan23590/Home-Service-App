@@ -15,7 +15,6 @@ export const apiDanhSachKhachHang = async () => {
           }
           soDienThoai
           email
-          uid
         }
       }`;
    

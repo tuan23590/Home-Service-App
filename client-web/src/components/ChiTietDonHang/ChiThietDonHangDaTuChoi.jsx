@@ -4,23 +4,11 @@ import { useLoaderData, useNavigate } from 'react-router-dom';
 import { apiTuChoiDonHang, themNhanVienVaoDonHang } from '../../../utils/DonHangUtils';
 import CloseIcon from '@mui/icons-material/Close';
 import ThongTinKhachHang from './ThongTinKhachHang';
+import { EPOCHTODATE } from '../../function';
 
 const ChiThietDonHangDaTuChoi = () => {
   const donHang = useLoaderData();
-  console.log(donHang);
   const navigate = useNavigate();
-  const formatDate = (epochTime) => {
-    const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-    const date = new Date(epochTime * 1000);
-    const dayOfWeek = daysOfWeek[date.getDay()];
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0 nên cần cộng thêm 1
-    const year = date.getFullYear();
-    const formattedDateTime = `${dayOfWeek}, ${day}/${month}/${year} - ${hours}:${minutes}`;
-    return formattedDateTime;
-  };
   const HandelClose = () => {
     navigate('../');
   }
@@ -90,7 +78,7 @@ const ChiThietDonHangDaTuChoi = () => {
               <strong>Thời gian bắt đầu: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {formatDate(donHang.ngayBatDau)}
+              {EPOCHTODATE(donHang.ngayBatDau)}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -106,7 +94,7 @@ const ChiThietDonHangDaTuChoi = () => {
               <strong>Thời gian kết thúc: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {formatDate(donHang.ngayKetThuc)}
+              {EPOCHTODATE(donHang.ngayKetThuc)}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -130,7 +118,7 @@ const ChiThietDonHangDaTuChoi = () => {
               <strong>Thời gian tạo đơn: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {formatDate(donHang.ngayDatHang)}
+              {EPOCHTODATE(donHang.ngayDatHang)}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -227,8 +215,8 @@ const ChiThietDonHangDaTuChoi = () => {
                 <TableBody>
                   {donHang.danhSachLichThucHien?.map((schedule, index) => (
                     <TableRow key={index}>
-                      <TableCell>{formatDate(schedule.thoiGianBatDauLich)}</TableCell>
-                      <TableCell>{formatDate(schedule.thoiGianKetThucLich)}</TableCell>
+                      <TableCell>{EPOCHTODATE(schedule.thoiGianBatDauLich)}</TableCell>
+                      <TableCell>{EPOCHTODATE(schedule.thoiGianKetThucLich)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -237,7 +225,6 @@ const ChiThietDonHangDaTuChoi = () => {
           </Box>
         </Box>
       </Paper>
-
             <Divider sx={{ margin: '15px' }} />
 
             <ThongTinKhachHang donHang={donHang}/>

@@ -76,6 +76,7 @@ export const typeDefs = `#graphql
         nhanVienCu : NhanVien,
         soThangLapLai: Int,
         dichVuChinh: DichVu,
+        lyDoNhanVienTuChoiDonHang: String,
     },
     type TinhTp {
         name: String,
@@ -124,6 +125,7 @@ export const typeDefs = `#graphql
         DonHangDaTuChoi: [DonHang],
         NhanVienTheoId(idNhanVien: String): NhanVien,
         TimNhanVienTheoEmail(email: String): NhanVien,
+        DanhSachDonHangTheoNhanVien(idNhanVien: String): [DonHang],
     },
     type Mutation {
         themDichVu(tenDichVu: String!, maDichVu: String, khoiLuongCongViec: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
@@ -165,5 +167,7 @@ export const typeDefs = `#graphql
         dungLichThucHien(idLichThucHien: String, lyDoDungLich: String): LichThucHien,
         tiepTucLichThucHien(idLichThucHien: String): LichThucHien,
         doiNhanVien(idDonHang: String,idNhanVienCu: String,idNhanVienMoi: String,lyDoDoiNhanVien: String): DonHang,
+        nhanVienXacNhanCongViec(idDonHang: String): DonHang,
+        nhanVienTuChoiCongViec(idDonHang: String, lyDoNhanVienTuChoiDonHang: String): DonHang,
     }
 `

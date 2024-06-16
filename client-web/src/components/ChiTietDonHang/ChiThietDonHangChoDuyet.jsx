@@ -14,8 +14,9 @@ const ChiThietDonHangChoDuyet = () => {
   const navigate = useNavigate();
 
   const duyetDonHang = async () => {
-    const { data } = await themNhanVienVaoDonHang(donHang.id, [nhanVienDaChon.id]);
-    if (data.themNhanVienVaoDonHang !== null) {
+    const data = await themNhanVienVaoDonHang(donHang.id, [nhanVienDaChon.id]);
+    console.log(data);
+    if (data !== null) {
       setSnackbar({ open: true, message: 'Duyệt đơn hàng thành công', severity: 'success' });
       navigate('../');
     } else {

@@ -20,110 +20,103 @@ const ThongTinDonHang = ({ donHang }) => {
           <Typography variant='h6'>Thông tin đơn hàng</Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Mã đơn hàng:</strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {donHang.maDonHang}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>TG bắt đầu: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {EPOCHTODATE(donHang.ngayBatDau)}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Tên dịch vụ: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {donHang.dichVuChinh.tenDichVu}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>TG kết thúc: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {EPOCHTODATE(donHang.ngayKetThuc)}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Khối lượng CV: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {donHang.dichVuChinh.khoiLuongCongViec}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Vật nuôi: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {donHang.vatNuoi||'Không có vật nuôi'}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>TG tạo đơn: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {EPOCHTODATETIME(donHang.ngayDatHang)}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Trạng thái ĐH: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {donHang.trangThaiDonHang}
           </Typography>
         </Grid>
-        {donHang.dichVuTheoYeuCauCuaKhachHang && (
-          <>
-          <Grid item xs={6} sx={{ display: 'flex' }}>
-            <Typography sx={{ width: '20%' }}>
-              <strong>DV theo yêu cầu: </strong>
-            </Typography>
-            <Typography sx={{ width: '80%' }}>
-              {donHang.dichVuTheoYeuCauCuaKhachHang}
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
-            <strong>Giá DV theo YC: </strong>
-          </Typography>
-          <Typography sx={{ width: '80%' }}>
-            {donHang.giaDichVuTheoYeuCauCuaKhachHang?.toLocaleString('vi-VN')} VND
-          </Typography>
-        </Grid>
-          </>
-        )}
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Số giờ thực hiện: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {donHang.soGioThucHien} giờ
           </Typography>
         </Grid>
+        {donHang.lyDoNhanVienTuChoiDonHang && (
+          <>
+          <Grid item xs={6} sx={{ display: 'flex' }}>
+          <Typography sx={{ width: '30%' }}>
+            <strong>Lý do NV từ chối DH: </strong>
+          </Typography>
+          <Typography sx={{ width: '70%' }}>
+            {donHang.lyDoNhanVienTuChoiDonHang}
+          </Typography>
+        </Grid>
+            
+          </>
+        )}
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Thành tiền: </strong>
           </Typography>
-          <Typography color={'red'} sx={{ width: '80%' }}>
+          <Typography color={'red'} sx={{ width: '70%' }}>
             <strong>{donHang.tongTien.toLocaleString('vi-VN')} VNĐ</strong>
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '20%' }}>
+          <Typography sx={{ width: '30%' }}>
             <strong>Ghi chú ĐH: </strong>
           </Typography>
-          <Typography sx={{ width: '80%' }}>
+          <Typography sx={{ width: '70%' }}>
             {donHang.ghiChu || 'Không có ghi chú'}
           </Typography>
         </Grid>

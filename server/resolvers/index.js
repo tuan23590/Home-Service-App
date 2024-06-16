@@ -111,7 +111,9 @@ export const resolvers = {
             return ['Đang chờ duyệt', 'Đã duyệt đơn', 'Đang thực hiện', 'Đã hoàn thành', "Đã từ chối"];
         },
         DonHangDangChoDuyet: async (parent, args) => {
-            const data = await DonHangModel.find({ trangThaiDonHang: "Đang chờ duyệt" });
+            const data = await DonHangModel.find({
+                trangThaiDonHang: { $in: ["Đang chờ duyệt", "Nhân viên đã từ chối công việc"] }
+              });
             return data;
         },
         DonHangDaDuyet: async (parent, args) => {
@@ -128,6 +130,10 @@ export const resolvers = {
         },
         TimNhanVienTheoEmail: async (parent, args) => {
             const data = await NhanVienModel.findOne({ email: args.email });
+            return data;
+        },
+        DanhSachDonHangTheoNhanVien: async (parent, args) => {
+            const data = await DonHangModel.find({ nhanVien: args.idNhanVien, trangThaiDonHang: 'Đã duyệt đơn' });
             return data;
         }
     },
@@ -227,12 +233,7 @@ export const resolvers = {
                 }
                 idKhachHang = khachHang.id;
             }
-
-
-
             const lastDonHang = await DonHangModel.findOne().sort({ _id: -1 }).exec();
-           
-
             let newMaDonHang;
             if (lastDonHang) {
                 const lastMaDonHang = lastDonHang.maDonHang;
@@ -262,7 +263,7 @@ export const resolvers = {
                 const danhSachLichThucHienMoi = new LichThucHienModel({
                     thoiGianBatDauLich: lichThucHien.thoiGianBatDau,
                     thoiGianKetThucLich: lichThucHien.thoiGianKetThuc,
-                    trangThaiLich: "Đang thực hiện",
+                    trangThaiLich: "Chờ nhân viên xác nhận công việc",
                     donHang: DonHang._id
                 });
                 const resLichThucHien = await danhSachLichThucHienMoi.save();
@@ -305,7 +306,6 @@ export const resolvers = {
         },
         themNhanVienVaoDonHang: async (parent, args) => {
             try {
-
                 const donHang = await DonHangModel.findById(args.idDonHang);
                 donHang.trangThaiDonHang = "Đã duyệt đơn";
                 args.idNhanVien.forEach(id => {
@@ -316,8 +316,46 @@ export const resolvers = {
                     nv.lichLamViec = nv.lichLamViec.concat(donHang.danhSachLichThucHien);
                     await nv.save();
                 });
-
                 await donHang.save();
+                return donHang;
+            } catch (err) {
+                return { "message": 'err' };
+            }
+        },
+        nhanVienXacNhanCongViec: async (parent, args) => {
+            try {
+                const donHang = await DonHangModel.findById(args.idDonHang);
+                donHang.trangThaiDonHang = "Nhân viên đã xác nhận công việc";
+                donHang.danhSachLichThucHien.forEach(async (id) => {
+                    const lichThucHien = await LichThucHienModel.findById(id);
+                    lichThucHien.trangThaiLich = 'Nhân viên đã xác nhận công việc';
+                    await lichThucHien.save();
+                });
+                await donHang.save();
+                return donHang;
+            } catch (err) {
+                return { "message": 'err' };
+            }
+        },
+        nhanVienTuChoiCongViec: async (parent, args) => {
+            try {
+                const donHang = await DonHangModel.findById(args.idDonHang);
+                const nhanVien = await NhanVienModel.findById(donHang.nhanVien[0]);
+                donHang.trangThaiDonHang = "Nhân viên đã từ chối công việc";
+                donHang.lyDoNhanVienTuChoiDonHang = args.lyDoNhanVienTuChoiDonHang;
+                donHang.danhSachLichThucHien.forEach(async (id) => {
+                    const lichThucHien = await LichThucHienModel.findById(id);
+                    lichThucHien.trangThaiLich = 'Nhân viên đã từ chối công việc';
+                    await lichThucHien.save();
+                });
+                await donHang.save();
+                for (const lichThucHienId of donHang.danhSachLichThucHien) {
+                    const index = nhanVien.lichLamViec.indexOf(lichThucHienId);
+                    if (index !== -1) {
+                        nhanVien.lichLamViec.splice(index, 1);
+                    }
+                }
+                await nhanVien.save();
                 return donHang;
             } catch (err) {
                 return { "message": 'err' };

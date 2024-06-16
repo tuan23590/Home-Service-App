@@ -67,6 +67,9 @@ const DonHangSchema = new mongoose.Schema({
     soThangLapLai:{
         type: Number
     },
+    lyDoNhanVienTuChoiDonHang:{
+        type: String
+    },
     
     
     

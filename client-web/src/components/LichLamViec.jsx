@@ -4,9 +4,11 @@ import { useState } from 'react';
 
 export default function LichLamViec ({data}) {
     const {lichLamViec,selectedDate,setSelectedDate} = data;
+    const lichLamViecNhanVien = lichLamViec.filter(item => item.trangThaiLich === "Nhân viên đã xác nhận công việc");
+
+
     const [currentDate, setCurrentDate] = useState(new Date());
     const [open, setOpen] = useState(false);
-
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
@@ -50,7 +52,7 @@ export default function LichLamViec ({data}) {
     const isHighlighted = (day) => {
         if (!day) return false;
         const dayDate = new Date(year, month, day).toLocaleDateString();
-        return lichLamViec.some(lich => new Date(lich.thoiGianBatDauLich).toLocaleDateString() === dayDate);
+        return lichLamViecNhanVien.some(lich => new Date(lich.thoiGianBatDauLich).toLocaleDateString() === dayDate);
     };
 
     return (
@@ -71,8 +73,7 @@ export default function LichLamViec ({data}) {
             {days.map((day, index) => {
                 const dayDate = new Date(year, month, day);
                 const formattedDate = dayDate.toLocaleDateString();
-                const lichLamViecOfDay = lichLamViec.filter(lich => new Date(lich.thoiGianBatDauLich).toLocaleDateString() === formattedDate);
-
+                const lichLamViecOfDay = lichLamViecNhanVien.filter(lich => new Date(lich.thoiGianBatDauLich).toLocaleDateString() === formattedDate);
                 return (
                     <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}>
                         <Box
@@ -103,7 +104,7 @@ export default function LichLamViec ({data}) {
                                         <>
                                             {lichLamViecOfDay.map((lich, index) => (
                                                 <Typography key={index} variant="body2">
-                                                    {new Date(lich.thoiGianBatDauLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianBatDauLich).getMinutes().toString().padStart(2, '0')} - {new Date(lich.thoiGianKetThucLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianKetThucLich).getMinutes().toString().padStart(2, '0')} ({lich.trangThaiLich})
+                                                    {new Date(lich.thoiGianBatDauLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianBatDauLich).getMinutes().toString().padStart(2, '0')} - {new Date(lich.thoiGianKetThucLich).getHours().toString().padStart(2, '0')}:{new Date(lich.thoiGianKetThucLich).getMinutes().toString().padStart(2, '0')}
                                                 </Typography>
                                             ))}
                                         </>

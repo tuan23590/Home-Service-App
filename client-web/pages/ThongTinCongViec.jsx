@@ -36,7 +36,7 @@ export default function ThongTinCongViec() {
 
                 <ThongTinTaiKhoan />
 
-                <Paper>
+                <Paper sx={{marginY: '10px'}}>
                     <Tabs value={tabValue} onChange={handleTabChange} centered>
                         <Tab label="Xác nhận công việc" />
                         <Tab label="Xem lịch làm việc" />
@@ -45,7 +45,7 @@ export default function ThongTinCongViec() {
 
                 {tabValue === 0 && (
 
-                    <XacNhanCongViec />
+                    <XacNhanCongViec data={{nhanVien}}/>
                 )}
 
                 {tabValue === 1 && (
