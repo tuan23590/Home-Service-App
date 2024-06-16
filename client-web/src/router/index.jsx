@@ -27,7 +27,7 @@ import ChiThietDonHangDaTuChoi from "../components/ChiTietDonHang/ChiThietDonHan
 import QuanLyDonHang from "../../pages/QuanLyDonHang";
 import QuanLyDichVu from "../components/QuanLyDichVu";
 import { apiDanhSachDichVu } from "../../utils/DichVuUtils";
-import LichLamViec from "../../pages/LichLamViec";
+import ThongTinCongViec from "../../pages/ThongTinCongViec";
 import QuanLyDonHangProtected from "./QuanLyDonHangProtected";
 const MainLayout = () => {
     return <DonHangProvider>
@@ -51,8 +51,8 @@ export default createBrowserRouter([
                 path: '/',
             },
             {
-                element: <LichLamViec />,
-                path: '/LichLamViec',
+                element: <ThongTinCongViec />,
+                path: '/ThongTinCongViec',
             },
             {
                 element: <DangNhap />,

@@ -18,6 +18,7 @@ export default function AuthProvider({ children }) {
                 setUser(user);
                 localStorage.setItem('accessToken', user.accessToken);
                 const data = await apiTimNhanVienTheoEmail(user.email);
+                
                 if (!data) {
                   alert('Tài khoản của bạn không có quyền truy cập vào hệ thống 1');
                   user.auth.signOut();

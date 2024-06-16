@@ -31,7 +31,7 @@ const ThongTinTaiKhoan = () => {
         onClose={xuLyDongMenu}>
             {nhanVien?.phanQuyen === 'Tasker' && (
                 <MenuItem>
-                    <Link style={{ textDecoration: 'none', color: '#000000'}}  to='/LichLamViec'>Lịch Làm Việc</Link>
+                    <Link style={{ textDecoration: 'none', color: '#000000'}}  to='/ThongTinCongViec'>Lịch Làm Việc</Link>
                 </MenuItem>
             )}
              {nhanVien?.phanQuyen === 'NVQL' && (

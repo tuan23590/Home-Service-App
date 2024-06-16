@@ -34,6 +34,7 @@ export const typeDefs = `#graphql
         trangThaiHienTai: String,
         lichLamViec: [LichThucHien],
         phanQuyen: String,
+        anhDaiDien: String,
     },
     type KhachHang {
         id: String,
