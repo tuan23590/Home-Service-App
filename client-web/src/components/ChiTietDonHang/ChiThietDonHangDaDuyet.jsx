@@ -11,9 +11,7 @@ import { apiThayDoiNhanVien } from '../../../utils/NhanVienUtils';
 
 const ChiThietDonHangChoDuyet = (vaiable) => {
   const { setSnackbar } = useOutletContext();
-  const {data} = useLoaderData();
-  const donHang = data.DonHangTheoId;
-  console.log(donHang);
+  const donHang = useLoaderData();
   const [nhanVienDaChon, setNhanVienDaChon] = useState(null);
   const navigate = useNavigate();
 

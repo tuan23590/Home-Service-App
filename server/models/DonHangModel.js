@@ -52,9 +52,6 @@ const DonHangSchema = new mongoose.Schema({
     lyDoTuChoi:{
         type: String
     },
-    lyDoHuyDonHang:{
-        type: String
-    },
     uuTienTasker:{
         type: Boolean
     },
@@ -67,12 +64,10 @@ const DonHangSchema = new mongoose.Schema({
     dichVuChinh:{
         type: String
     },
-    dichVuTheoYeuCauCuaKhachHang:{
-        type: String
-    },
-    giaDichVuTheoYeuCauCuaKhachHang:{
+    soThangLapLai:{
         type: Number
     },
+    
     
     
 },{timestamps: true});

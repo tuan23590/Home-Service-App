@@ -35,7 +35,7 @@ const ThemDonHang = () => {
         ghiChu: ''
     });
     const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
-    const tongTien = (donHangData.danhSachDichVuThem.reduce((acc, curr) => acc + curr.gia, 0)+ donHangData.dichVuChinh?.gia || 0) + parseInt(donHangData.giaDichVuTheoYeuCauCuaKhachHang)||0;
+    const tongTien = (donHangData.danhSachDichVuThem.reduce((acc, curr) => acc + curr.gia, 0)+ donHangData.dichVuChinh?.gia || 0);
     useEffect(() => {
         console.log();
         setDonHangData((prevData) => ({
@@ -104,7 +104,6 @@ const ThemDonHang = () => {
     }, [donHangData.ngayBatDau, donHangData.gioBatDau, donHangData.soThangLapLai?.value, chonNgayLamViecTrongTuan]);
 
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-
     const handleCloseSnackbar = () => {
       setSnackbar({ ...snackbar, open: false });
     };
@@ -121,7 +120,7 @@ const ThemDonHang = () => {
             const data = await apiThemDonHang(donHangData);
             alert('Tạo đơn hàng thành công')
             console.log(data);
-            //window.location.reload();
+            window.location.reload();
         } catch (error) {
             alert('Tạo đơn hàng thất bại')
         }

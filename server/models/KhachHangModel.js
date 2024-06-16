@@ -14,9 +14,6 @@ const KhachHangSchema = new mongoose.Schema({
     },
     email:{
         type: String
-    },
-    uid: {
-        type: String
     }
 },{timestamps: true});
 

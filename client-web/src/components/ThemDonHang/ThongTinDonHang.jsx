@@ -286,36 +286,6 @@ const ThongTinDonHang = ({ data }) => {
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        label="Dịch vụ theo yêu cầu của khách hàng"
-                        name="dichVuTheoYeuCauCuaKhachHang"
-                        variant="outlined"
-                        size="small"
-                        value={donHangData.dichVuTheoYeuCauCuaKhachHang}
-                        onChange={handleChangeDonHang}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <Autocomplete
-                        required
-                        options={danhSachGiaDichVuTheoYeuCau}
-                        onChange={(event, newValue) => setDonHangData((prevData) => ({
-                            ...prevData,
-                            giaDichVuTheoYeuCauCuaKhachHang: newValue?.price ||0
-                        }))}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Giá DV theo yêu cầu của khách hàng"
-                                variant="outlined"
-                                size="small"
-                                fullWidth
-                            />
-                        )}
-                    />
-                </Grid>
-                <Grid item xs={6}>
                     <Autocomplete
                         required
                         getOptionLabel={(option) => option.timeString}

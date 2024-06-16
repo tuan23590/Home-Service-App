@@ -39,7 +39,8 @@ export default function DangNhap() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            // backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundImage: 'url(https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
@@ -69,7 +70,7 @@ export default function DangNhap() {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -79,14 +80,14 @@ export default function DangNhap() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Mật khẩu"
                 type="password"
                 id="password"
                 autoComplete="current-password"
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+                label="Lưu tài khoản"
               />
               <Box>
                 <Button
@@ -103,7 +104,7 @@ export default function DangNhap() {
                   }}
                   backgroundColor="#2196f3 !important"
                 >
-                  Sign In
+                  Đăng nhập
                 </Button>
                 <Button variant='outlined' fullWidth onClick={handleLoginWithGoogle} className="google">
                   <GoogleIcon sx={{ marginRight: '10px' }} />
@@ -113,14 +114,14 @@ export default function DangNhap() {
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
-                    Forgot password?
+                    Quên mật khẩu?
                   </Link>
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <Link href="#" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Box>
           </Box>

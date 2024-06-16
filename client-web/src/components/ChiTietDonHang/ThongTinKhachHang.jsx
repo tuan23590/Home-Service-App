@@ -15,7 +15,7 @@ const ThongTinKhachHang = ({donHang}) => {
               <strong>Tên khách hàng: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.khachHang.tenKhachHang}
+              {donHang.khachHang?.tenKhachHang}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -24,10 +24,10 @@ const ThongTinKhachHang = ({donHang}) => {
             </Typography>
             <Typography sx={{ width: '80%' }}>
               {[
-                donHang.diaChi.soNhaTenDuong,
-                donHang.diaChi.xaPhuong,
-                donHang.diaChi.quanHuyen,
-                donHang.diaChi.tinhTP,
+                donHang.diaChi?.soNhaTenDuong,
+                donHang.diaChi?.xaPhuong,
+                donHang.diaChi?.quanHuyen,
+                donHang.diaChi?.tinhTP,
               ].join(', ')}
             </Typography>
           </Grid>
@@ -36,7 +36,7 @@ const ThongTinKhachHang = ({donHang}) => {
               <strong>Số điện thoại: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.khachHang.soDienThoai}
+              {donHang.khachHang?.soDienThoai}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -44,7 +44,7 @@ const ThongTinKhachHang = ({donHang}) => {
               <strong>Ghi chú địa chỉ: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.diaChi.ghiChu}
+              {donHang.diaChi?.ghiChu}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -52,7 +52,7 @@ const ThongTinKhachHang = ({donHang}) => {
               <strong>Email: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.khachHang.email}
+              {donHang.khachHang?.email}
             </Typography>
           </Grid>
         </Grid>

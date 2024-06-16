@@ -1,13 +1,13 @@
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,TableContainer ,TableBody ,Table ,TableCell ,TableHead , TableRow ,Button, Divider, Paper, Typography, Box, Tooltip, IconButton, TextField, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { apiTuChoiDonHang, themNhanVienVaoDonHang } from '../../../utils/DonHangUtils';
 import CloseIcon from '@mui/icons-material/Close';
 import ThongTinKhachHang from './ThongTinKhachHang';
 
 const ChiThietDonHangDaTuChoi = () => {
-  const data = useOutletContext();
-  const donHang = data.chonDonHang;
+  const donHang = useLoaderData();
+  console.log(donHang);
   const navigate = useNavigate();
   const formatDate = (epochTime) => {
     const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
@@ -98,7 +98,7 @@ const ChiThietDonHangDaTuChoi = () => {
               <strong>Tên dịch vụ: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].tenDichVu}
+              {donHang.dichVuChinh?.tenDichVu}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -114,7 +114,7 @@ const ChiThietDonHangDaTuChoi = () => {
               <strong>Khối lượng CV: </strong>
             </Typography>
             <Typography sx={{ width: '80%' }}>
-              {donHang.danhSachDichVu[donHang.danhSachDichVu.length - 1].khoiLuongCongViec}
+              {donHang.dichVuChinh?.khoiLuongCongViec}
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -154,7 +154,7 @@ const ChiThietDonHangDaTuChoi = () => {
               <strong>Thành tiền: </strong>
             </Typography>
             <Typography color={'red'} sx={{ width: '80%' }}>
-              <strong>{donHang.tongTien.toLocaleString('vi-VN')} VNĐ</strong>
+              <strong>{donHang.tongTien?.toLocaleString('vi-VN')} VNĐ</strong>
             </Typography>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -191,11 +191,11 @@ const ChiThietDonHangDaTuChoi = () => {
                 </TableHead>
                 <TableBody>
                   {donHang && Array.isArray(donHang.danhSachDichVu) ? (
-                    donHang.danhSachDichVu.map((service, index) => (
+                    donHang.danhSachDichVu?.map((service, index) => (
                       service.loaiDichVu === "DichVuThem" && (
                         <TableRow key={index}>
                           <TableCell>
-                            {service.tenDichVu}
+                            {service?.tenDichVu}
                           </TableCell>
                           <TableCell>
                             {service.gia === null ? `+ ${service.thoiGian} Giờ` : `+ ${service.gia.toLocaleString('vi-VN')} VNĐ`}
@@ -225,7 +225,7 @@ const ChiThietDonHangDaTuChoi = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {donHang.danhSachLichThucHien.map((schedule, index) => (
+                  {donHang.danhSachLichThucHien?.map((schedule, index) => (
                     <TableRow key={index}>
                       <TableCell>{formatDate(schedule.thoiGianBatDauLich)}</TableCell>
                       <TableCell>{formatDate(schedule.thoiGianKetThucLich)}</TableCell>
