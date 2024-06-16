@@ -187,12 +187,6 @@ export const resolvers = {
     },
 
     Mutation: {
-        themDichVu: async (parent, args) => {
-            const dichVuMoi = args;
-            const DichVu = new DichVuModel(dichVuMoi);
-            await DichVu.save();
-            return DichVu;
-        },
         themDonHang: async (parent, args) => {
             const danhSachLichThucHien = JSON.parse(args.danhSachLichThucHien);
             const danhSachIdLichThucHien = [];
@@ -440,6 +434,20 @@ export const resolvers = {
             await nhanVienCu.save();
             await donHang.save();
             return donHang;
+        },
+        themDichVu: async (parent, args) => {
+            const dichVuMoi = args;
+            const DichVu = new DichVuModel(dichVuMoi);
+            await DichVu.save();
+            return DichVu;
+        },
+        xoaDichVu: async (parent, args) => {
+            const dichVu = await DichVuModel.findByIdAndDelete(args.idDichVu);
+            return dichVu;
+        },
+        suaDichVu: async (parent, args) => {
+            const dichVu = await DichVuModel.findByIdAndUpdate(args.idDichVu, args, { new: true });
+            return dichVu;
         }
     }
 };

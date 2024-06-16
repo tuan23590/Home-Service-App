@@ -37,26 +37,10 @@ const ThongTinDonHang = ({ donHang }) => {
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
           <Typography sx={{ width: '30%' }}>
-            <strong>Tên dịch vụ: </strong>
-          </Typography>
-          <Typography sx={{ width: '70%' }}>
-            {donHang.dichVuChinh.tenDichVu}
-          </Typography>
-        </Grid>
-        <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '30%' }}>
             <strong>TG kết thúc: </strong>
           </Typography>
           <Typography sx={{ width: '70%' }}>
             {EPOCHTODATE(donHang.ngayKetThuc)}
-          </Typography>
-        </Grid>
-        <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '30%' }}>
-            <strong>Khối lượng CV: </strong>
-          </Typography>
-          <Typography sx={{ width: '70%' }}>
-            {donHang.dichVuChinh.khoiLuongCongViec}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -133,22 +117,27 @@ const ThongTinDonHang = ({ donHang }) => {
               <TableHead>
                 <TableRow>
                   <TableCell>Tên Dịch vụ</TableCell>
-                  <TableCell>Biểu phí</TableCell>
+                  <TableCell>Giá tiền</TableCell>
+                  <TableCell>Thời gian</TableCell>
+                  <TableCell>Khối lượng công việc</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {donHang && Array.isArray(donHang.danhSachDichVu) ? (
                   donHang.danhSachDichVu.map((service, index) => (
-                    service.loaiDichVu === "DichVuThem" && (
+                    service && (
                       <TableRow key={index}>
                         <TableCell>
                           {service.tenDichVu}
                         </TableCell>
                         <TableCell>
-                                {service.gia 
-                                    ? `+ ${service.gia.toLocaleString('vi-VN')} VNĐ` 
-                                    : ''} 
-                                {service.thoiGian ? `+ ${service.thoiGian} giờ` : ''}
+                                {service.gia.toLocaleString('vi-VN')} VNĐ 
+                            </TableCell>
+                            <TableCell>
+                                {service.thoiGian} giờ
+                            </TableCell>
+                            <TableCell>
+                                {service.khoiLuongCongViec}
                             </TableCell>
                       </TableRow>
                     )

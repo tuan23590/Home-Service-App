@@ -138,8 +138,8 @@ export const APIDanhSachDonHangDaTuChoi = async ()=> {
 }
 
 export const apiThemDonHang = async (formData) => {
-  const query = `mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $uuTienTasker: Boolean, $diaChi: String, $tongTien: Float, $dichVuTheoYeuCauCuaKhachHang: String, $giaDichVuTheoYeuCauCuaKhachHang: Float, $soThangLapLai: Int, $dichVuChinh: String) {
-    themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, uuTienTasker: $uuTienTasker, diaChi: $diaChi, tongTien: $tongTien, dichVuTheoYeuCauCuaKhachHang: $dichVuTheoYeuCauCuaKhachHang, giaDichVuTheoYeuCauCuaKhachHang: $giaDichVuTheoYeuCauCuaKhachHang, soThangLapLai: $soThangLapLai, dichVuChinh: $dichVuChinh) {
+  const query = `mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $diaChi: String, $tongTien: Float, $soThangLapLai: Int) {
+    themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, diaChi: $diaChi, tongTien: $tongTien, soThangLapLai: $soThangLapLai) {
       maDonHang
     }
   }
@@ -147,19 +147,16 @@ export const apiThemDonHang = async (formData) => {
  
   const {ThemDonHang} = await GraphQLrequest ({query,
     variables: {
-      soGioThucHien: formData.dichVuChinh.thoiGian,
+      soGioThucHien: formData.soGioThucHien,
       danhSachLichThucHien: JSON.stringify(formData.danhSachLichThucHien),
       khachHang: JSON.stringify(formData.khachHang),
-      danhSachDichVu: formData.danhSachDichVuThem.map(dichVu => dichVu.id),
+      danhSachDichVu: formData.danhSachDichVu.map(dichVu => dichVu.id),
       vatNuoi: formData.vatNuoi,
       ghiChu: formData.ghiChu,
       uuTienTasker: null,
       diaChi: JSON.stringify(formData.diaChi),
       tongTien: formData.tongTien,
-      dichVuTheoYeuCauCuaKhachHang: formData.dichVuTheoYeuCauCuaKhachHang,
-      giaDichVuTheoYeuCauCuaKhachHang: parseFloat(formData.giaDichVuTheoYeuCauCuaKhachHang),
       soThangLapLai: formData.soThangLapLai.value,
-      dichVuChinh: formData.dichVuChinh.id
     }});
   return ThemDonHang;
 };

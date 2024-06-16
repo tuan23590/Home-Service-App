@@ -15,33 +15,17 @@ export const apiDanhSachDichVu = async () => {
     const {DichVus} = await GraphQLrequest({query});
     return DichVus;
   };
-
-  export const apiDanhSachDichVuThem = async () => {
-    const query = `query DichVuThem {
-      DichVuThem {
-        id
-        tenDichVu
-        gia
-        thoiGian
-      }
-    }`;
-
-    const {DichVuThem} = await GraphQLrequest({query});
-    return DichVuThem;
-  };
-
-
-  export const apiDanhSachDichVuChinh = async () => {
-    const query = `query DichVuCaLe {
-      DichVuCaLe {
-        id
-        tenDichVu
-        khoiLuongCongViec
-        gia
-        thoiGian
-        loaiDichVu
-      }
-    }`;
-    const {DichVuCaLe} = await GraphQLrequest({query});
-    return DichVuCaLe;
+  export const apiThemDichVu = async (dichVuData) => {
+    const query = `mutation ThemDichVu($tenDichVu: String!, $khoiLuongCongViec: String, $gia: Int, $thoiGian: Int) {
+  themDichVu(tenDichVu: $tenDichVu, khoiLuongCongViec: $khoiLuongCongViec, gia: $gia, thoiGian: $thoiGian) {
+    tenDichVu
+  }
+}`;
+    const {themDichVu} = await GraphQLrequest({query, variables: {
+      tenDichVu: dichVuData.tenDichVu,
+      khoiLuongCongViec: dichVuData.khoiLuongCongViec,
+      gia: dichVuData.gia.value,
+      thoiGian: dichVuData.thoiGian.value
+    }});
+    return themDichVu;
   };

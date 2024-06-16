@@ -9,8 +9,7 @@ const ThemDonHang = () => {
     const [donHangData, setDonHangData] = useState({
         danhSachLichThucHien: [],
         khachHang: '',
-        dichVuChinh: null,
-        danhSachDichVuThem: [],
+        danhSachDichVu: [],
         ngayBatDau: null,
         gioBatDau: null,
         soThangLapLai: null,
@@ -18,8 +17,7 @@ const ThemDonHang = () => {
         ghiChu: '',
         diaChi: '',
         tongTien: 0,
-        dichVuTheoYeuCauCuaKhachHang: '',
-        giaDichVuTheoYeuCauCuaKhachHang: undefined,
+        soGioThucHien: 0,
     });
     const [khachHangData, setKhachHangData] = useState({
         id: null,
@@ -35,14 +33,14 @@ const ThemDonHang = () => {
         ghiChu: ''
     });
     const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
-    const tongTien = (donHangData.danhSachDichVuThem.reduce((acc, curr) => acc + curr.gia, 0)+ donHangData.dichVuChinh?.gia || 0);
+    const tongTien = (donHangData.danhSachDichVu.reduce((acc, curr) => acc + curr.gia, 0));
     useEffect(() => {
         console.log();
         setDonHangData((prevData) => ({
             ...prevData,
-            tongTien: tongTien * donHangData.danhSachLichThucHien.length || 0
+            tongTien: tongTien * (donHangData.danhSachLichThucHien.length || 1)
         }));
-    }, [donHangData.dichVuChinh, donHangData.danhSachDichVuThem, donHangData.soThangLapLai, donHangData.giaDichVuTheoYeuCauCuaKhachHang, donHangData.danhSachLichThucHien]);
+    }, [donHangData.dichVuChinh, donHangData.danhSachDichVu, donHangData.soThangLapLai, donHangData.danhSachLichThucHien]);
 
 
 
@@ -116,6 +114,26 @@ const ThemDonHang = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (donHangData.danhSachLichThucHien.length === 0) {
+            setSnackbar({ open: true, message: 'Vui lòng chọn ngày làm việc', severity: 'error' });
+            return;
+        }
+        if (donHangData.khachHang === '') {
+            setSnackbar({ open: true, message: 'Vui lòng chọn khách hàng', severity: 'error' });
+            return;
+        }
+        if (donHangData.diaChi.quanHuyen === null) {
+            setSnackbar({ open: true, message: 'Vui lòng chọn địa chỉ làm việc', severity: 'error' });
+            return;
+        }
+        if (donHangData.danhSachDichVu.length === 0) {
+            setSnackbar({ open: true, message: 'Vui lòng chọn dịch vụ', severity: 'error' });
+            return;
+        }
+        if (khachHangData.soDienThoai === null) {
+            setSnackbar({ open: true, message: 'Vui lòng chọn khách hàng', severity: 'error' });
+            return;
+        }
         try {
             const data = await apiThemDonHang(donHangData);
             alert('Tạo đơn hàng thành công')

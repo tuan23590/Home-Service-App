@@ -128,7 +128,6 @@ export const typeDefs = `#graphql
         DanhSachDonHangTheoNhanVien(idNhanVien: String): [DonHang],
     },
     type Mutation {
-        themDichVu(tenDichVu: String!, maDichVu: String, khoiLuongCongViec: String, gia: Int, thoiGian: Int, icon: String, iconSelected: String): DichVu,
         themDonHang(
             soGioThucHien: Int,
             danhSachLichThucHien: [String],
@@ -169,5 +168,8 @@ export const typeDefs = `#graphql
         doiNhanVien(idDonHang: String,idNhanVienCu: String,idNhanVienMoi: String,lyDoDoiNhanVien: String): DonHang,
         nhanVienXacNhanCongViec(idDonHang: String): DonHang,
         nhanVienTuChoiCongViec(idDonHang: String, lyDoNhanVienTuChoiDonHang: String): DonHang,
+        themDichVu(tenDichVu: String!, khoiLuongCongViec: String, gia: Int, thoiGian: Int): DichVu,
+        xoaDichVu(idDichVu: String): DichVu,
+        suaDichVu(idDichVu: String, tenDichVu: String, khoiLuongCongViec: String, gia: Int, thoiGian: Int): DichVu,
     }
 `
