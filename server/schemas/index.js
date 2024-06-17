@@ -168,8 +168,8 @@ export const typeDefs = `#graphql
         doiNhanVien(idDonHang: String,idNhanVienCu: String,idNhanVienMoi: String,lyDoDoiNhanVien: String): DonHang,
         nhanVienXacNhanCongViec(idDonHang: String): DonHang,
         nhanVienTuChoiCongViec(idDonHang: String, lyDoNhanVienTuChoiDonHang: String): DonHang,
-        themDichVu(tenDichVu: String!, khoiLuongCongViec: String, gia: Int, thoiGian: Int): DichVu,
+        themDichVu(tenDichVu: String!, khoiLuongCongViec: String, gia: Int, thoiGian: Int, loaiDichVu: String): DichVu,
         xoaDichVu(idDichVu: String): DichVu,
-        suaDichVu(idDichVu: String, tenDichVu: String, khoiLuongCongViec: String, gia: Int, thoiGian: Int): DichVu,
+        suaDichVu(idDichVu: String, tenDichVu: String, khoiLuongCongViec: String, gia: Int, thoiGian: Int,loaiDichVu: String): DichVu,
     }
 `

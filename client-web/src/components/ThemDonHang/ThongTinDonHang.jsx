@@ -54,7 +54,7 @@ const ThongTinDonHang = ({ data }) => {
             return timesArray;
         };
     
-        const interval = donHangData.dichVuChinh?.thoiGian || 1;
+        const interval = donHangData.soGioThucHien || 1;
         const timeRanges = generateTimeRanges(interval);
         setDanhSachGioThucHien(timeRanges);
     }, [donHangData.dichVuChinh]);

@@ -69,7 +69,7 @@ export default function LichLamViec ({data}) {
                 </Grid>
             ))}
         </Grid>
-        <Grid container spacing={2} sx={{ height: '55vh' }}>
+        <Grid container spacing={2} sx={{ height: '48vh' }}>
             {days.map((day, index) => {
                 const dayDate = new Date(year, month, day);
                 const formattedDate = dayDate.toLocaleDateString();
@@ -78,7 +78,7 @@ export default function LichLamViec ({data}) {
                     <Grid item xs={1.71} key={index} onClick={() => day && handleClickOpen(day)}>
                         <Box
                             sx={{
-                                height: 80,
+                                height: 60,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',

@@ -16,8 +16,8 @@ export const apiDanhSachDichVu = async () => {
     return DichVus;
   };
   export const apiThemDichVu = async (dichVuData) => {
-    const query = `mutation ThemDichVu($tenDichVu: String!, $khoiLuongCongViec: String, $gia: Int, $thoiGian: Int) {
-  themDichVu(tenDichVu: $tenDichVu, khoiLuongCongViec: $khoiLuongCongViec, gia: $gia, thoiGian: $thoiGian) {
+    const query = `mutation ThemDichVu($tenDichVu: String!, $khoiLuongCongViec: String, $gia: Int, $thoiGian: Int, $loaiDichVu: String) {
+  themDichVu(tenDichVu: $tenDichVu, khoiLuongCongViec: $khoiLuongCongViec, gia: $gia, thoiGian: $thoiGian, loaiDichVu: $loaiDichVu) {
     tenDichVu
   }
 }`;
@@ -25,7 +25,8 @@ export const apiDanhSachDichVu = async () => {
       tenDichVu: dichVuData.tenDichVu,
       khoiLuongCongViec: dichVuData.khoiLuongCongViec,
       gia: dichVuData.gia.value,
-      thoiGian: dichVuData.thoiGian.value
+      thoiGian: dichVuData.thoiGian.value,
+      loaiDichVu: dichVuData.loaiDichVu
     }});
     return themDichVu;
   };
