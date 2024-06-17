@@ -29,6 +29,7 @@ import QuanLyDichVu from "../components/QuanLyDichVu";
 import { apiDanhSachDichVu } from "../../utils/DichVuUtils";
 import ThongTinCongViec from "../../pages/ThongTinCongViec";
 import QuanLyDonHangProtected from "./QuanLyDonHangProtected";
+import XemChiTietDonHang from './../components/XemChiTietDonHang';
 const MainLayout = () => {
     return <DonHangProvider>
         <Outlet />
@@ -53,6 +54,13 @@ export default createBrowserRouter([
             {
                 element: <ThongTinCongViec />,
                 path: '/ThongTinCongViec',
+                children: [
+                    {
+                        element: <XemChiTietDonHang />,
+                        path: `/ThongTinCongViec/:id`,
+                        loader: apiChiTietDonHang,
+                    },
+                ]
             },
             {
                 element: <DangNhap />,

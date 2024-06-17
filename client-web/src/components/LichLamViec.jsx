@@ -1,7 +1,8 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { apiTimDanhSachDonHangTheoDanhSachLichThucHien } from '../../utils/DonHangUtils';
-import { EPOCHTODATE, EPOCHTODATETIME, EPOCHTODATETIMETOTIME } from './../function'
+import { EPOCHTODATETIMETOTIME, EPOCHTODATETODAY } from './../function'
+import { Outlet, useNavigate } from 'react-router-dom';
 
 export default function LichLamViec({ data }) {
     const { lichLamViec, selectedDate, setSelectedDate } = data;
@@ -10,7 +11,7 @@ export default function LichLamViec({ data }) {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [danhSachDonHangTheoLichLamViec, setDanhSachDonHangTheoLichLamViec] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    const navigate = useNavigate();
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
@@ -145,7 +146,7 @@ export default function LichLamViec({ data }) {
                 </Paper>
             </Grid>
             <Grid item xs={4}>
-                <Paper sx={{ padding: '10px', height: "56vh" ,overflow: 'auto'}}>
+                <Paper sx={{ padding: '10px', height: "58vh" ,overflow: 'auto'}}>
                     <Box>
                         <Typography variant="h5" align="center">
                             <strong>
@@ -167,7 +168,9 @@ export default function LichLamViec({ data }) {
                                 </Typography>
                             ) : (
                                 danhSachDonHangTheoLichLamViec.map((donHang, index) => (
-                                    <Paper key={index} sx={{ marginBottom: '10px', padding: '15px', border: 1 }}>
+                                    <Paper key={index} sx={{ marginBottom: '10px', padding: '15px', border: 1 ,cursor: 'pointer',':hover':{
+                                        backgroundColor: '#f0f0f0'
+                                    }}} onClick={()=>{navigate(`./${donHang.id}`)}}>
                                         <Typography>
                                             <strong>Mã đơn hàng: </strong> {donHang.maDonHang}
                                         </Typography>
@@ -184,7 +187,10 @@ export default function LichLamViec({ data }) {
                                             <strong>Dịch vụ thực hiện: </strong> {donHang.danhSachDichVu.map(dichVu => dichVu.tenDichVu).join(', ')}
                                         </Typography>
                                         <Typography>
-                                            <strong>Số giờ thực hiện: </strong> {donHang.soGioThucHien} giờ
+                                            <strong>Ngày làm việc: </strong> {EPOCHTODATETODAY(matchingItems[index]?.thoiGianBatDauLich)}
+                                        </Typography>
+                                        <Typography>
+                                            <strong>Làm trong: </strong> {EPOCHTODATETIMETOTIME(matchingItems[index]?.thoiGianBatDauLich,matchingItems[index]?.thoiGianKetThucLich)}
                                         </Typography>
                                         <Typography>
                                             <strong>Vật nuôi: </strong> {donHang.vatNuoi}
@@ -192,9 +198,7 @@ export default function LichLamViec({ data }) {
                                         <Typography>
                                             <strong>Ghi chú: </strong> {donHang.ghiChu || 'Không có ghi chú'}
                                         </Typography>
-                                        <Typography>
-                                            <strong>TG thực hiện: </strong> {EPOCHTODATETIMETOTIME(matchingItems[index]?.thoiGianBatDauLich,matchingItems[index]?.thoiGianKetThucLich)}
-                                        </Typography>
+                                        
                                     </Paper>
                                 ))
                             )
@@ -202,6 +206,7 @@ export default function LichLamViec({ data }) {
                     </Box>
                 </Paper>
             </Grid>
+            <Outlet />
         </Grid>
     );
 };

@@ -1,9 +1,9 @@
 import { Box, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import {EPOCHTODATE, EPOCHTODATETIME} from '../../function/index'
+import {EPOCHTODATE, EPOCHTODATETIME, EPOCHTODATETIMETOTIME,EPOCHTODATETODAY} from '../../function/index'
 const ThongTinDonHang = ({ donHang }) => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -13,7 +13,6 @@ const ThongTinDonHang = ({ donHang }) => {
     setPage(0);
   };
   return (
-
     <Paper elevation={3} sx={{ padding: '20px' }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -159,8 +158,9 @@ const ThongTinDonHang = ({ donHang }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Thời gian bắt đầu</TableCell>
-                  <TableCell>Thời gian kết thúc</TableCell>
+                  <TableCell>Ngày làm việc</TableCell>
+                  <TableCell>Làm trong</TableCell>
+                  <TableCell>Trạng thái</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -168,8 +168,6 @@ const ThongTinDonHang = ({ donHang }) => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
                 <TableRow
-                  //key={row.id}
-                  //onClick={() => handleRowClick(row)}
                   sx={{
                     cursor: 'pointer',
                     '&:hover': {
@@ -177,8 +175,9 @@ const ThongTinDonHang = ({ donHang }) => {
                     },
                   }}
                 >
-                  <TableCell>{EPOCHTODATETIME(row.thoiGianBatDauLich)}</TableCell>
-                    <TableCell>{EPOCHTODATETIME(row.thoiGianKetThucLich)}</TableCell>
+                   <TableCell>{EPOCHTODATETODAY(row.thoiGianBatDauLich)}</TableCell>
+                  <TableCell>{EPOCHTODATETIMETOTIME(row.thoiGianBatDauLich,row.thoiGianKetThucLich)}</TableCell>
+                    <TableCell>{row.trangThaiLich}</TableCell>
                 </TableRow>
               ))}
               </TableBody>
@@ -190,7 +189,7 @@ const ThongTinDonHang = ({ donHang }) => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[10,15,20,30,50,100]}
+          rowsPerPageOptions={[5,10,15,20,30,50,100]}
           labelRowsPerPage="Số hàng mỗi trang"
         />
           </TableContainer>
