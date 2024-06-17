@@ -135,6 +135,10 @@ export const resolvers = {
         DanhSachDonHangTheoNhanVien: async (parent, args) => {
             const data = await DonHangModel.find({ nhanVien: args.idNhanVien, trangThaiDonHang: 'Đã duyệt đơn' });
             return data;
+        },
+        TimDanhSachDonHangTheoDanhSachLichThucHien: async (parent, args) => {
+            const data = await DonHangModel.find({ danhSachLichThucHien: { $in: args.idLichThucHien } });
+            return data;
         }
     },
     DonHang: {

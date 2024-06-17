@@ -290,3 +290,86 @@ export const apiNhanVienTuChoiCongViec = async (idDonHang,lyDoNhanVienTuChoiDonH
   const {NhanVienTuChoiCongViec} = await GraphQLrequest({query, variables: {idDonHang,lyDoNhanVienTuChoiDonHang}});
   return NhanVienTuChoiCongViec;
 }
+
+export const apiTimDanhSachDonHangTheoDanhSachLichThucHien = async (idLichThucHien)=> {
+  const query = `query TimDanhSachDonHangTheoDanhSachLichThucHien($idLichThucHien: [String]) {
+  TimDanhSachDonHangTheoDanhSachLichThucHien(idLichThucHien: $idLichThucHien) {
+    danhSachDichVu {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+        thoiGian
+      }
+      danhSachLichThucHien {
+        id
+        lyDoDungLich
+        thoiGianBatDauLich
+        thoiGianKetThucLich
+        trangThaiLich
+      }
+      diaChi {
+        ghiChu
+        quanHuyen
+        soNhaTenDuong
+        tinhTP
+      }
+      dichVuChinh {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+      }
+      ghiChu
+      khachHang {
+        email
+        soDienThoai
+        tenKhachHang
+      }
+      lyDoDoiNhanVien
+      lyDoTuChoi
+      maDonHang
+      lyDoNhanVienTuChoiDonHang
+      ngayBatDau
+      ngayDatHang
+      id
+      ngayKetThuc
+      nhanVien {
+        id
+        anhDaiDien
+        cccd
+        diaChi
+        email
+        ghiChu
+        gioiTinh
+        ngaySinh
+        soDienThoai
+        tenNhanVien
+        dichVu {
+          tenDichVu
+        }
+        danhGia
+      }
+      nhanVienCu {
+        anhDaiDien
+        cccd
+        diaChi
+        email
+        ghiChu
+        gioiTinh
+        ngaySinh
+        soDienThoai
+        tenNhanVien
+      }
+      soGioThucHien
+      soThangLapLai
+      tongTien
+      trangThaiDonHang
+      uuTienTasker
+      vatNuoi
+  }
+}
+    `;
+  const {TimDanhSachDonHangTheoDanhSachLichThucHien} = await GraphQLrequest({query, variables: {idLichThucHien}});
+  return TimDanhSachDonHangTheoDanhSachLichThucHien;
+}
