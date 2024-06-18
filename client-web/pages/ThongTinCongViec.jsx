@@ -4,19 +4,17 @@ import { Box, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, Dial
 import ThongTinNhanVien from '../src/components/ChiTietDonHang/ThongTinNhanVien';
 import ThongTinTaiKhoan from '../src/components/ThongTinTaiKhoan';
 import { AuthContext } from '../src/context/AuthProvider';
-import { useNavigate } from 'react-router-dom';
-import LichLamViec from '../src/components/LichLamViec';
+import { Outlet, useNavigate } from 'react-router-dom';
+import LichLamViec from '../src/components/LichLamViec/index';
 import XacNhanCongViec from '../src/components/XacNhanCongViec';
-
+import DanhSachDonHangDaXacNhan from '../src/components/DanhSachDonHangDaXacNhan';
 
 export default function ThongTinCongViec() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [thongTinNhanVien, setThongTinNhanVien] = useState([]);
     const [tabValue, setTabValue] = useState(0); // State to manage active tab
     const lichLamViec = thongTinNhanVien.lichLamViec || [];
-    const { user, nhanVien } = useContext(AuthContext);
-    const navigate = useNavigate();
-
+    const { nhanVien } = useContext(AuthContext);
     useEffect(() => {
         const fetchData = async () => {
             const data = await apiThongTinNhanVien(nhanVien.id);
@@ -40,6 +38,7 @@ export default function ThongTinCongViec() {
                     <Tabs value={tabValue} onChange={handleTabChange} centered>
                         <Tab label="Xác nhận công việc" />
                         <Tab label="Xem lịch làm việc" />
+                        <Tab label="Danh sách đơn hàng đã xác nhận" />
                     </Tabs>
                 </Paper>
 
@@ -51,7 +50,11 @@ export default function ThongTinCongViec() {
                 {tabValue === 1 && (
                     <LichLamViec data={{ lichLamViec, selectedDate, setSelectedDate }} />
                 )}
+                {tabValue === 2 && (
+                    <DanhSachDonHangDaXacNhan data={{nhanVien}}/>
+                )}
             </Box>
+            <Outlet />
         </>
     );
 }

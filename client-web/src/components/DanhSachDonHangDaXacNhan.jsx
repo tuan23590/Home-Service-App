@@ -1,20 +1,20 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { apiDanhSachDonHangChoXacNhanTheoNhanVien } from '../../utils/DonHangUtils';
+import { apiDanhSachDonHangDaXacNhanTheoNhanVien } from '../../utils/DonHangUtils';
 import { Box, Grid, Typography } from '@mui/material';
-import DSDonHangThuGon from './LichLamViec/DSDonHangThuGon';
+import DSLamViecThuGon from './LichLamViec/DSDonHangThuGon';
 
-export default function XacNhanCongViec({ data }) {
+export default function DanhSachDonHangDaXacNhan({ data }) {
   const { nhanVien } = data;
-  const [danhSachDonHang, setDanhSachLichLamViec] = useState([]);
+  const [danhSachDonHang, setDanhSachDonHang] = useState([]);
   useEffect(() => {
-    const fetchDanhSachDonHangChoXacNhanTheoNhanVien = async () => {
-      const data = await apiDanhSachDonHangChoXacNhanTheoNhanVien(nhanVien.id);
-      setDanhSachLichLamViec(data);
+    const fetchDanhSachDonHangDaXacNhanTheoNhanVien = async () => {
+      const data = await apiDanhSachDonHangDaXacNhanTheoNhanVien(nhanVien.id);
+      setDanhSachDonHang(data);
     }
     if (nhanVien?.id) {
-      fetchDanhSachDonHangChoXacNhanTheoNhanVien();
+      fetchDanhSachDonHangDaXacNhanTheoNhanVien();
     }
   }, [nhanVien?.id]);
   return (
@@ -37,9 +37,9 @@ export default function XacNhanCongViec({ data }) {
           </>
         ) : (
           <Box sx={{marginTop: '20px'}}>
-            <Typography variant="h4" align="center" sx={{paddingBottom: '15px'}}>Danh sách đơn hàng chờ xác nhận</Typography>
+            <Typography variant="h4" align="center" sx={{paddingBottom: '15px'}}>Danh sách đơn hàng đã xác nhận</Typography>
             <Box sx={{marginLeft: "15px"}}>
-            <DSDonHangThuGon data={{danhSachDonHang}}/>
+            <DSLamViecThuGon data={{danhSachDonHang}}/>
             </Box>
           </Box>
         )}

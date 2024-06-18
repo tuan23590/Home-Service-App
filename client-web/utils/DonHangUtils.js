@@ -219,9 +219,9 @@ export const apiHuyDonHang = async (idDonHang, lyDoHuyDonHang) => {
   return data;
 };
 
-export const apiDanhSachDonHangTheoNhanVien = async (idNhanVien)=> {
-  const query = `query DanhSachDonHangTheoNhanVien($idNhanVien: String) {
-  DanhSachDonHangTheoNhanVien(idNhanVien: $idNhanVien) {
+export const apiDanhSachDonHangChoXacNhanTheoNhanVien = async (idNhanVien)=> {
+  const query = `query DanhSachDonHangChoXacNhanTheoNhanVien($idNhanVien: String) {
+  DanhSachDonHangChoXacNhanTheoNhanVien(idNhanVien: $idNhanVien) {
    danhSachDichVu {
         gia
         khoiLuongCongViec
@@ -267,8 +267,59 @@ export const apiDanhSachDonHangTheoNhanVien = async (idNhanVien)=> {
   }
 }  
     `;
-  const {DanhSachDonHangTheoNhanVien} = await GraphQLrequest({query, variables: {idNhanVien}});
-  return DanhSachDonHangTheoNhanVien;
+  const {DanhSachDonHangChoXacNhanTheoNhanVien} = await GraphQLrequest({query, variables: {idNhanVien}});
+  return DanhSachDonHangChoXacNhanTheoNhanVien;
+}
+export const apiDanhSachDonHangDaXacNhanTheoNhanVien = async (idNhanVien)=> {
+  const query = `query DanhSachDonHangDaXacNhanTheoNhanVien($idNhanVien: String) {
+  DanhSachDonHangDaXacNhanTheoNhanVien(idNhanVien: $idNhanVien) {
+   danhSachDichVu {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+        thoiGian
+      }
+      danhSachLichThucHien {
+        id
+        lyDoDungLich
+        thoiGianBatDauLich
+        thoiGianKetThucLich
+        trangThaiLich
+      }
+      diaChi {
+        ghiChu
+        quanHuyen
+        soNhaTenDuong
+        tinhTP
+      }
+      dichVuChinh {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+      }
+      ghiChu
+      khachHang {
+        email
+        soDienThoai
+        tenKhachHang
+      }
+      maDonHang
+      ngayBatDau
+      ngayDatHang
+      id
+      ngayKetThuc
+      soGioThucHien
+      soThangLapLai
+      tongTien
+      trangThaiDonHang
+      vatNuoi
+  }
+}  
+    `;
+  const {DanhSachDonHangDaXacNhanTheoNhanVien} = await GraphQLrequest({query, variables: {idNhanVien}});
+  return DanhSachDonHangDaXacNhanTheoNhanVien;
 }
 export const apiNhanVienXacNhanCongViec = async (idDonHang)=> {
   const query = `mutation NhanVienXacNhanCongViec($idDonHang: String) {

@@ -132,10 +132,17 @@ export const resolvers = {
             const data = await NhanVienModel.findOne({ email: args.email });
             return data;
         },
-        DanhSachDonHangTheoNhanVien: async (parent, args) => {
-            const data = await DonHangModel.find({ nhanVien: args.idNhanVien, trangThaiDonHang: 'Đã duyệt đơn' });
+        DanhSachDonHangChoXacNhanTheoNhanVien: async (parent, args) => {
+            const data = await DonHangModel.find({ nhanVien: args.idNhanVien, trangThaiDonHang: 'Chờ xác nhận' });
             return data;
         },
+        DanhSachDonHangDaXacNhanTheoNhanVien: async (parent, args) => {
+            const data = await DonHangModel.find({
+                nhanVien: args.idNhanVien,
+                trangThaiDonHang: { $in: ['Đang thực hiện', 'Đã hoàn thành'] }
+            });
+            return data;
+        },        
         TimDanhSachDonHangTheoDanhSachLichThucHien: async (parent, args) => {
             const data = await DonHangModel.find({ danhSachLichThucHien: { $in: args.idLichThucHien } });
             return data;
@@ -305,7 +312,7 @@ export const resolvers = {
         themNhanVienVaoDonHang: async (parent, args) => {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
-                donHang.trangThaiDonHang = "Đã duyệt đơn";
+                donHang.trangThaiDonHang = "Chờ xác nhận";
                 args.idNhanVien.forEach(id => {
                     donHang.nhanVien.push(id);
                 });
@@ -323,10 +330,10 @@ export const resolvers = {
         nhanVienXacNhanCongViec: async (parent, args) => {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
-                donHang.trangThaiDonHang = "Nhân viên đã xác nhận công việc";
+                donHang.trangThaiDonHang = "Đang thực hiện";
                 donHang.danhSachLichThucHien.forEach(async (id) => {
                     const lichThucHien = await LichThucHienModel.findById(id);
-                    lichThucHien.trangThaiLich = 'Nhân viên đã xác nhận công việc';
+                    lichThucHien.trangThaiLich = 'Đang thực hiện';
                     await lichThucHien.save();
                 });
                 await donHang.save();
@@ -339,11 +346,11 @@ export const resolvers = {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
                 const nhanVien = await NhanVienModel.findById(donHang.nhanVien[0]);
-                donHang.trangThaiDonHang = "Nhân viên đã từ chối công việc";
+                donHang.trangThaiDonHang = "Nhân viên từ chối";
                 donHang.lyDoNhanVienTuChoiDonHang = args.lyDoNhanVienTuChoiDonHang;
                 donHang.danhSachLichThucHien.forEach(async (id) => {
                     const lichThucHien = await LichThucHienModel.findById(id);
-                    lichThucHien.trangThaiLich = 'Nhân viên đã từ chối công việc';
+                    lichThucHien.trangThaiLich = 'Nhân viên từ chối';
                     await lichThucHien.save();
                 });
                 await donHang.save();

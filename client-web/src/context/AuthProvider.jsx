@@ -25,7 +25,6 @@ export default function AuthProvider({ children }) {
                   return;
                 }
                 setNhanVien(data);
-                console.log(data);
                 return;
             }
             setUser({});

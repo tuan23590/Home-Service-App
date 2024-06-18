@@ -1,22 +1,21 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { apiTimDanhSachDonHangTheoDanhSachLichThucHien } from '../../utils/DonHangUtils';
-import { EPOCHTODATETIMETOTIME, EPOCHTODATETODAY } from './../function'
-import { Outlet, useNavigate } from 'react-router-dom';
+import { apiTimDanhSachDonHangTheoDanhSachLichThucHien } from '../../../utils/DonHangUtils';
+import DSDonHangThuGon from './DSDonHangThuGon';
+
 
 export default function LichLamViec({ data }) {
     const { lichLamViec, selectedDate, setSelectedDate } = data;
     const lichLamViecNhanVien = lichLamViec.filter(item => item.trangThaiLich === "Nhân viên đã xác nhận công việc");
     const [matchingItems, setMatchingItems] = useState([]);
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [danhSachDonHangTheoLichLamViec, setDanhSachDonHangTheoLichLamViec] = useState([]);
+    const [danhSachDonHang, setDanhSachDonHang] = useState([]);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
     useEffect(() => {
-        setSelectedDate(currentDate);
+        handleClickOpen(currentDate.getDate());
     }, []);
 
     const handlePreviousMonth = () => {
@@ -39,7 +38,7 @@ export default function LichLamViec({ data }) {
 
         setLoading(true); // Bắt đầu tải dữ liệu
         const data = await apiTimDanhSachDonHangTheoDanhSachLichThucHien(matchingItems.map(item => item.id));
-        setDanhSachDonHangTheoLichLamViec(data);
+        setDanhSachDonHang(data);
         setLoading(false); // Kết thúc tải dữ liệu
     };
 
@@ -146,9 +145,7 @@ export default function LichLamViec({ data }) {
                 </Paper>
             </Grid>
             <Grid item xs={4}>
-                <Paper sx={{ padding: '10px', height: "58vh" ,overflow: 'auto'}}>
-                    <Box>
-                        <Typography variant="h5" align="center">
+            <Typography variant="h5" align="center">
                             <strong>
                                 Danh sách công việc {
                                     selectedDate?.toDateString() === new Date().toDateString()
@@ -156,57 +153,28 @@ export default function LichLamViec({ data }) {
                                         : 'ngày ' + selectedDate?.toLocaleString('default', { day: 'numeric', month: 'long' })
                                 }
                             </strong>
-                        </Typography>
+                </Typography>
+                <Paper sx={{ padding: '10px', height: "56vh" ,overflow: 'auto'}}>
+                    <Box>
+                        
                         {loading ? (
                             <Typography variant="body1" align="center">
                                 Đang tải...
                             </Typography>
                         ) : (
-                            danhSachDonHangTheoLichLamViec.length === 0 ? (
+                            danhSachDonHang.length === 0 ? (
                                 <Typography variant="body1" align="center">
                                     Không có công việc nào trong ngày này
                                 </Typography>
                             ) : (
-                                danhSachDonHangTheoLichLamViec.map((donHang, index) => (
-                                    <Paper key={index} sx={{ marginBottom: '10px', padding: '15px', border: 1 ,cursor: 'pointer',':hover':{
-                                        backgroundColor: '#f0f0f0'
-                                    }}} onClick={()=>{navigate(`./${donHang.id}`)}}>
-                                        <Typography>
-                                            <strong>Mã đơn hàng: </strong> {donHang.maDonHang}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Khách hàng: </strong> {donHang.khachHang.tenKhachHang}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>SĐT của KH: </strong> {donHang.khachHang.soDienThoai}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Địa chỉ: </strong> {donHang.diaChi.soNhaTenDuong}, {donHang.diaChi.xaPhuong}, {donHang.diaChi.quanHuyen}, {donHang.diaChi.tinhTP}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Dịch vụ thực hiện: </strong> {donHang.danhSachDichVu.map(dichVu => dichVu.tenDichVu).join(', ')}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Ngày làm việc: </strong> {EPOCHTODATETODAY(matchingItems[index]?.thoiGianBatDauLich)}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Làm trong: </strong> {EPOCHTODATETIMETOTIME(matchingItems[index]?.thoiGianBatDauLich,matchingItems[index]?.thoiGianKetThucLich)}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Vật nuôi: </strong> {donHang.vatNuoi}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Ghi chú: </strong> {donHang.ghiChu || 'Không có ghi chú'}
-                                        </Typography>
-                                        
-                                    </Paper>
-                                ))
+                                <Box sx={{marginLeft: '-10px'}}>
+                                    <DSDonHangThuGon data={{danhSachDonHang,matchingItems}} />
+                                </Box>
                             )
                         )}
                     </Box>
                 </Paper>
             </Grid>
-            <Outlet />
         </Grid>
     );
 };
