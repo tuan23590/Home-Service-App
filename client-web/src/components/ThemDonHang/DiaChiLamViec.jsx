@@ -207,8 +207,11 @@ const DiaChiLamViec = ({data}) => {
                 onChange={handleChangeDiaChi}
             />
         </Grid>
-        <Grid item xs={6}>
+        </>
+       )}
+        <Grid item xs={12}>
             <TextField
+                disabled = {diaChiData.id ==null ? false : true}
                 fullWidth
                 label="Ghi chú địa chỉ"
                 name="ghiChu"
@@ -216,10 +219,12 @@ const DiaChiLamViec = ({data}) => {
                 size="small"
                 value={diaChiData.ghiChu === 'Thêm địa chỉ mới' ? '' : diaChiData.ghiChu}
                 onChange={handleChangeDiaChi}
+                InputLabelProps={{
+                    shrink: true,
+                  }}
             />
         </Grid>
-        </>
-       )}
+        
     </Grid>
     );
 };

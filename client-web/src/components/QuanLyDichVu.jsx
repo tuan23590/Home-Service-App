@@ -27,7 +27,7 @@ const QuanLyDichVu = () => {
         loaiDichVu: null
     });
     const danhSachGioThucHien = [{ label: 'cả ngày', value: 8 },{ label: '0 giờ', value: 0 },{ label: '1 giờ', value: 1 }, { label: '2 giờ', value: 2 }, { label: '3 giờ', value: 3 }, { label: '4 giờ', value: 4 }]
-    const danhSachLoaiDichVu = ['Dịch vụ có lập lại','Dịch vụ không lập lại']
+    const danhSachLoaiDichVu = ['Dịch vụ cho gia đình','Dịch vụ chăm sóc và hỗ trợ','Dịch vụ bảo dưỡng điện máy','Dịch vụ dành cho doanh nghiệp','Dịch vụ tiện ích nâng cao']
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setDichVuData({
@@ -102,17 +102,7 @@ const QuanLyDichVu = () => {
                                         size='small'
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
-                                <TextField
-                                        label="Nhập giá dịch vụ (VND)"
-                                        name="gia"
-                                        value={dichVuData.gia}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                        size='small'
-                                        type="number"
-                                    />
-                                </Grid>
+                               
                                 <Grid item xs={6}>
                                     <Autocomplete
                                         required
@@ -130,6 +120,17 @@ const QuanLyDichVu = () => {
                                                 
                                             />
                                         )}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                <TextField
+                                        label="Nhập giá dịch vụ (VND)"
+                                        name="gia"
+                                        value={dichVuData.gia}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                        size='small'
+                                        type="number"
                                     />
                                 </Grid>
                                 <Grid item xs={6}>

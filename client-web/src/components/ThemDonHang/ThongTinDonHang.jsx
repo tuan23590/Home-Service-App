@@ -21,6 +21,7 @@ const ThongTinDonHang = ({ data }) => {
     const [viTri, setViTri] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const danhSachLoaiDichVu = ['Dịch vụ cho gia đình','Dịch vụ chăm sóc và hỗ trợ', 'Dịch vụ bảo dưỡng điện máy', 'Dịch vụ dành cho doanh nghiệp', 'Dịch vụ tiện ích nâng cao']
     dayjs.locale('vi');
     useEffect(() => {
         setDonHangData(prevData => ({
@@ -42,23 +43,23 @@ const ThongTinDonHang = ({ data }) => {
             for (let hour = businessStart; hour + interval <= businessEnd; hour++) {
                 const startHour = hour.toString().padStart(2, '0');
                 const endHour = (hour + interval).toString().padStart(2, '0');
-    
+
                 const timeString = `${startHour}:00 đến ${endHour}:00 (làm trong ${interval} giờ)`;
-    
+
                 // Check if the time range includes 12:00 to 13:00
                 if (!(hour <= 12 && hour + interval > 12)) {
                     timesArray.push({ timeString, startHour, interval });
                 }
             }
-    
+
             return timesArray;
         };
-    
+
         const interval = donHangData.soGioThucHien || 1;
         const timeRanges = generateTimeRanges(interval);
         setDanhSachGioThucHien(timeRanges);
     }, [donHangData.dichVuChinh]);
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -100,7 +101,7 @@ const ThongTinDonHang = ({ data }) => {
             setSelectedDichVu(selectedDichVu.filter((dichVu) => dichVu !== item));
         } else {
             const totalTimeSelected = selectedDichVu.reduce((total, dichVu) => total + (dichVu.thoiGian || 0), 0);
-    
+
             if (totalTimeSelected + (item.thoiGian || 0) <= 4 || item.thoiGian === null) {
                 setSelectedDichVu([...selectedDichVu, item]);
             } else {
@@ -108,7 +109,7 @@ const ThongTinDonHang = ({ data }) => {
             }
         }
     };
-    
+
     useEffect(() => {
         setDonHangData(prevData => ({
             ...prevData,
@@ -162,7 +163,7 @@ const ThongTinDonHang = ({ data }) => {
                 if (idx === viTri) {
                     return {
                         ...lich,
-                        thoiGianBatDau: thoiGianBatDauMoi.getTime(), 
+                        thoiGianBatDau: thoiGianBatDauMoi.getTime(),
                         thoiGianKetThuc: thoiGianKetThuc.getTime()
                     };
                 }
@@ -185,12 +186,40 @@ const ThongTinDonHang = ({ data }) => {
             doiGioThucHien();
         }
     };
-
+    const [loaiDichVu, setLoaiDichVu] = useState('');
+    const [filteredDanhSachDichVuThem, setFilteredDanhSachDichVuThem] = useState([]);
+    const handleLoaiDichVuChange = (event, newValue) => {
+        setLoaiDichVu(newValue);
+        if (newValue) {
+            const filtered = danhSachDichVuThem.filter(dichVu => dichVu.loaiDichVu === newValue);
+            setFilteredDanhSachDichVuThem(filtered);
+        } else {
+            setFilteredDanhSachDichVuThem([]);
+        }
+    };
     return (
         <>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Typography variant="h6">Thông tin đơn hàng</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                <Autocomplete
+                required
+                getOptionLabel={(option) => option}
+                options={danhSachLoaiDichVu}
+                value={loaiDichVu}
+                onChange={handleLoaiDichVuChange}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Chọn loại dịch vụ"
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                    />
+                )}
+            />
                 </Grid>
                 <Grid item xs={12}>
                     <Typography><strong>Danh sách dịch vụ</strong></Typography>
@@ -204,7 +233,7 @@ const ThongTinDonHang = ({ data }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {danhSachDichVuThem.map((dichVu) => (
+                            {filteredDanhSachDichVuThem.map((dichVu) => (
                                 <TableRow key={dichVu.id} sx={{
                                     cursor: 'pointer',
                                     '&:hover': {
@@ -248,7 +277,7 @@ const ThongTinDonHang = ({ data }) => {
                         )}
                     />
                 </Grid>
-               
+
 
                 <Grid item xs={6}>
                     <TextField
@@ -299,37 +328,37 @@ const ThongTinDonHang = ({ data }) => {
                         )}
                     />
                 </Grid>
-                <Grid item xs={6} sx={{display:'flex',justifyContent:'center'}}>
+                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Box>
-                    <Typography><strong>Chọn thứ làm việc trong tuần</strong></Typography>
-                <Box sx={{ flexDirection: 'row', marginTop: '20px'}}>
-                        <Button sx={{margin: '5px', width: '150px'}} variant={chonNgayLamViecTrongTuan.includes(1) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(1)}>Thứ 2</Button>
-                        <Button sx={{margin: '5px', width: '150px'}} variant={chonNgayLamViecTrongTuan.includes(2) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(2)}>Thứ 3</Button>
-                        <Button sx={{margin: '5px', width: '150px'}} variant={chonNgayLamViecTrongTuan.includes(3) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(3)}>Thứ 4</Button>
-                        <Button sx={{margin: '5px', width: '150px'}} variant={chonNgayLamViecTrongTuan.includes(4) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(4)}>Thứ 5</Button>
-                        <Button sx={{margin: '5px', width: '150px'}} variant={chonNgayLamViecTrongTuan.includes(5) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(5)}>Thứ 6</Button>
-                        <Button sx={{margin: '5px', width: '150px'}} variant={chonNgayLamViecTrongTuan.includes(6) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(6)}>Thứ 7</Button>
-                        <Button sx={{margin: '5px', width: '150px'}} variant={chonNgayLamViecTrongTuan.includes(0) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(0)}>Chủ nhật</Button>
-                    </Box>
+                        <Typography><strong>Chọn thứ làm việc trong tuần</strong></Typography>
+                        <Box sx={{ flexDirection: 'row', marginTop: '20px' }}>
+                            <Button sx={{ margin: '5px', width: '150px' }} variant={chonNgayLamViecTrongTuan.includes(1) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(1)}>Thứ 2</Button>
+                            <Button sx={{ margin: '5px', width: '150px' }} variant={chonNgayLamViecTrongTuan.includes(2) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(2)}>Thứ 3</Button>
+                            <Button sx={{ margin: '5px', width: '150px' }} variant={chonNgayLamViecTrongTuan.includes(3) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(3)}>Thứ 4</Button>
+                            <Button sx={{ margin: '5px', width: '150px' }} variant={chonNgayLamViecTrongTuan.includes(4) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(4)}>Thứ 5</Button>
+                            <Button sx={{ margin: '5px', width: '150px' }} variant={chonNgayLamViecTrongTuan.includes(5) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(5)}>Thứ 6</Button>
+                            <Button sx={{ margin: '5px', width: '150px' }} variant={chonNgayLamViecTrongTuan.includes(6) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(6)}>Thứ 7</Button>
+                            <Button sx={{ margin: '5px', width: '150px' }} variant={chonNgayLamViecTrongTuan.includes(0) ? 'contained' : 'outlined'} color='info' onClick={() => handleButtonClick(0)}>Chủ nhật</Button>
+                        </Box>
                     </Box>
                     <Box>
-                    <Typography><strong>Chọn ngày bắt đầu làm việc</strong></Typography>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateCalendar
+                        <Typography><strong>Chọn ngày bắt đầu làm việc</strong></Typography>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateCalendar
 
-                            value={donHangData.ngayBatDau}
-                            onChange={handleDateChange}
-                            dayOfWeekFormatter={(_day, weekday) => {
-                                if (_day.$W === 1) {
-                                    return 'CN';
-                                } else if (_day.$W === 0) {
-                                    return 'T7';
-                                } else {
-                                    return 'T' + _day.$W;
-                                }
-                            }}
-                        />
-                    </LocalizationProvider>
+                                value={donHangData.ngayBatDau}
+                                onChange={handleDateChange}
+                                dayOfWeekFormatter={(_day, weekday) => {
+                                    if (_day.$W === 1) {
+                                        return 'CN';
+                                    } else if (_day.$W === 0) {
+                                        return 'T7';
+                                    } else {
+                                        return 'T' + _day.$W;
+                                    }
+                                }}
+                            />
+                        </LocalizationProvider>
                     </Box>
                 </Grid>
                 {donHangData.danhSachLichThucHien.length ? (<Grid item xs={6}>
@@ -381,20 +410,20 @@ const ThongTinDonHang = ({ data }) => {
                                 })}
                         </TableBody>
                     </Table>
-                   <Box sx={{display: 'flex', justifyContent:'space-between'}}> 
-                   <Typography sx={{marginTop: '15px'}}><strong>Tổng số ngày thực hiện: {donHangData.danhSachLichThucHien?.length}</strong></Typography>
-                    <TablePagination
-                        component="div"
-                        count={donHangData.danhSachLichThucHien.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        rowsPerPageOptions={[5,10, 15, 20, 30, 50, 100]}
-                        labelRowsPerPage="Số hàng mỗi trang"
-                    />
-                   </Box>
-                    
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography sx={{ marginTop: '15px' }}><strong>Tổng số ngày thực hiện: {donHangData.danhSachLichThucHien?.length}</strong></Typography>
+                        <TablePagination
+                            component="div"
+                            count={donHangData.danhSachLichThucHien.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            rowsPerPageOptions={[5, 10, 15, 20, 30, 50, 100]}
+                            labelRowsPerPage="Số hàng mỗi trang"
+                        />
+                    </Box>
+
                 </Grid>) : (<></>)}
 
             </Grid>

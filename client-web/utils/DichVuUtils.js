@@ -24,7 +24,7 @@ export const apiDanhSachDichVu = async () => {
     const {themDichVu} = await GraphQLrequest({query, variables: {
       tenDichVu: dichVuData.tenDichVu,
       khoiLuongCongViec: dichVuData.khoiLuongCongViec,
-      gia: dichVuData.gia.value,
+      gia: parseInt(dichVuData.gia),
       thoiGian: dichVuData.thoiGian.value,
       loaiDichVu: dichVuData.loaiDichVu
     }});
