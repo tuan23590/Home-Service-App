@@ -22,7 +22,6 @@ export default function ChonThoiGianLamViec({hideModal}) {
       onPress={()=>hideModal()}
       >
         <Ionicons name="chevron-back-sharp" size={24} color="black" />
-      <Text>ChonThoiGianLamViec</Text>
       </TouchableOpacity>
       <Heading text="Thời gian làm việc" />
       <ChonNgayLam />

@@ -43,9 +43,6 @@ const DonHangSchema = new mongoose.Schema({
     ghiChu:{
         type: String
     },
-    saoDanhGia:{
-        type: String
-    },
     ghiChuDanhGia:{
         type: String
     },
@@ -70,8 +67,9 @@ const DonHangSchema = new mongoose.Schema({
     lyDoNhanVienTuChoiDonHang:{
         type: String
     },
-    
-    
+    saoDanhGia:{
+        type: Number
+    }
     
 },{timestamps: true});
 

@@ -56,6 +56,7 @@ export const typeDefs = `#graphql
     },
     type DonHang {
         id: String,
+        saoDanhGia: Float,
         maDonHang:  String,
         ngayDatHang: Float,
         ngayBatDau: Float,
@@ -69,7 +70,6 @@ export const typeDefs = `#graphql
         diaChi: DiaChi,
         vatNuoi: String,
         ghiChu: String,
-        saoDanhGia: String,
         ghiChuDanhGia: String,
         uuTienTasker: Boolean,
         tongTien: Float,
@@ -133,6 +133,7 @@ export const typeDefs = `#graphql
         ThongKe: String,
         danhSachDichVuDangHoatDong: [DichVu],
         TimKhachHangTheoId(idKhachHang: String): KhachHang,
+        DanhSachDonHangTheoKhachHang(idKhachHang: String): [DonHang],
     },
     type Mutation {
         themDonHang(
@@ -182,6 +183,6 @@ export const typeDefs = `#graphql
         kichHoatDichVu(idDichVu: String): DichVu,
         hoanThanhLich(idLichThucHien: String): LichThucHien,
         themDiaChiTamThoi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String,ghiChu: String): DiaChi,
-        
+        danhGiaDonHang(idDonHang: String, saoDanhGia: Float, ghiChuDanhGia: String): DonHang,
     }
 `

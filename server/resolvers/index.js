@@ -152,6 +152,10 @@ export const resolvers = {
             const data = await KhachHangModel.findOne({ _id: args.idKhachHang });
             return data;
         },
+        DanhSachDonHangTheoKhachHang: async (parent, args) => {
+            const data = await DonHangModel.find({ khachHang: args.idKhachHang });
+            return data;
+        },
         ThongKe: async (parent, args) => {
             const today = new Date();
             const currentMonth = today.getMonth(); 
@@ -573,6 +577,7 @@ export const resolvers = {
         hoanThanhLich: async (parent, args) => {
             const lichThucHien = await LichThucHienModel.findById(args.idLichThucHien);
             lichThucHien.trangThaiLich = "Đã hoàn thành";
+            // lichThucHien.nhanVienHoanThanh = args.idNhanVien;
             await lichThucHien.save();
             const DsLichThucHien = await LichThucHienModel.find({ donHang: lichThucHien.donHang });
             const allCompleted = DsLichThucHien.every(item => item.trangThaiLich === "Đã hoàn thành");
@@ -592,6 +597,13 @@ export const resolvers = {
             khachHang.danhSachDiaChi.push(DiaChi._id);
             await khachHang.save();
             return DiaChi;
+        },
+        danhGiaDonHang: async (parent, args) => {
+            const donHang = await DonHangModel.findById(args.idDonHang);
+            donHang.ghiChuDanhGia = args.ghiChuDanhGia;
+            donHang.saoDanhGia = args.saoDanhGia;
+            donHang.save();
+            return donHang;
         },
                 
     }

@@ -66,7 +66,6 @@ export default function ChiTietDonHang({hideModal}) {
       onPress={()=>hideModal()}
       >
         <Ionicons name="chevron-back-sharp" size={24} color="black" />
-        <Text>Chi Tiet Don Hang</Text>
       </TouchableOpacity>
       <Heading text='Vị trí làm việc'/>
       <View style={styles.box}>

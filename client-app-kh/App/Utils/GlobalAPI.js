@@ -271,6 +271,90 @@ console.log('convertedData',convertedData);
   console.log('result',result);
   return result;
 }
+
+const apiDanhSachDonHang=async()=>{ 
+  
+  const query = gql`
+  query DanhSachDonHangTheoKhachHang($idKhachHang: String) {
+  DanhSachDonHangTheoKhachHang(idKhachHang: $idKhachHang) {
+    id
+    maDonHang
+    ngayDatHang
+    ngayBatDau
+    ngayKetThuc
+    soGioThucHien
+    trangThaiDonHang
+    danhSachLichThucHien {
+      trangThaiLich
+      thoiGianKetThucLich
+      thoiGianBatDauLich
+      lyDoDungLich
+    }
+    nhanVien {
+      cccd
+      chuyenMon
+      danhGia
+      diaChi
+      ghiChu
+      email
+      gioiTinh
+      ngaySinh
+      soDienThoai
+      tenNhanVien
+    }
+    diaChi {
+      xaPhuong
+      tinhTP
+      soNhaTenDuong
+      quanHuyen
+      id
+      ghiChu
+    }
+    vatNuoi
+    ghiChu
+    saoDanhGia
+    ghiChuDanhGia
+    uuTienTasker
+    tongTien
+    lyDoTuChoi
+    lyDoDoiNhanVien
+    soThangLapLai
+    saoDanhGia
+    lyDoNhanVienTuChoiDonHang
+    danhSachDichVu {
+      id
+      loaiDichVu
+      tenDichVu
+      thoiGian
+    }
+  }
+} 
+  `
+  const variavles = {
+    idKhachHang: "665afcd7bb0d528e34df544d"
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+const apiDanhGiaDonHang=async(danhGiaData)=>{ 
+  
+  const query = gql`
+  mutation DanhGiaDonHang($idDonHang: String, $saoDanhGia: Float, $ghiChuDanhGia: String) {
+  danhGiaDonHang(idDonHang: $idDonHang, saoDanhGia: $saoDanhGia, ghiChuDanhGia: $ghiChuDanhGia) {
+    maDonHang
+  }
+}
+  `
+  const variavles = {
+    idDonHang: danhGiaData.idDonHang,
+    saoDanhGia: parseFloat(danhGiaData.saoDanhGia),
+    ghiChuDanhGia: danhGiaData.ghiChuDanhGia
+  }
+  const result = await request(API_URL, query,variavles)
+  console.log('result',result);
+  return result;
+}
+
 export default {
     getSlider,
     getCategory,
@@ -283,7 +367,9 @@ export default {
     apiXaPhuong,
     apiThemDiaChi,
     apiDanhSachDiaChi,
-    apiThemDonHang
+    apiThemDonHang,
+    apiDanhSachDonHang,
+    apiDanhGiaDonHang
 };
 
 
