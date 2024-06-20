@@ -10,12 +10,12 @@ import MapPicker from '../../Compunents/MapPicker'
 import ChonThoiGianLamViec from './ChonThoiGianLamViec';
 import numeral from 'numeral';
 import { DonHangContext } from '../../Provider/DonHangProvider'
+import { ModalContext } from './../../Provider/ModalProvider';
 
 export default function BookingSingle({hideModal}) {
-
-  const [modalVisible, setModalVisible] = useState(false);
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
-  const {tongCong,dichVuChinh} = useContext(DonHangContext);
+  const {tongCong,dichVuChinh,diaChi} = useContext(DonHangContext);
+  const {isModal2Visible, setModal2Visible} = useContext(ModalContext);
   const press = () => {
     setModalThoiGianLamViec(true);
   }
@@ -29,8 +29,12 @@ export default function BookingSingle({hideModal}) {
       <Ionicons name="chevron-back-sharp" size={24} color="black" />
         <Text style={{fontSize:17}}>Tạo đơn</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={()=>setModalVisible(true)}>
-        <Text>Mo Map</Text>
+      <TouchableOpacity onPress={()=>setModal2Visible(true)}>
+      {diaChi ? (
+        <Text>{diaChi?.soNhaTenDuong}, {diaChi?.xaPhuong}, {diaChi?.quanHuyen}, {diaChi?.tinhTP}</Text>
+      ):(
+        <Text>Chọn địa chỉ</Text>
+      )}
       </TouchableOpacity>
       </View>
       <View style={{marginHorizontal:20}}>
@@ -50,10 +54,10 @@ export default function BookingSingle({hideModal}) {
       </View>
       <Modal
         animationType='slide'
-        visible={modalVisible}
+        visible={isModal2Visible}
         style={{top: -20}}
         >
-          <MapPicker hideModal={()=>setModalVisible(false)}/>
+          <MapPicker hideModal={()=>setModal2Visible(false)}/>
         </Modal>
         <Modal
         animationType='slide'

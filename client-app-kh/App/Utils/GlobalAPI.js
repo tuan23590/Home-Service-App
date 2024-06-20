@@ -145,13 +145,145 @@ const getDichVuCaLe=async()=>{
   const result = await request(API_URL, query)
   return result;
 }
+
+const apiTinhTP=async()=>{ 
+  
+  const query = gql`
+  query DanhSachTinhTp {
+        DanhSachTinhTp {
+        name_with_type
+          code
+        }
+      }        
+  `
+  const result = await request(API_URL, query)
+  return result;
+}
+const apiQuanHuyen=async(idTinhTp)=>{ 
+  const query = gql`
+  query DanhSachQuanHuyen($idTinhTp: String) {
+        DanhSachQuanHuyen(idTinhTP: $idTinhTp) {
+        name_with_type
+          code
+        }
+      }     
+  `
+  const variavles = {
+    idTinhTp: idTinhTp
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+const apiXaPhuong=async(idQuanHuyen)=>{ 
+  
+  const query = gql`
+  query DanhSachXaPhuong($idQuanHuyen: String) {
+        DanhSachXaPhuong(idQuanHuyen: $idQuanHuyen) {
+        name_with_type
+          code
+        }
+      }  
+  `
+  const variavles = {
+    idQuanHuyen: idQuanHuyen
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+const apiThemDiaChi=async(address)=>{ 
+  const query = gql`
+  mutation themDiaChiTamThoi($tinhTp: String, $quanHuyen: String, $xaPhuong: String, $soNhaTenDuong: String, $ghiChu: String) {
+  themDiaChiTamThoi(tinhTP: $tinhTp, quanHuyen: $quanHuyen, xaPhuong: $xaPhuong, soNhaTenDuong: $soNhaTenDuong, ghiChu: $ghiChu) {
+    id
+  }
+} 
+  `
+  const variavles = {
+    tinhTp: address.tinhTPName,
+    quanHuyen: address.quanHuyenName,
+    xaPhuong: address.xaPhuongName,
+    soNhaTenDuong: address.soNhaTenDuong,
+    ghiChu: address.ghiChuDiaChi
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+const apiDanhSachDiaChi=async()=>{ 
+  
+  const query = gql`
+  query TimNhanVienTheoEmail($idKhachHang: String) {
+  TimKhachHangTheoId(idKhachHang: $idKhachHang) {
+    danhSachDiaChi {
+      xaPhuong
+      tinhTP
+      soNhaTenDuong
+      quanHuyen
+      id
+      ghiChu
+    }
+    email
+    id
+    soDienThoai
+    tenKhachHang
+  }
+} 
+  `
+  const variavles = {
+    idKhachHang: "665afcd7bb0d528e34df544d"
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+
+const apiThemDonHang=async(donHangData)=>{ 
+  console.log('donHangData',donHangData.diaChi.id);
+  const query = gql`
+  mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $diaChi: String, $tongTien: Float, $soThangLapLai: Int) {
+    themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, diaChi: $diaChi, tongTien: $tongTien, soThangLapLai: $soThangLapLai) {
+      maDonHang
+    }
+  } 
+  `
+  const millisecondsToHours = 1000 * 60 * 60;
+  const convertedData = donHangData.lichLamViec.map(date => {
+    const thoiGianBatDau = date.getTime(); // Chuyển đổi thành epoch time (milliseconds)
+    const thoiGianKetThuc = thoiGianBatDau + donHangData.dichVuChinh.thoiGian * millisecondsToHours; // Tính toán gioKetThuc
+    return {
+      thoiGianBatDau,
+        thoiGianKetThuc
+    };
+});
+console.log('convertedData',convertedData);
+
+  const variables = {
+    soGioThucHien: donHangData.dichVuChinh.thoiGian,
+    danhSachLichThucHien: JSON.stringify(convertedData),
+    khachHang: JSON.stringify(donHangData.khachHang),
+    danhSachDichVu: Array(donHangData.dichVuChinh.thoiGian).fill(donHangData.dichVuChinh.id),
+    vatNuoi: donHangData.vatNuoi,
+    ghiChu: donHangData.ghiChu,
+    diaChi: JSON.stringify(donHangData.diaChi),
+    tongTien: donHangData.tongTien,
+    soThangLapLai: 0
+};
+//   console.log('variables',variables);
+  const result = await request(API_URL, query,variables)
+  console.log('result',result);
+  return result;
+}
 export default {
     getSlider,
     getCategory,
     getDiscovers,
     getDichVuThem,
     getDichVuCaLe,
-    themDonHang
+    themDonHang,
+    apiTinhTP,
+    apiQuanHuyen,
+    apiXaPhuong,
+    apiThemDiaChi,
+    apiDanhSachDiaChi,
+    apiThemDonHang
 };
 
 

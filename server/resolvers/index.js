@@ -148,6 +148,10 @@ export const resolvers = {
             const data = await DonHangModel.find({ danhSachLichThucHien: { $in: args.idLichThucHien } });
             return data;
         },
+        TimKhachHangTheoId: async (parent, args) => {
+            const data = await KhachHangModel.findOne({ _id: args.idKhachHang });
+            return data;
+        },
         ThongKe: async (parent, args) => {
             const today = new Date();
             const currentMonth = today.getMonth(); 
@@ -579,6 +583,16 @@ export const resolvers = {
                 await donHang.save();
             }
             return lichThucHien;
-        }        
+        },
+        themDiaChiTamThoi: async (parent, args) => {
+            const diaChiMoi = args;
+            const DiaChi = new DiaChiModel(diaChiMoi);
+            await DiaChi.save();
+            const khachHang = await KhachHangModel.findById("665afcd7bb0d528e34df544d");
+            khachHang.danhSachDiaChi.push(DiaChi._id);
+            await khachHang.save();
+            return DiaChi;
+        },
+                
     }
 };

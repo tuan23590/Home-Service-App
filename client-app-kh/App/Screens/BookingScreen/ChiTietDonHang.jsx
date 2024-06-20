@@ -6,9 +6,12 @@ import Colors from '../../Utils/Colors';
 import numeral from 'numeral';
 import { DonHangContext } from '../../Provider/DonHangProvider';
 import GlobalAPI from '../../Utils/GlobalAPI';
+import { Alert } from 'react-native';
+import { ModalContext } from './../../Provider/ModalProvider';
 
 export default function ChiTietDonHang({hideModal}) {
-    const {vatNuoi,dichVuThem,dichVuChinh,gioLam,lichLamViec,tongTien,uuTienTasker,ghiChu} = useContext(DonHangContext);
+    const {vatNuoi,dichVuThem,dichVuChinh,gioLam,lichLamViec,tongTien,uuTienTasker,ghiChu,khachHang,diaChi} = useContext(DonHangContext);
+    const {setModal1Visible,setModal2Visible,setModal3Visible} = useContext(ModalContext);
     const formatDateWithTime = (dateString, boundHour = 0) => {
       const date = new Date(dateString);
       const day = date.getDate();
@@ -25,16 +28,37 @@ export default function ChiTietDonHang({hideModal}) {
       return `${addLeadingZero(hour)}:${addLeadingZero(minute)} - ${day}/${month}`;
   };
   
-    const press = () => {
-      const fetchData = async () => {
-        try {
-          const data = await GlobalAPI.themDonHang(lichLamViec,dichVuChinh,dichVuThem,vatNuoi,ghiChu,uuTienTasker,tongTien);
-        } catch (error) {
-          console.error("Error fetching:", error);
-        }
-      };
-      fetchData();
+  const press = () => {
+    const donHangdata = {
+      lichLamViec,
+      dichVuChinh,
+      vatNuoi,
+      ghiChu,
+      tongTien,
+      khachHang,
+      diaChi
     };
+    
+    const fetchData = async () => {
+      try {
+        const data = await GlobalAPI.apiThemDonHang(donHangdata);
+        // Kiểm tra kết quả từ API và hiển thị thông báo nếu thành công
+        if (data) {
+          Alert.alert("Thông báo", "Thêm đơn hàng thành công");
+          setModal1Visible(false);
+          setModal2Visible(false);
+          setModal3Visible(false);
+          hideModal();
+        }
+      } catch (error) {
+        console.error("Error fetching:", error);
+        // Xử lý lỗi khi gọi API
+        Alert.alert("Lỗi", "Thêm đơn hàng thất bại");
+      }
+    };
+  
+    fetchData();
+  };
 
   return (
     <View style={{marginHorizontal: 20}}>
@@ -46,11 +70,11 @@ export default function ChiTietDonHang({hideModal}) {
       </TouchableOpacity>
       <Heading text='Vị trí làm việc'/>
       <View style={styles.box}>
-        <Text>123 Nguyen Trai, Quan 1, TP HCM</Text>
-        <Text>Nguyễn Văn A</Text>
-        <Text>Số Điện thoại: 0123456789</Text>
-        <Text>Chi tiết địa chỉ</Text>
-        <Text>123 Nguyen Trai, Quan 1, TP HCM 123 Nguyen Trai, Quan 1, TP HCM </Text>
+      <Text style={styles.boldText}>Thông tin cá nhân</Text>
+        <Text>Họ và tên: {khachHang.tenKhachHang}</Text>
+        <Text>Số Điện thoại: {khachHang.soDienThoai}</Text>
+        <Text style={styles.boldText}>Chi tiết địa chỉ</Text>
+        <Text>({diaChi?.ghiChu}){diaChi?.soNhaTenDuong}, {diaChi?.xaPhuong}, {diaChi?.quanHuyen}, {diaChi?.tinhTP}</Text>
       </View>
         <Heading text='Thông tin công việc'/>
         <View style={styles.box}>
@@ -67,7 +91,7 @@ export default function ChiTietDonHang({hideModal}) {
         </View>
         <Heading text='Phương thức thanh toán'/>
         <View style={styles.box}>
-            <Text>tiền mặt {'>'}  |  Khuyến mãi {'>'}</Text> 
+            <Text></Text> 
         </View>
         <Text style={styles.boldText}>Tổng cộng: {numeral(tongTien).format('0,0')} VND</Text>
 
