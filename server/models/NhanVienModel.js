@@ -46,7 +46,10 @@ const NhanVienSchema = new mongoose.Schema({
         type: String
     },anhDaiDien:{
         type: String
-    }
+    },
+    chuyenMon:{
+        type: String
+    },
     
 },{timestamps: true});
 

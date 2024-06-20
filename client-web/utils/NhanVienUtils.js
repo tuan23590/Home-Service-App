@@ -21,6 +21,7 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         danhGia
         trangThaiHienTai
         anhDaiDien
+        chuyenMon
       }
     }`;
     const {DanhSachNhanVienTrongViec} = await GraphQLrequest({query,variables:{ idDonHang }})
@@ -63,6 +64,7 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
           lyDoDungLich
         }
         anhDaiDien
+        chuyenMon
       }
     }`;
     const {NhanVienTheoId} = await GraphQLrequest({query,variables: {idNhanVien}})
@@ -95,6 +97,7 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
           lyDoDungLich
         }
         anhDaiDien
+        chuyenMon
   }
 }`;
     const {TimNhanVienTheoEmail} = await GraphQLrequest({query,variables: {email}})
@@ -121,6 +124,7 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     trangThaiHienTai
     phanQuyen
     anhDaiDien
+    chuyenMon
   }
 }`;
     const {NhanViens} = await GraphQLrequest({query})
