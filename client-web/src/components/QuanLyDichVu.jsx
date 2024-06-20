@@ -26,7 +26,7 @@ const QuanLyDichVu = () => {
         thoiGian: null,
         loaiDichVu: null
     });
-    const danhSachGioThucHien = [{ label: 'cả ngày', value: 8 },{ label: '0 giờ', value: 0 },{ label: '1 giờ', value: 1 }, { label: '2 giờ', value: 2 }, { label: '3 giờ', value: 3 }, { label: '4 giờ', value: 4 }]
+    const danhSachGioThucHien = [{ label: '0 giờ', value: 0 },{ label: '1 giờ', value: 1 }, { label: '2 giờ', value: 2 }, { label: '3 giờ', value: 3 }, { label: '4 giờ', value: 4 }]
     const danhSachLoaiDichVu = ['Dịch vụ cho gia đình','Dịch vụ chăm sóc và hỗ trợ','Dịch vụ bảo dưỡng điện máy','Dịch vụ dành cho doanh nghiệp','Dịch vụ tiện ích nâng cao']
     const handleInputChange = (e) => {
         const { name, value } = e.target;

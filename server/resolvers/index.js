@@ -1,7 +1,6 @@
 import { DiaChiModel, DichVuModel, DonHangModel, KhachHangModel, LichThucHienModel, NhanVienModel } from '../models/index.js';
 import fs from 'fs';
 
-
 function epochToText(epoch) {
     const dateObject = new Date(epoch * 1000);
     const formattedDate = dateObject.toLocaleString();
@@ -55,7 +54,7 @@ export const resolvers = {
         DanhSachNhanVienTrongViec: async (parent, args) => {
             const data = await DonHangModel.findOne({ _id: args.idDonHang });
             const thoiGianBatDauDonHang = data.ngayBatDau;
-            const danhSachNhanVien = await NhanVienModel.find({phanQuyen:'Tasker'});
+            const danhSachNhanVien = await NhanVienModel.find({ phanQuyen: 'Tasker' });
             const nhanVienKhongTrungLich = [];
 
             for (let i = 0; i < danhSachNhanVien.length; i++) {
@@ -113,7 +112,7 @@ export const resolvers = {
         DonHangDangChoDuyet: async (parent, args) => {
             const data = await DonHangModel.find({
                 trangThaiDonHang: { $in: ["Đang chờ duyệt", "Nhân viên đã từ chối công việc"] }
-              });
+            });
             return data;
         },
         DonHangDaDuyet: async (parent, args) => {
@@ -142,10 +141,95 @@ export const resolvers = {
                 trangThaiDonHang: { $in: ['Đang thực hiện', 'Đã hoàn thành'] }
             });
             return data;
-        },        
+        },
         TimDanhSachDonHangTheoDanhSachLichThucHien: async (parent, args) => {
             const data = await DonHangModel.find({ danhSachLichThucHien: { $in: args.idLichThucHien } });
             return data;
+        },
+        ThongKe: async (parent, args) => {
+            const today = new Date();
+            const currentMonth = today.getMonth(); 
+            const currentYear = today.getFullYear(); 
+        
+            const startDate = new Date(currentYear, currentMonth, 1);
+            const endDate = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+        
+            const doanhThu12Thang = [];
+            let thongKeThangHienTai = {};
+        
+            try {
+                const donHangsThangHienTai = await DonHangModel.find({
+                    ngayDatHang: { $gte: startDate, $lte: endDate }
+                });
+                const soDonHangThangHienTai = donHangsThangHienTai.length;
+        
+                let tongTienThangHienTai = 0;
+                donHangsThangHienTai.forEach(donHang => {
+                    tongTienThangHienTai += donHang.tongTien;
+                });
+        
+                const khachHangsThangHienTai = await KhachHangModel.find({
+                    createdAt: { $gte: startDate, $lte: endDate }
+                });
+                const soKhachHangMoi = khachHangsThangHienTai.length;
+        
+                // Lấy thông tin tháng trước
+                const startDateThangTruoc = new Date(currentYear, currentMonth - 1, 1);
+                const endDateThangTruoc = new Date(currentYear, currentMonth, 0, 23, 59, 59);
+        
+                const donHangsThangTruoc = await DonHangModel.find({
+                    ngayDatHang: { $gte: startDateThangTruoc, $lte: endDateThangTruoc }
+                });
+                const soDonHangThangTruoc = donHangsThangTruoc.length;
+        
+                let tongTienThangTruoc = 0;
+                donHangsThangTruoc.forEach(donHang => {
+                    tongTienThangTruoc += donHang.tongTien;
+                });
+        
+                const khachHangsThangTruoc = await KhachHangModel.find({
+                    createdAt: { $gte: startDateThangTruoc, $lte: endDateThangTruoc }
+                });
+                const soKhachHangMoiThangTruoc = khachHangsThangTruoc.length;
+        
+                const phanTramSoDonHang = soDonHangThangTruoc !== 0 ? ((soDonHangThangHienTai - soDonHangThangTruoc) / soDonHangThangTruoc) * 100 : 0;
+                const phanTramTongTien = tongTienThangTruoc !== 0 ? ((tongTienThangHienTai - tongTienThangTruoc) / tongTienThangTruoc) * 100 : 0;
+                const phanTramSoKhachHang = soKhachHangMoiThangTruoc !== 0 ? ((soKhachHangMoi - soKhachHangMoiThangTruoc) / soKhachHangMoiThangTruoc) * 100 : 0;
+        
+                thongKeThangHienTai = {
+                    soDonHangThangHienTai,
+                    tongTienThangHienTai,
+                    soKhachHangMoi,
+                    phanTramSoDonHang,
+                    phanTramTongTien,
+                    phanTramSoKhachHang
+                };
+                for (let thang = 1; thang <= 12; thang++) {
+                    const startDateThang = new Date(currentYear, thang - 1, 1);
+                    const endDateThang = new Date(currentYear, thang, 0, 23, 59, 59);
+        
+                    const donHangs = await DonHangModel.find({
+                        ngayDatHang: { $gte: startDateThang, $lte: endDateThang }
+                    });
+        
+                    let doanhThuThang = 0;
+                    donHangs.forEach(donHang => {
+                        doanhThuThang += donHang.tongTien;
+                    });
+        
+                    doanhThu12Thang.push({
+                        doanhThu: doanhThuThang
+                    });
+                }
+        
+                // Trả về kết quả dưới dạng JSON string
+                return JSON.stringify({
+                    thongKeThangHienTai,
+                    doanhThu12Thang
+                });
+            } catch (error) {
+                throw new Error('Lỗi khi thực hiện thống kê: ' + error.message);
+            }
         }
     },
     DonHang: {
@@ -222,16 +306,16 @@ export const resolvers = {
 
             let idKhachHang;
             if (khachHang.id === undefined) {
-            const khachHangMoi = new KhachHangModel({
-                tenKhachHang: khachHang.tenKhachHang,
-                soDienThoai: khachHang.soDienThoai,
-                email: khachHang.email,
-                danhSachDiaChi: [idDiaChi]
-            });
-            const resKhachHang = await khachHangMoi.save();
-            idKhachHang = resKhachHang._id;
+                const khachHangMoi = new KhachHangModel({
+                    tenKhachHang: khachHang.tenKhachHang,
+                    soDienThoai: khachHang.soDienThoai,
+                    email: khachHang.email,
+                    danhSachDiaChi: [idDiaChi]
+                });
+                const resKhachHang = await khachHangMoi.save();
+                idKhachHang = resKhachHang._id;
             } else {
-                if(diaChi.id === undefined) {
+                if (diaChi.id === undefined) {
                     const KH = await KhachHangModel.findById(khachHang.id);
                     KH.danhSachDiaChi.push(idDiaChi);
                     await KH.save();
@@ -254,14 +338,14 @@ export const resolvers = {
                 khachHang: idKhachHang,
                 diaChi: idDiaChi,
                 maDonHang: newMaDonHang,
-                ngayDatHang: (Math.floor(Date.now() / 1000))*1000,
+                ngayDatHang: (Math.floor(Date.now() / 1000)) * 1000,
                 trangThaiDonHang: "Đang chờ duyệt"
             };
 
             const DonHang = new DonHangModel(donHangMoi);
             await DonHang.save();
 
-            
+
             for (let i = 0; i < danhSachLichThucHien.length; i++) {
                 const lichThucHien = danhSachLichThucHien[i];
 
@@ -279,10 +363,10 @@ export const resolvers = {
             const ngayKetThucMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[danhSachIdLichThucHien.length - 1]);
 
             DonHang.ngayBatDau = ngayBatDauMoi ? ngayBatDauMoi.thoiGianBatDauLich : null,
-            DonHang.ngayKetThuc = ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
-            DonHang.danhSachLichThucHien = danhSachIdLichThucHien;
+                DonHang.ngayKetThuc = ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
+                DonHang.danhSachLichThucHien = danhSachIdLichThucHien;
             await DonHang.save();
-            
+
             return DonHang;
         },
         themKhachHang: async (parent, args) => {

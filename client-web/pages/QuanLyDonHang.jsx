@@ -26,6 +26,7 @@ export default function QuanLyDonHang() {
             }}>
     <Grid item xs={2} sx={{height: '99vh'}}>
          <SideBarList listItem={[
+            {'link':'ThongKe','text':'Thống kê'},
             {'link':'DanhSachDonHangChoDuyet','text':'Danh sách chờ duyệt'},
             {'link':'DanhSachDonHangDaDuyet','text':'Danh sách đã duyệt'},
             {'link':'DanhSachDonHangDaTuChoi','text':'Danh sách đã từ chối'},
