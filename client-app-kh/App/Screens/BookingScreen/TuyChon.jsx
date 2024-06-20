@@ -31,7 +31,7 @@ export default function TuyChon() {
     }
     return (
         <View>
-            <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
+            {/* <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                 <AntDesign name="hearto" size={22} color="black" />
                 <Text style={{ marginLeft: 5 }}>Ưu tiên Tasker yêu thích </Text>
                 <AntDesign name="questioncircleo" size={15} color="black" />
@@ -42,7 +42,7 @@ export default function TuyChon() {
                     trackColor={{true: Colors.GREEN}}
                     thumbColor={uuTienTasker ? Colors.GREEN : 'gray'}
                 />
-            </View>
+            </View> */}
             <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                 <MaterialIcons name="pets" size={22} color="black" />
                 <Text style={{ marginLeft: 5 }}>Nhà có thú cưng </Text>

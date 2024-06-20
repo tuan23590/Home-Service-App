@@ -37,16 +37,13 @@ export default function BookingSingle({hideModal}) {
         <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
         <ThoiLuong />
 
-        <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
-        <DichVuThem />
-
         <Heading text={"Tùy chọn"}/>
         <TuyChon />
         <TouchableOpacity 
           onPress={()=>press()}
         >
           <View style={styles.container}>
-            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{dichVuChinh?.thoiGian}h</Text>
+            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(dichVuChinh?.gia).format('0,0')} VND/{dichVuChinh?.thoiGian}h</Text>
             <Text style={{color: 'white'}}>Tiếp theo</Text>
           </View>
         </TouchableOpacity>

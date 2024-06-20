@@ -9,15 +9,22 @@ import GlobalAPI from '../../Utils/GlobalAPI';
 
 export default function ChiTietDonHang({hideModal}) {
     const {vatNuoi,dichVuThem,dichVuChinh,gioLam,lichLamViec,tongTien,uuTienTasker,ghiChu} = useContext(DonHangContext);
-    const formatDateWithTime = (dateString,boundHuor = 0) => {
+    const formatDateWithTime = (dateString, boundHour = 0) => {
       const date = new Date(dateString);
       const day = date.getDate();
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      const hour = date.getHours() + boundHuor;
+      const hour = date.getHours() + boundHour;
       const minute = date.getMinutes();
-      return `${hour}:${minute} - ${day}/${month} `;
-    };
+  
+      // Helper function to add leading zero if needed
+      const addLeadingZero = (number) => {
+          return number < 10 ? `0${number}` : number.toString();
+      };
+  
+      return `${addLeadingZero(hour)}:${addLeadingZero(minute)} - ${day}/${month}`;
+  };
+  
     const press = () => {
       const fetchData = async () => {
         try {
@@ -55,9 +62,8 @@ export default function ChiTietDonHang({hideModal}) {
             ))}
             
             <Text style={styles.boldText}>Chi tiết công việc</Text>
-            <Text>Khối lượng công việc: {dichVuChinh.moTaDichVu}</Text>
-            <Text>Dịch vụ thêm: {dichVuThem.map(item => item?.tenDichVu).join(', ')}</Text>
-            <Text>Nhà có vật nuôi: {vatNuoi}</Text>
+            {/* <Text>Dịch vụ thêm: {dichVuThem.map(item => item?.tenDichVu).join(', ')}</Text> */}
+            {vatNuoi && <Text>Nhà có vật nuôi: {vatNuoi}</Text>}
         </View>
         <Heading text='Phương thức thanh toán'/>
         <View style={styles.box}>

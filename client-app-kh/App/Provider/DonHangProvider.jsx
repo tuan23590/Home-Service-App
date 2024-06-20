@@ -15,13 +15,15 @@ export default function DonHangProvider({ children }) {
   const [tongTien, setTongTien] = useState(0);
 
   useEffect(() => {
-    const giaDichVuThem = dichVuThem?.reduce((total, dichVu) => total + (dichVu.gia || 0), 0);
-    setTongCong(dichVuChinh?.gia + giaDichVuThem);
-    setTongTien(dichVuChinh?.gia + giaDichVuThem);
-  } , [dichVuChinh, dichVuThem]);
+    setTongTien(dichVuChinh?.gia);
+    
+  } , [dichVuChinh]);
   useEffect(() => {
-      setTongTien(tongCong * lichLamViec.length);
-  }, [lichLamViec]);
+    const length = lichLamViec && lichLamViec.length > 0 ? lichLamViec.length : 1;
+    console.log('length',length);
+    setTongTien(dichVuChinh?.gia * length);
+}, [lichLamViec]);
+
   return (
     <DonHangContext.Provider value={{ 
       tongTien, 

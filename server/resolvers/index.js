@@ -40,7 +40,7 @@ export const resolvers = {
             return data;
         },
         DichVuCaLe: async () => {
-            const data = await DichVuModel.find({ loaiDichVu: "CaLe" });
+            const data = await DichVuModel.find({ tenDichVu: "Dọn dẹp nhà" });
             return data;
         },
         DichVuThem: async () => {
