@@ -34,3 +34,19 @@ export const apiTiepTucLichThucHien = async (idLichThucHien) => {
     });
     return tiepTucLichThucHien;
 };
+
+export const apiHoanThanhLichThucHien = async (idLichThucHien) => {
+  const query = `mutation HoanThanhLich($idLichThucHien: String) {
+  hoanThanhLich(idLichThucHien: $idLichThucHien) {
+    trangThaiLich
+  }
+}
+  `;
+  const { tiepTucLichThucHien } = await GraphQLrequest({
+      query,
+      variables: {
+          idLichThucHien
+      }
+  });
+  return tiepTucLichThucHien;
+};

@@ -67,7 +67,6 @@ const options = {
 
 const BieuDoCot = ({ value }) => {
   const doanhThu12Thang = value.dataThongKe.doanhThu12Thang?.map(item => item.doanhThu);
-  console.log(doanhThu12Thang);
   const data = {
     labels: [
       'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',

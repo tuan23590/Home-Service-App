@@ -10,7 +10,6 @@ export default function XemChiTietDonHang() {
   const donHang = useLoaderData();
   const [open, setOpen] = useState(false);
   const [lyDoNhanVienTuChoiDonHang, setLyDoNhanVienTuChoiDonHang] = useState('');
-  console.log(donHang);
   const navigate = useNavigate();
   const HandelClose = () => {
     navigate('../');

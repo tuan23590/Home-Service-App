@@ -8,6 +8,7 @@ import ThongTinNhanVien from './ThongTinNhanVien';
 import ThongTinKhachHang from './ThongTinKhachHang';
 import DanhSachNhanVienPhuHop from './DanhSachNhanVienPhuHop';
 import { apiThayDoiNhanVien } from '../../../utils/NhanVienUtils';
+import { EPOCHTODATE, EPOCHTODATETIMETOTIME, EPOCHTODATETODAY } from '../../function';
 
 const ChiThietDonHangChoDuyet = (vaiable) => {
   const { setSnackbar } = useOutletContext();
@@ -150,6 +151,20 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
   const xuLyDongLyDoDungLich = () => {
     setTrangThaiLyDoDungLich(false);
   }
+  const groupServices = (services) => {
+    const grouped = services.reduce((acc, service) => {
+      const existingService = acc.find(s => s.tenDichVu === service.tenDichVu);
+      if (existingService) {
+        existingService.soLanThucHien += 1;
+      } else {
+        acc.push({ ...service, soLanThucHien: 1 });
+      }
+      return acc;
+    }, []);
+    return grouped;
+  };
+
+  const groupedServices = donHang && donHang.danhSachDichVu ? groupServices(donHang.danhSachDichVu) : [];
   return (
     <Box
       sx={{
@@ -205,15 +220,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                     <strong>Thời gian bắt đầu: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
-                    {formatDate(donHang.ngayBatDau)}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Tên dịch vụ: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {donHang.dichVuChinh.tenDichVu}
+                    {EPOCHTODATE(donHang.ngayBatDau)}
                   </Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -221,15 +228,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                     <strong>Thời gian kết thúc: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
-                    {formatDate(donHang.ngayKetThuc)}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex' }}>
-                  <Typography sx={{ width: '20%' }}>
-                    <strong>Khối lượng CV: </strong>
-                  </Typography>
-                  <Typography sx={{ width: '80%' }}>
-                    {donHang.dichVuChinh.khoiLuongCongViec}
+                    {EPOCHTODATE(donHang.ngayKetThuc)}
                   </Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -245,7 +244,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                     <strong>Thời gian tạo đơn: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
-                    {formatDate(donHang.ngayDatHang)}
+                    {EPOCHTODATE(donHang.ngayDatHang)}
                   </Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -301,45 +300,57 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                     Danh sách dịch vụ thêm
                   </Typography>
                   <TableContainer component={Paper}>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Tên Dịch vụ</TableCell>
-                          <TableCell>Biểu phí</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {donHang && Array.isArray(donHang.danhSachDichVu) ? (
-                          donHang.danhSachDichVu?.map((service, index) => (
-                            service.loaiDichVu === "DichVuThem" && (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  {service?.tenDichVu}
-                                </TableCell>
-                                <TableCell>
-                                  {service.gia === null ? `+ ${service.thoiGian} Giờ` : `+ ${service.gia.toLocaleString('vi-VN')} VNĐ`}
-                                </TableCell>
-                              </TableRow>
-                            )
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={2}>Không có dịch vụ đã đặt</TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Tên Dịch vụ</TableCell>
+                  <TableCell>Giá tiền</TableCell>
+                  <TableCell>Thời gian</TableCell>
+                  <TableCell>Số lần thực hiện</TableCell>
+                  <TableCell>Loại dịch vụ</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {groupedServices.length > 0 ? (
+                  groupedServices.map((service, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        {service.tenDichVu}
+                      </TableCell>
+                      <TableCell>
+                        {service.gia.toLocaleString('vi-VN')} VNĐ
+                      </TableCell>
+                      <TableCell>
+                        {service.thoiGian} giờ
+                      </TableCell>
+                      <TableCell>
+                        {service.soLanThucHien} lần
+                      </TableCell>
+                      <TableCell>
+                        {service.loaiDichVu}
+                      </TableCell>
+                      
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5}>Không có dịch vụ đã đặt</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
                 </Box>
                 <Box sx={{ width: '49.5%' }}>
-                  <Typography variant="h6" gutterBottom>
-                    Danh sách lịch thực hiện
-                  </Typography>
+                <Typography variant="h6" gutterBottom>
+            Danh sách dịch vụ thực hiện
+          </Typography>
                   <TableContainer component={Paper}>
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Thời gian thực hiện</TableCell>
+                          <TableCell>Ngày làm việc</TableCell>
+                          <TableCell>Làm trong</TableCell>
                           <TableCell>Trạng thái</TableCell>
                           <TableCell>Ghi chú</TableCell>
                           <TableCell>Thao tác</TableCell>
@@ -348,10 +359,11 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                       <TableBody>
                         {donHang.danhSachLichThucHien.map((lichThucHien, index) => (
                           <TableRow key={index}>
-                            <TableCell>{formatDateTimeToTime(lichThucHien.thoiGianBatDauLich, lichThucHien.thoiGianKetThucLich)}</TableCell>
+                             <TableCell>{EPOCHTODATETODAY(lichThucHien.thoiGianBatDauLich)}</TableCell>
+                             <TableCell>{EPOCHTODATETIMETOTIME(lichThucHien.thoiGianBatDauLich, lichThucHien.thoiGianKetThucLich)}</TableCell>
                             <TableCell>{lichThucHien.trangThaiLich} </TableCell>
                             <TableCell>{lichThucHien.lyDoDungLich}</TableCell>
-
+                            {donHang.trangThaiDonHang === "Đang thực hiện" && (
                             <TableCell>
                               {lichThucHien.trangThaiLich === "Đã dừng lịch" ? (
                                 <Button
@@ -373,7 +385,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                                 </Button>
                               )}
                             </TableCell>
-
+)}
 
                           </TableRow>
                         ))}
@@ -409,7 +421,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
             )}
 
             <Divider sx={{ margin: '15px' }} />
-
+            {donHang.trangThaiDonHang !== "Đã hoàn thành" && (
             <Paper elevation={3} sx={{ padding: '20px', display: 'flex', justifyContent: 'flex-end' }}>
 
               {trangThaiDoiNhanVien ? (
@@ -426,6 +438,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
               }
 
             </Paper>
+            )}
           </Box>
         )}
       </Paper>

@@ -100,3 +100,29 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     const {TimNhanVienTheoEmail} = await GraphQLrequest({query,variables: {email}})
     return TimNhanVienTheoEmail;
   };
+  export const apiDanhSachNhanVien = async () => {
+    const query = `query NhanViens {
+  NhanViens {
+    id
+    tenNhanVien
+    gioiTinh
+    ngaySinh
+    diaChi
+    soDienThoai
+    email
+    cccd
+    dichVu {
+      tenDichVu
+      id
+    }
+    ghiChu
+    trangThaiTaiKhoan
+    danhGia
+    trangThaiHienTai
+    phanQuyen
+    anhDaiDien
+  }
+}`;
+    const {NhanViens} = await GraphQLrequest({query})
+    return NhanViens;
+  };

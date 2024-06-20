@@ -6,7 +6,7 @@ import DSDonHangThuGon from './DSDonHangThuGon';
 
 export default function LichLamViec({ data }) {
     const { lichLamViec, selectedDate, setSelectedDate } = data;
-    const lichLamViecNhanVien = lichLamViec.filter(item => item.trangThaiLich === "Nhân viên đã xác nhận công việc");
+    const lichLamViecNhanVien = lichLamViec.filter(item => item.trangThaiLich === "Đang thực hiện");
     const [matchingItems, setMatchingItems] = useState([]);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [danhSachDonHang, setDanhSachDonHang] = useState([]);

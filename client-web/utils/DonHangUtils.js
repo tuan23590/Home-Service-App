@@ -43,12 +43,6 @@ export const apiChiTietDonHang = async ({params})=> {
         soNhaTenDuong
         tinhTP
       }
-      dichVuChinh {
-        gia
-        khoiLuongCongViec
-        loaiDichVu
-        tenDichVu
-      }
       ghiChu
       khachHang {
         email
@@ -144,13 +138,13 @@ export const apiThemDonHang = async (formData) => {
     }
   }
   `;
- 
+ const dsdv = formData.danhSachDichVu.flatMap(dichVu => Array.from({ length: dichVu.soLanSuDung }, () => dichVu.id))
   const {ThemDonHang} = await GraphQLrequest ({query,
     variables: {
       soGioThucHien: formData.soGioThucHien,
       danhSachLichThucHien: JSON.stringify(formData.danhSachLichThucHien),
       khachHang: JSON.stringify(formData.khachHang),
-      danhSachDichVu: formData.danhSachDichVu.map(dichVu => dichVu.id),
+      danhSachDichVu: dsdv,
       vatNuoi: formData.vatNuoi,
       ghiChu: formData.ghiChu,
       uuTienTasker: null,

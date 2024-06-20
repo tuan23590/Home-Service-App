@@ -9,6 +9,7 @@ export const typeDefs = `#graphql
         icon: String,
         iconSelected: String,
         loaiDichVu: String,
+        trangThai: String,
     },
     type DiaChi {
         id: String,
@@ -129,6 +130,7 @@ export const typeDefs = `#graphql
         DanhSachDonHangDaXacNhanTheoNhanVien(idNhanVien: String): [DonHang],
         TimDanhSachDonHangTheoDanhSachLichThucHien(idLichThucHien: [String]): [DonHang],
         ThongKe: String,
+        danhSachDichVuDangHoatDong: [DichVu],
     },
     type Mutation {
         themDonHang(
@@ -174,5 +176,8 @@ export const typeDefs = `#graphql
         themDichVu(tenDichVu: String!, khoiLuongCongViec: String, gia: Int, thoiGian: Int, loaiDichVu: String): DichVu,
         xoaDichVu(idDichVu: String): DichVu,
         suaDichVu(idDichVu: String, tenDichVu: String, khoiLuongCongViec: String, gia: Int, thoiGian: Int,loaiDichVu: String): DichVu,
+        dungDichVu(idDichVu: String): DichVu,
+        kichHoatDichVu(idDichVu: String): DichVu,
+        hoanThanhLich(idLichThucHien: String): LichThucHien,
     }
 `

@@ -7,8 +7,8 @@ function epochToText(epoch) {
 }
 export const resolvers = {
     Query: {
-        DichVus: async () => {
-            const data = await DichVuModel.find();
+        danhSachDichVuDangHoatDong: async () => {
+            const data = await DichVuModel.find({ trangThai: "Đang hoạt động" });
             return data;
         },
         NhanViens: async () => {
@@ -111,12 +111,14 @@ export const resolvers = {
         },
         DonHangDangChoDuyet: async (parent, args) => {
             const data = await DonHangModel.find({
-                trangThaiDonHang: { $in: ["Đang chờ duyệt", "Nhân viên đã từ chối công việc"] }
+                trangThaiDonHang: { $in: ["Đang chờ duyệt", "Nhân viên từ chối"] }
             });
             return data;
         },
         DonHangDaDuyet: async (parent, args) => {
-            const data = await DonHangModel.find({ trangThaiDonHang: "Đã duyệt đơn" });
+            const data = await DonHangModel.find({ 
+                trangThaiDonHang: { $in: ["Đã duyệt đơn", "Đang thực hiện","Chờ xác nhận", 'Đã hoàn thành'] }
+            });
             return data;
         },
         DonHangDaTuChoi: async (parent, args) => {
@@ -234,9 +236,18 @@ export const resolvers = {
     },
     DonHang: {
         danhSachDichVu: async (parent) => {
-            const data = await DichVuModel.find({ _id: { $in: parent.danhSachDichVu } });
-            return data;
-        },
+            const uniqueIds = [...new Set(parent.danhSachDichVu)];
+            const uniqueServices = await DichVuModel.find({ _id: { $in: uniqueIds } });
+            const countMap = parent.danhSachDichVu.reduce((acc, id) => {
+                acc[id] = (acc[id] || 0) + 1;
+                return acc;
+            }, {});
+            const reconstructedDanhSachDichVu = uniqueServices.flatMap(service => 
+                Array(countMap[service._id]).fill(service)
+            );
+            console.log(reconstructedDanhSachDichVu);
+            return reconstructedDanhSachDichVu;
+        },        
         khachHang: async (parent) => {
             const data = await KhachHangModel.findOne({ _id: parent.khachHang });
             return data;
@@ -352,7 +363,7 @@ export const resolvers = {
                 const danhSachLichThucHienMoi = new LichThucHienModel({
                     thoiGianBatDauLich: lichThucHien.thoiGianBatDau,
                     thoiGianKetThucLich: lichThucHien.thoiGianKetThuc,
-                    trangThaiLich: "Chờ nhân viên xác nhận công việc",
+                    trangThaiLich: "Đang chờ duyệt",
                     donHang: DonHang._id
                 });
                 const resLichThucHien = await danhSachLichThucHienMoi.save();
@@ -460,6 +471,8 @@ export const resolvers = {
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.trangThaiDonHang = "Đã từ chối";
             donHang.lyDoTuChoi = args.lyDoTuChoi;
+            const danhSachLichLamViec = await LichThucHienModel.find({ _id: { $in: donHang.danhSachLichThucHien } });
+            danhSachLichLamViec.forEach(async lichThucHien => { lichThucHien.trangThaiLich = "Đã từ chối"; await lichThucHien.save(); });
             donHang.save();
             return donHang;
         },
@@ -533,6 +546,7 @@ export const resolvers = {
         themDichVu: async (parent, args) => {
             const dichVuMoi = args;
             const DichVu = new DichVuModel(dichVuMoi);
+            DichVu.trangThai = "Dừng hoạt động";
             await DichVu.save();
             return DichVu;
         },
@@ -543,6 +557,28 @@ export const resolvers = {
         suaDichVu: async (parent, args) => {
             const dichVu = await DichVuModel.findByIdAndUpdate(args.idDichVu, args, { new: true });
             return dichVu;
-        }
+        },
+        dungDichVu: async (parent, args) => {
+            const dichVu = await DichVuModel.findByIdAndUpdate(args.idDichVu, { trangThai: "Dừng hoạt động" }, { new: true });
+            return dichVu;
+        },
+        kichHoatDichVu: async (parent, args) => {
+            const dichVu = await DichVuModel.findByIdAndUpdate(args.idDichVu, { trangThai: "Đang hoạt động" }, { new: true });
+            return dichVu;
+        },
+        hoanThanhLich: async (parent, args) => {
+            const lichThucHien = await LichThucHienModel.findById(args.idLichThucHien);
+            lichThucHien.trangThaiLich = "Đã hoàn thành";
+            await lichThucHien.save();
+            const DsLichThucHien = await LichThucHienModel.find({ donHang: lichThucHien.donHang });
+            const allCompleted = DsLichThucHien.every(item => item.trangThaiLich === "Đã hoàn thành");
+            console.log(allCompleted);
+            if (allCompleted) {
+                const donHang = await DonHangModel.findById(lichThucHien.donHang);
+                donHang.trangThaiDonHang = "Đã hoàn thành";
+                await donHang.save();
+            }
+            return lichThucHien;
+        }        
     }
 };

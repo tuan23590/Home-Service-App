@@ -1,9 +1,12 @@
 import { Box, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import {EPOCHTODATE, EPOCHTODATETIME, EPOCHTODATETIMETOTIME,EPOCHTODATETODAY} from '../../function/index'
+import { EPOCHTODATE, EPOCHTODATETIME, EPOCHTODATETIMETOTIME, EPOCHTODATETODAY } from '../../function/index';
+
 const ThongTinDonHang = ({ donHang }) => {
+  console.log(donHang);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -12,6 +15,22 @@ const ThongTinDonHang = ({ donHang }) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const groupServices = (services) => {
+    const grouped = services.reduce((acc, service) => {
+      const existingService = acc.find(s => s.tenDichVu === service.tenDichVu);
+      if (existingService) {
+        existingService.soLanThucHien += 1;
+      } else {
+        acc.push({ ...service, soLanThucHien: 1 });
+      }
+      return acc;
+    }, []);
+    return grouped;
+  };
+
+  const groupedServices = donHang && donHang.danhSachDichVu ? groupServices(donHang.danhSachDichVu) : [];
+
   return (
     <Paper elevation={3} sx={{ padding: '20px' }}>
       <Grid container spacing={2}>
@@ -47,7 +66,7 @@ const ThongTinDonHang = ({ donHang }) => {
             <strong>Vật nuôi: </strong>
           </Typography>
           <Typography sx={{ width: '70%' }}>
-            {donHang.vatNuoi||'Không có vật nuôi'}
+            {donHang.vatNuoi || 'Không có vật nuôi'}
           </Typography>
         </Grid>
         <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -75,17 +94,24 @@ const ThongTinDonHang = ({ donHang }) => {
           </Typography>
         </Grid>
         {donHang.lyDoNhanVienTuChoiDonHang && (
-          <>
           <Grid item xs={6} sx={{ display: 'flex' }}>
-          <Typography sx={{ width: '30%' }}>
-            <strong>Lý do NV từ chối DH: </strong>
-          </Typography>
-          <Typography sx={{ width: '70%' }}>
-            {donHang.lyDoNhanVienTuChoiDonHang}
-          </Typography>
-        </Grid>
-            
-          </>
+            <Typography sx={{ width: '30%' }}>
+              <strong>Lý do NV từ chối DH: </strong>
+            </Typography>
+            <Typography sx={{ width: '70%' }}>
+              {donHang.lyDoNhanVienTuChoiDonHang}
+            </Typography>
+          </Grid>
+        )}
+        {donHang.lyDoTuChoi && (
+          <Grid item xs={6} sx={{ display: 'flex' }}>
+            <Typography sx={{ width: '30%' }}>
+              <strong>Lý do NV từ chối DH: </strong>
+            </Typography>
+            <Typography sx={{ width: '70%' }}>
+              {donHang.lyDoTuChoi}
+            </Typography>
+          </Grid>
         )}
         <Grid item xs={6} sx={{ display: 'flex' }}>
           <Typography sx={{ width: '30%' }}>
@@ -106,10 +132,10 @@ const ThongTinDonHang = ({ donHang }) => {
       </Grid>
 
       <Divider sx={{ margin: '20px 0' }} />
-      <Box display={'flex'} justifyContent={'space-between'} >
+      <Box display={'flex'} justifyContent={'space-between'}>
         <Box sx={{ width: '48%' }}>
           <Typography variant="h6" gutterBottom>
-            Danh sách dịch vụ thêm
+            Danh sách dịch vụ thực hiện
           </Typography>
           <TableContainer component={Paper}>
             <Table>
@@ -118,32 +144,35 @@ const ThongTinDonHang = ({ donHang }) => {
                   <TableCell>Tên Dịch vụ</TableCell>
                   <TableCell>Giá tiền</TableCell>
                   <TableCell>Thời gian</TableCell>
-                  <TableCell>Khối lượng công việc</TableCell>
+                  <TableCell>Số lần thực hiện</TableCell>
+                  <TableCell>Loại dịch vụ</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {donHang && Array.isArray(donHang.danhSachDichVu) ? (
-                  donHang.danhSachDichVu.map((service, index) => (
-                    service && (
-                      <TableRow key={index}>
-                        <TableCell>
-                          {service.tenDichVu}
-                        </TableCell>
-                        <TableCell>
-                                {service.gia.toLocaleString('vi-VN')} VNĐ 
-                            </TableCell>
-                            <TableCell>
-                                {service.thoiGian} giờ
-                            </TableCell>
-                            <TableCell>
-                                {service.khoiLuongCongViec}
-                            </TableCell>
-                      </TableRow>
-                    )
+                {groupedServices.length > 0 ? (
+                  groupedServices.map((service, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        {service.tenDichVu}
+                      </TableCell>
+                      <TableCell>
+                        {service.gia.toLocaleString('vi-VN')} VNĐ
+                      </TableCell>
+                      <TableCell>
+                        {service.thoiGian} giờ
+                      </TableCell>
+                      <TableCell>
+                        {service.soLanThucHien} lần
+                      </TableCell>
+                      <TableCell>
+                        {service.loaiDichVu}
+                      </TableCell>
+                      
+                    </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={2}>Không có dịch vụ đã đặt</TableCell>
+                    <TableCell colSpan={5}>Không có dịch vụ đã đặt</TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -165,33 +194,34 @@ const ThongTinDonHang = ({ donHang }) => {
               </TableHead>
               <TableBody>
                 {donHang.danhSachLichThucHien
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
-                <TableRow
-                  sx={{
-                    cursor: 'pointer',
-                    '&:hover': {
-                      backgroundColor: '#bec2cc',
-                    },
-                  }}
-                >
-                   <TableCell>{EPOCHTODATETODAY(row.thoiGianBatDauLich)}</TableCell>
-                  <TableCell>{EPOCHTODATETIMETOTIME(row.thoiGianBatDauLich,row.thoiGianKetThucLich)}</TableCell>
-                    <TableCell>{row.trangThaiLich}</TableCell>
-                </TableRow>
-              ))}
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        cursor: 'pointer',
+                        '&:hover': {
+                          backgroundColor: '#bec2cc',
+                        },
+                      }}
+                    >
+                      <TableCell>{EPOCHTODATETODAY(row.thoiGianBatDauLich)}</TableCell>
+                      <TableCell>{EPOCHTODATETIMETOTIME(row.thoiGianBatDauLich, row.thoiGianKetThucLich)}</TableCell>
+                      <TableCell>{row.trangThaiLich}</TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
             <TablePagination
-          component="div"
-          count={donHang.danhSachLichThucHien.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5,10,15,20,30,50,100]}
-          labelRowsPerPage="Số hàng mỗi trang"
-        />
+              component="div"
+              count={donHang.danhSachLichThucHien.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 15, 20, 30, 50, 100]}
+              labelRowsPerPage="Số hàng mỗi trang"
+            />
           </TableContainer>
         </Box>
       </Box>

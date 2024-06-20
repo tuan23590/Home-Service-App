@@ -38,6 +38,9 @@ const DichVuSchema = new mongoose.Schema({
     dichVuChinh:{
         type: String
     },
+    trangThai:{
+        type: String
+    },
 },{timestamps: true});
 
 const DichVuModel = mongoose.model('DichVu',DichVuSchema);

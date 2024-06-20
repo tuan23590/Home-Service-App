@@ -26,13 +26,14 @@ export default function QuanLyDonHang() {
             }}>
     <Grid item xs={2} sx={{height: '99vh'}}>
          <SideBarList listItem={[
-            {'link':'ThongKe','text':'Thống kê'},
-            {'link':'DanhSachDonHangChoDuyet','text':'Danh sách chờ duyệt'},
-            {'link':'DanhSachDonHangDaDuyet','text':'Danh sách đã duyệt'},
-            {'link':'DanhSachDonHangDaTuChoi','text':'Danh sách đã từ chối'},
-            {'link':'ThemDonHang','text':'Thêm đơn hàng'},
-            {'link':'QuanLyDichVu','text':'Quản lý dịch vụ'},
-            {'link':'','text':'Quản lý người dùng'},
+            {'link':'ThongKe','text':'Thống kê', 'phanQuyen': ['NVCSKH','Admin']},
+            {'link':'DanhSachDonHangChoDuyet','text':'Danh sách chờ duyệt', 'phanQuyen': ['NVCSKH','Admin'],'tab':true},
+            {'link':'DanhSachDonHangDaDuyet','text':'Danh sách đã duyệt', 'phanQuyen': ['NVCSKH','Admin'],'tab':true},
+            {'link':'DanhSachDonHangDaTuChoi','text':'Danh sách đã từ chối', 'phanQuyen': ['NVCSKH','Admin'],'tab':true},
+            {'link':'ThemDonHang','text':'Thêm đơn hàng', 'phanQuyen': ['NVCSKH','Admin']},
+            {'link':'QuanLyDichVu','text':'Quản lý dịch vụ', 'phanQuyen': ['Admin']},
+            {'link':'QuanLyNhanVien','text':'Quản lý nhân viên', 'phanQuyen': ['Admin']},
+            {'link':'QuanLyKhachHang','text':'Quản lý khách hàng', 'phanQuyen': ['Admin']},
             ]} />
     </Grid>
     <Grid item xs={10} sx={{height: '101%', paddingTop: '15px',paddingRight: '15px'}}>

@@ -1,6 +1,6 @@
 import { Autocomplete, Grid, Table, TableBody, TableCell, Checkbox, TableHead, TableRow, TextField, Typography, Box, FormControlLabel, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TablePagination } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { apiDanhSachDichVu } from '../../../utils/DichVuUtils';
+import { apiDanhSachDichVuDangHoatDong } from '../../../utils/DichVuUtils';
 import { EPOCHTODATE, EPOCHTODATETIME } from '../../function/index';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -32,7 +32,8 @@ const ThongTinDonHang = ({ data }) => {
     useEffect(() => {
         setDonHangData(prevData => ({
             ...prevData,
-            danhSachDichVu: selectedDichVu
+            danhSachDichVu: selectedDichVu,
+            gioBatDau: null
         }));
     }, [selectedDichVu]);
     useEffect(() => {
@@ -45,8 +46,6 @@ const ThongTinDonHang = ({ data }) => {
                 const endHour = (hour + interval).toString().padStart(2, '0');
 
                 const timeString = `${startHour}:00 đến ${endHour}:00 (làm trong ${interval} giờ)`;
-
-                // Check if the time range includes 12:00 to 13:00
                 if (!(hour <= 12 && hour + interval > 12)) {
                     timesArray.push({ timeString, startHour, interval });
                 }
@@ -58,12 +57,12 @@ const ThongTinDonHang = ({ data }) => {
         const interval = donHangData.soGioThucHien || 1;
         const timeRanges = generateTimeRanges(interval);
         setDanhSachGioThucHien(timeRanges);
-    }, [donHangData.dichVuChinh]);
+    }, [donHangData.soGioThucHien]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await apiDanhSachDichVu();
+                const data = await apiDanhSachDichVuDangHoatDong();
                 setDanhSachDichVuThem(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -86,36 +85,43 @@ const ThongTinDonHang = ({ data }) => {
     };
     const handleChangeDonHang = (e) => {
         const { name, value } = e.target;
-
         setDonHangData((prevData) => {
             const newData = { ...prevData, [name]: value };
-            // if (name === 'dichVuChinh') {
-            //     newData.gioBatDau = null;
-            //     newData.ngayBatDau = null;
-            // }
             return newData;
         });
     };
     const handleSelect = (item) => {
-        if (selectedDichVu.includes(item)) {
-            setSelectedDichVu(selectedDichVu.filter((dichVu) => dichVu !== item));
+        const existingService = selectedDichVu.find((dichVu) => dichVu.id === item.id);
+        
+        let newSelectedDichVu;
+        if (existingService) {
+            newSelectedDichVu = selectedDichVu.map((dichVu) =>
+                dichVu.id === item.id ? { ...dichVu, soLanSuDung: dichVu.soLanSuDung + 1 } : dichVu
+            );
         } else {
-            const totalTimeSelected = selectedDichVu.reduce((total, dichVu) => total + (dichVu.thoiGian || 0), 0);
-
-            if (totalTimeSelected + (item.thoiGian || 0) <= 4 || item.thoiGian === null) {
-                setSelectedDichVu([...selectedDichVu, item]);
-            } else {
-                setSnackbar({ open: true, message: 'Không thể thêm dịch vụ vì đã đạt tối đa thời gian.', severity: 'error' });
-            }
+            newSelectedDichVu = [...selectedDichVu, { ...item, soLanSuDung: 1 }];
+        }
+    
+        const newTotalTime = newSelectedDichVu.reduce((total, dichVu) => 
+            total + (dichVu.thoiGian || 0) * (dichVu.soLanSuDung || 1), 0
+        );
+    
+        if (newTotalTime <= 4) {
+            setSelectedDichVu(newSelectedDichVu);
+        } else {
+            setSnackbar({ open: true, message: 'Đã đạt giới hạn thời gian thực hiện', severity: 'error' });
         }
     };
-
     useEffect(() => {
         setDonHangData(prevData => ({
             ...prevData,
-            soGioThucHien: selectedDichVu.reduce((total, dichVu) => total + (dichVu.thoiGian || 0), 0),
+            soGioThucHien: selectedDichVu.reduce((total, dichVu) => 
+                total + (dichVu.thoiGian || 0) * (dichVu.soLanSuDung || 1), 0),
         }));
     }, [selectedDichVu]);
+    
+
+
     const handleButtonClick = (day) => {
         if (chonNgayLamViecTrongTuan.includes(day)) {
             // Nếu ngày đã được chọn, loại bỏ khỏi danh sách
@@ -127,8 +133,6 @@ const ThongTinDonHang = ({ data }) => {
     };
     const handleDateChange = (date) => {
         const currentDate = new Date();
-
-        // endDate;
 
         if (date.$d <= currentDate.setDate(currentDate.getDate() - 1)) {
             setSnackbar({ open: true, message: 'Ngày không thể nhỏ hơn ngày hiện tại.', severity: 'error' });
@@ -189,6 +193,7 @@ const ThongTinDonHang = ({ data }) => {
     const [loaiDichVu, setLoaiDichVu] = useState('');
     const [filteredDanhSachDichVuThem, setFilteredDanhSachDichVuThem] = useState([]);
     const handleLoaiDichVuChange = (event, newValue) => {
+        setSelectedDichVu([]);
         setLoaiDichVu(newValue);
         if (newValue) {
             const filtered = danhSachDichVuThem.filter(dichVu => dichVu.loaiDichVu === newValue);
@@ -226,31 +231,59 @@ const ThongTinDonHang = ({ data }) => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Chọn</TableCell>
                                 <TableCell>Tên Dịch Vụ</TableCell>
                                 <TableCell>Giá tiền</TableCell>
-                                <TableCell>Thời gian</TableCell>
+                                <TableCell>Thời gian hoàn thành</TableCell>
+                                <TableCell>Chọn số lần thực hiện</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredDanhSachDichVuThem.map((dichVu) => (
-                                <TableRow key={dichVu.id} sx={{
-                                    cursor: 'pointer',
-                                    '&:hover': {
-                                        backgroundColor: '#bec2cc',
-                                    },
-                                }} onClick={() => handleSelect(dichVu)}>
-                                    <TableCell>
-                                        <Checkbox
-                                            checked={selectedDichVu.includes(dichVu)}
-                                            onChange={() => handleSelect(dichVu)}
-                                        />
-                                    </TableCell>
-                                    <TableCell>{dichVu.tenDichVu}</TableCell>
-                                    <TableCell>{dichVu.gia !== null ? '+ ' + dichVu.gia.toLocaleString('vi-VN') + ' VNĐ' : ''}</TableCell>
-                                    <TableCell>{dichVu.thoiGian !== null ? '+ ' + dichVu.thoiGian + ' giờ' : ''}</TableCell>
-                                </TableRow>
-                            ))}
+                        {filteredDanhSachDichVuThem.map((dichVu) => (
+    <TableRow key={dichVu.id} sx={{
+        cursor: 'pointer',
+        '&:hover': {
+            backgroundColor: '#bec2cc',
+        },
+    }}>
+        
+        <TableCell>{dichVu.tenDichVu}</TableCell>
+        <TableCell>{dichVu.gia !== null ? '+ ' + dichVu.gia.toLocaleString('vi-VN') + ' VNĐ' : ''} / lần</TableCell>
+        <TableCell>{dichVu.thoiGian !== null ? '+ ' + dichVu.thoiGian + ' giờ' : ''} / lần</TableCell>
+        <TableCell>
+            <Box display="flex" alignItems="center">
+                <Button
+                variant="outlined"
+                size='small'
+                color='primary'
+                    disabled={!selectedDichVu.some((item) => item.id === dichVu.id)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        const updatedSelectedDichVu = selectedDichVu.map((item) =>
+                            item.id === dichVu.id ? { ...item, soLanSuDung: item.soLanSuDung - 1 } : item
+                        ).filter((item) => item.soLanSuDung > 0);
+                        setSelectedDichVu(updatedSelectedDichVu);
+                    }}
+                >
+                    -
+                </Button>
+                <Typography variant="body1" component="span" style={{ margin: '0 8px' }}>
+                    {selectedDichVu.find((item) => item.id === dichVu.id)?.soLanSuDung || 0} lần
+                </Typography>
+                <Button onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelect(dichVu);
+                }}
+                variant="outlined"
+                color='primary'
+                size='small'
+                >
+                    +
+                </Button>
+            </Box>
+        </TableCell>
+    </TableRow>
+))}
+
                         </TableBody>
                     </Table>
                 </Grid>
@@ -258,7 +291,8 @@ const ThongTinDonHang = ({ data }) => {
                     <Typography><strong>Tổng tiền: </strong>{donHangData.tongTien.toLocaleString('vi-VN') + ' VNĐ'} </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography><strong>Thời gian thực hiện: </strong>{donHangData.soGioThucHien} <i>(Tối đa 4 giờ)</i></Typography>
+                    <Typography><strong>Thời gian thực hiện: </strong>{donHangData.soGioThucHien} <i>(Tối đa 4 giờ / đơn hàng)</i></Typography>
+                    <Typography><i>* Vui lòng đặt 2 đơn gần giờ nhau nếu khách hàng yêu cầu quá 4 giờ</i></Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Autocomplete

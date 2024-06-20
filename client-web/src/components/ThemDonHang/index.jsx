@@ -33,7 +33,8 @@ const ThemDonHang = () => {
         ghiChu: ''
     });
     const [chonNgayLamViecTrongTuan, setChonNgayLamViecTrongTuan] = useState([]);
-    const tongTien = (donHangData.danhSachDichVu.reduce((acc, curr) => acc + curr.gia, 0));
+    const tongTien = donHangData.danhSachDichVu.reduce((acc, curr) => acc + curr.gia * curr.soLanSuDung, 0);
+
     useEffect(() => {
         console.log();
         setDonHangData((prevData) => ({
@@ -41,6 +42,7 @@ const ThemDonHang = () => {
             tongTien: tongTien * (donHangData.danhSachLichThucHien.length || 1)
         }));
     }, [donHangData.dichVuChinh, donHangData.danhSachDichVu, donHangData.soThangLapLai, donHangData.danhSachLichThucHien]);
+    
 
 
 
