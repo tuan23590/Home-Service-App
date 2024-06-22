@@ -12,6 +12,7 @@ import { ModalContext } from './../../Provider/ModalProvider';
 export default function ChiTietDonHang({hideModal}) {
     const {vatNuoi,dichVuThem,dichVuChinh,gioLam,lichLamViec,tongTien,uuTienTasker,ghiChu,khachHang,diaChi} = useContext(DonHangContext);
     const {setModal1Visible,setModal2Visible,setModal3Visible} = useContext(ModalContext);
+    console.log('ghiChu',ghiChu);
     const formatDateWithTime = (dateString, boundHour = 0) => {
       const date = new Date(dateString);
       const day = date.getDate();
@@ -83,10 +84,15 @@ export default function ChiTietDonHang({hideModal}) {
             {lichLamViec?.map((ngay, index) => (
               <Text key={index}>Ngày Bắt đầu: {formatDateWithTime(ngay)} đến {formatDateWithTime(ngay,boundHuor=dichVuChinh.thoiGian)}</Text>
             ))}
-            
             <Text style={styles.boldText}>Chi tiết công việc</Text>
-            {/* <Text>Dịch vụ thêm: {dichVuThem.map(item => item?.tenDichVu).join(', ')}</Text> */}
-            {vatNuoi && <Text>Nhà có vật nuôi: {vatNuoi}</Text>}
+            {/* <Text>Dịch vụ thêm: {ghiChu}</Text>  */}
+            {vatNuoi && (
+              <>
+              
+              <Text>Nhà có vật nuôi: {vatNuoi}</Text>
+              <Text>Ghi chú: {ghiChu}</Text>
+              </>
+            )}
         </View>
         <Heading text='Phương thức thanh toán'/>
         <View style={styles.box}>

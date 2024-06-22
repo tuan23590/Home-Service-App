@@ -119,7 +119,7 @@ const DanhSachNhanVienPhuHop = ({data}) => {
                           <strong>Chuyên môn: </strong>
                         </Typography>
                         <Typography sx={{ width: '65%' }}>
-                          {nhanVienDaChon.dichVu.map(dv => dv.tenDichVu).join(', ')}
+                          {nhanVienDaChon.chuyenMon}
                         </Typography>
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>
