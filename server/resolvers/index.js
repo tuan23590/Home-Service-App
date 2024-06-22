@@ -169,7 +169,8 @@ export const resolvers = {
         
             try {
                 const donHangsThangHienTai = await DonHangModel.find({
-                    ngayDatHang: { $gte: startDate, $lte: endDate }
+                    ngayDatHang: { $gte: startDate, $lte: endDate },
+                    trangThaiDonHang: { $in: ['Đang thực hiện', 'Đã hoàn thành'] }
                 });
                 const soDonHangThangHienTai = donHangsThangHienTai.length;
         

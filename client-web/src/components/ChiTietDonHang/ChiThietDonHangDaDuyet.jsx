@@ -277,7 +277,7 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                     <strong>Ghi chú ĐH: </strong>
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
-                    {donHang.ghiChu}
+                    {donHang.ghiChu == '' ? 'Không có ghi chú' : donHang.ghiChu}
 
                   </Typography>
                 </Grid>
@@ -287,6 +287,22 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                   </Typography>
                   <Typography sx={{ width: '80%' }}>
                     {donHang.lyDoDoiNhanVien === null ? 'Chưa thay đổi nhân viên' : donHang.lyDoDoiNhanVien}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sx={{ display: 'flex' }}>
+                  <Typography sx={{ width: '20%' }}>
+                    <strong>Số sao đánh giá:</strong>
+                  </Typography>
+                  <Typography sx={{ width: '80%' }}>
+                    {donHang.saoDanhGia === null ? 'Khách hàng chưa đánh giá đơn hàng' : donHang.saoDanhGia + ' sao'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sx={{ display: 'flex' }}>
+                  <Typography sx={{ width: '20%' }}>
+                    <strong>Ghi chú đánh giá:</strong>
+                  </Typography>
+                  <Typography sx={{ width: '80%' }}>
+                    {donHang.ghiChuDanhGia === null ? 'Không có ghi chú' : donHang.ghiChuDanhGia}
                   </Typography>
                 </Grid>
                
@@ -353,7 +369,9 @@ const ChiThietDonHangChoDuyet = (vaiable) => {
                           <TableCell>Làm trong</TableCell>
                           <TableCell>Trạng thái</TableCell>
                           <TableCell>Ghi chú</TableCell>
+                          {donHang.trangThaiDonHang === "Đang thực hiện" && (
                           <TableCell>Thao tác</TableCell>
+                          )}
                         </TableRow>
                       </TableHead>
                       <TableBody>

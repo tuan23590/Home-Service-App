@@ -15,7 +15,6 @@ const ActivateScreen = () => {
     const fetchData = async () => {
       try {
         const data = await GlobalAPI.apiDanhSachDonHang();
-        console.log("data", data.DanhSachDonHangTheoKhachHang);
         setOrders(data.DanhSachDonHangTheoKhachHang);
       } catch (error) {
         console.error("Error fetching:", error);

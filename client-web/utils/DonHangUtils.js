@@ -55,6 +55,8 @@ export const apiChiTietDonHang = async ({params})=> {
       lyDoNhanVienTuChoiDonHang
       ngayBatDau
       ngayDatHang
+      ghiChuDanhGia
+      saoDanhGia
       id
       ngayKetThuc
       nhanVien {

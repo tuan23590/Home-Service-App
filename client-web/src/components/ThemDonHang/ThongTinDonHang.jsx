@@ -233,8 +233,7 @@ const ThongTinDonHang = ({ data }) => {
                             <TableRow>
                                 <TableCell>Tên Dịch Vụ</TableCell>
                                 <TableCell>Giá tiền</TableCell>
-                                <TableCell>Thời gian hoàn thành</TableCell>
-                                <TableCell>Chọn số lần thực hiện</TableCell>
+                                <TableCell>Số giờ thực hiện</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -247,8 +246,8 @@ const ThongTinDonHang = ({ data }) => {
     }}>
         
         <TableCell>{dichVu.tenDichVu}</TableCell>
-        <TableCell>{dichVu.gia !== null ? '+ ' + dichVu.gia.toLocaleString('vi-VN') + ' VNĐ' : ''} / lần</TableCell>
-        <TableCell>{dichVu.thoiGian !== null ? '+ ' + dichVu.thoiGian + ' giờ' : ''} / lần</TableCell>
+        <TableCell>{dichVu.gia !== null ? dichVu.gia.toLocaleString('vi-VN') + ' VNĐ' : ''} / giờ</TableCell>
+        {/* <TableCell>{dichVu.thoiGian !== null ? '+ ' + dichVu.thoiGian + ' giờ' : ''} / lần</TableCell> */}
         <TableCell>
             <Box display="flex" alignItems="center">
                 <Button
@@ -267,7 +266,7 @@ const ThongTinDonHang = ({ data }) => {
                     -
                 </Button>
                 <Typography variant="body1" component="span" style={{ margin: '0 8px' }}>
-                    {selectedDichVu.find((item) => item.id === dichVu.id)?.soLanSuDung || 0} lần
+                    {selectedDichVu.find((item) => item.id === dichVu.id)?.soLanSuDung || 0} giờ
                 </Typography>
                 <Button onClick={(e) => {
                     e.stopPropagation();

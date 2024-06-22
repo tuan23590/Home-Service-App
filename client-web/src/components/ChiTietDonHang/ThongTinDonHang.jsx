@@ -129,6 +129,26 @@ const ThongTinDonHang = ({ donHang }) => {
             {donHang.ghiChu || 'Không có ghi chú'}
           </Typography>
         </Grid>
+        {donHang.trangThaiDonHang === 'Đã hoàn thành' && !donHang.saoDanhGia && (
+          <>
+          <Grid item xs={6} sx={{ display: 'flex' }}>
+                  <Typography sx={{ width: '20%' }}>
+                    <strong>Số sao đánh giá:</strong>
+                  </Typography>
+                  <Typography sx={{ width: '80%' }}>
+                    {donHang.saoDanhGia === null ? 'Khách hàng chưa đánh giá đơn hàng' : donHang.saoDanhGia + ' sao'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sx={{ display: 'flex' }}>
+                  <Typography sx={{ width: '20%' }}>
+                    <strong>Ghi chú đánh giá:</strong>
+                  </Typography>
+                  <Typography sx={{ width: '80%' }}>
+                    {donHang.ghiChuDanhGia === null ? 'Không có ghi chú' : donHang.ghiChuDanhGia}
+                  </Typography>
+                </Grid>
+          </>
+        )}
       </Grid>
 
       <Divider sx={{ margin: '20px 0' }} />

@@ -102,15 +102,7 @@ export default function Home() {
           <IconButton component={Link} to="/" color="inherit">
           </IconButton>
           <div>
-            <Button
-              aria-controls="menu-manage"
-              aria-haspopup="true"
-              onClick={handleManageClick}
-              color="inherit"
-              sx={{ '&:hover': { backgroundColor: 'transparent' } }}
-            >
-              Quản lý
-            </Button>
+            
             <Menu
               id="menu-manage"
               anchorEl={anchorElManage}

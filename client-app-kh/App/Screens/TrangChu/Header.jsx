@@ -5,7 +5,7 @@ import Colors from './../../Utils/Colors';
 export default function Header() {
     const [user, setUser] = useState({
         name: 'Tuấn',
-        imageUrl: 'https://down-vn.img.susercontent.com/file/bf1a1fb91e7c1b303b614276070f6b4e'
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
     });
 
     return user && (

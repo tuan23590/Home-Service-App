@@ -15,7 +15,7 @@ const SideBarList = ({ listItem }) => {
         if (!selectedPath && filteredList.length > 0) {
             navigate(`./${filteredList[0].link}`);
         } else if (selectedPath && !filteredList.some(item => item.link === selectedPath)) {
-            alert(`The path '${selectedPath}' is not authorized for the current user.`);
+            alert(`Bạn không có quyền truy cập vào trang này`);
             navigate(`./${filteredList[0].link}`);
         }
     }, [selectedPath, filteredList, navigate]);
@@ -59,7 +59,6 @@ const SideBarList = ({ listItem }) => {
                         <CardContent
                             sx={{
                                 '&:last-child': { pb: '10px' },
-                                textAlign: tab ? 'center' : 'left',
                             }}
                         >
                             <Typography sx={{ color: 'white' }}>
