@@ -10,7 +10,7 @@ export const GraphQLrequest = async (payload,options={})=>{
         },
         body: JSON.stringify(payload)
       });
-      if(!res.ok){
+      if(!res.ok){  
         if(res.status === 403)
         {
           return null;

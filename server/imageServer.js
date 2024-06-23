@@ -1,8 +1,8 @@
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,64 +11,94 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = 3000;
 
-// Cấu hình để lưu trữ tệp và đặt tên tệp
+// Create upload directories if they don't exist
+const uploadImagePath = join(__dirname, 'uploads', 'images');
+const uploadDocumentPath = join(__dirname, 'uploads', 'files');
+fs.promises.mkdir(uploadImagePath, { recursive: true }).catch(err => console.error('Error creating images directory: ', err));
+fs.promises.mkdir(uploadDocumentPath, { recursive: true }).catch(err => console.error('Error creating files directory: ', err));
+
+// Multer configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        const uploadPath = file.mimetype.startsWith('image/') ? uploadImagePath : uploadDocumentPath;
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}_${file.originalname}`);
     }
 });
 
-// Bộ lọc để chỉ chấp nhận tệp hình ảnh
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-        cb(null, true);
-    } else {
-        cb(new Error('Not an image! Please upload an image.'));
-    }
-};
+const upload = multer({ storage });
 
-const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter
-});
-
-// Sử dụng middleware cors
+// Middleware
 app.use(cors());
-
-// Đưa ra cấu hình để cung cấp truy cập đến thư mục chứa ảnh đã tải lên
 app.use('/uploads', express.static(join(__dirname, 'uploads')));
+app.use(express.json()); // Middleware to parse JSON request bodies
 
-// Route xử lý upload
-app.post('/upload', upload.single('hinhAnh'), (req, res) => {
+// Routes
+app.post('/upload-image', upload.single('hinhAnh'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded!' });
     }
-    res.status(200).json({ path: `/uploads/${req.file.filename}` });
+    res.status(200).json({ path: `/uploads/images/${req.file.filename}` });
 });
 
-// Route để lấy danh sách ảnh đã tải lên
+app.post('/upload-document', upload.single('taiLieu'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded!' });
+    }
+    res.status(200).json({ path: `/uploads/files/${req.file.filename}` });
+});
+
 app.get('/list-images', (req, res) => {
-    const uploadsDir = join(__dirname, 'uploads');
-    // Đọc danh sách các file trong thư mục uploads/
-    fs.readdir(uploadsDir, (err, files) => {
+    fs.readdir(uploadImagePath, (err, files) => {
         if (err) {
-            console.error('Error reading uploads directory: ', err);
+            console.error('Error reading images directory: ', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-
-        // Tạo mảng các đường dẫn của các file ảnh
         const imagePaths = files.map(file => ({
-            path: `/uploads/${file}`
+            path: `/uploads/images/${file}`
         }));
-
         res.json(imagePaths);
     });
 });
 
-// Khởi động server
+app.get('/list-documents', (req, res) => {
+    fs.readdir(uploadDocumentPath, (err, files) => {
+        if (err) {
+            console.error('Error reading documents directory: ', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        const documentPaths = files.map(file => ({
+            path: `/uploads/files/${file}`
+        }));
+        res.json(documentPaths);
+    });
+});
+
+app.delete('/delete-image/:filename', (req, res) => {
+    const imagePath = join(uploadImagePath, req.params.filename);
+    fs.unlink(imagePath, (err) => {
+        if (err) {
+            console.error('Error deleting image: ', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.status(200).json({ message: 'Image deleted successfully' });
+    });
+});
+
+app.delete('/delete-document/:filename', (req, res) => {
+    const documentPath = join(uploadDocumentPath, req.params.filename);
+    fs.unlink(documentPath, (err) => {
+        if (err) {
+            console.error('Error deleting document: ', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.status(200).json({ message: 'Document deleted successfully' });
+    });
+});
+
+// Start server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

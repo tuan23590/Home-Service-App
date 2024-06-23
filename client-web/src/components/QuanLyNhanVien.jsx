@@ -1,45 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Typography, Button, List, ListItem, ListItemText } from '@mui/material';
+import { Typography, List, ListItem, ListItemText, Button } from '@mui/material';
+import FileUpload from './FileUpload';
+import { fetchUploadedImages, fetchUploadedDocuments, deleteFile } from '../../utils/HinhAnhUtils';
 
 const QuanLyNhanVien = () => {
-    const [selectedFile, setSelectedFile] = useState(null);
     const [uploadedImages, setUploadedImages] = useState([]);
+    const [uploadedDocuments, setUploadedDocuments] = useState([]);
 
     useEffect(() => {
-        // Gọi hàm để lấy danh sách ảnh khi component được tải lần đầu
-        fetchUploadedImages();
-    }, []); // Khi dependencies là mảng rỗng, useEffect chỉ gọi một lần khi component được render lần đầu
+        fetchUploadedImages()
+            .then(response => setUploadedImages(response.data))
+            .catch(error => console.error('Error fetching images: ', error));
 
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
+        fetchUploadedDocuments()
+            .then(response => setUploadedDocuments(response.data))
+            .catch(error => console.error('Error fetching documents: ', error));
+    }, []);
+
+    const handleImageUploadSuccess = (filePath) => {
+        console.log('Uploaded image path: ', filePath);
+        fetchUploadedImages()
+            .then(response => setUploadedImages(response.data))
+            .catch(error => console.error('Error fetching images: ', error));
     };
 
-    const handleUpload = () => {
-        const formData = new FormData();
-        formData.append('hinhAnh', selectedFile);
-
-        axios.post('http://localhost:3000/upload', formData)
-            .then(response => {
-                console.log(response.data); // log the response from server
-                // Sau khi upload thành công, cập nhật danh sách ảnh bằng cách gọi lại hàm fetchUploadedImages()
-                fetchUploadedImages();
-            })
-            .catch(error => {
-                console.error('Error uploading file: ', error);
-                // Xử lý lỗi khi upload
-            });
+    const handleDocumentUploadSuccess = (filePath) => {
+        console.log('Uploaded document path: ', filePath);
+        fetchUploadedDocuments()
+            .then(response => setUploadedDocuments(response.data))
+            .catch(error => console.error('Error fetching documents: ', error));
     };
 
-    const fetchUploadedImages = () => {
-        axios.get('http://localhost:3000/list-images')
-            .then(response => {
-                setUploadedImages(response.data); // Cập nhật danh sách ảnh từ phản hồi của server
+    const handleDeleteFile = (fileType, path) => {
+        const filename = path.substring(fileType === 'image' ? '/uploads/images/'.length : '/uploads/files/'.length);
+        deleteFile(fileType, filename)
+            .then(data => {
+                if (fileType === 'image') {
+                    setUploadedImages(data);
+                } else {
+                    setUploadedDocuments(data);
+                }
             })
-            .catch(error => {
-                console.error('Error fetching images: ', error);
-                // Xử lý lỗi khi lấy danh sách ảnh
-            });
+            .catch(error => console.error(`Error deleting ${fileType}: `, error));
     };
 
     return (
@@ -47,12 +49,16 @@ const QuanLyNhanVien = () => {
             <Typography variant="h6">
                 Quản lý nhân viên
             </Typography>
-            <input type="file" onChange={handleFileChange} />
-            <Button variant="contained" color="primary" onClick={handleUpload}>
-                Upload
-            </Button>
+            <FileUpload
+                accept="image/*"
+                onUploadSuccess={handleImageUploadSuccess}
+            />
+            <FileUpload
+                accept=""
+                onUploadSuccess={handleDocumentUploadSuccess}
+            />
 
-            <Typography variant="h6" style={{ marginTop: '20px' }}>
+            {/* <Typography variant="h6" style={{ marginTop: '20px' }}>
                 Danh sách ảnh đã tải lên:
             </Typography>
             <List>
@@ -60,9 +66,35 @@ const QuanLyNhanVien = () => {
                     <ListItem key={image.path}>
                         <ListItemText primary={image.path} />
                         <img src={`http://localhost:3000${image.path}`} alt="Uploaded" style={{ width: '100px', height: 'auto', marginLeft: '20px' }} />
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleDeleteFile('image', image.path)}
+                        >
+                            Xóa
+                        </Button>
                     </ListItem>
                 ))}
             </List>
+
+            <Typography variant="h6" style={{ marginTop: '20px' }}>
+                Danh sách tài liệu đã tải lên:
+            </Typography>
+            <List>
+                {uploadedDocuments.map(document => (
+                    <ListItem key={document.path}>
+                        <ListItemText primary={document.path} />
+                        <a href={`http://localhost:3000${document.path}`} target="_blank" rel="noopener noreferrer">Xem tài liệu</a>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleDeleteFile('document', document.path)}
+                        >
+                            Xóa
+                        </Button>
+                    </ListItem>
+                ))}
+            </List> */}
         </div>
     );
 };
