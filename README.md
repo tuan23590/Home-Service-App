@@ -32,8 +32,8 @@ Hướng dẫn cài đặt vào chạy dự án:
 
 chạy server:
 
-    ```
     cd server 
 
+sau đó
+
     npm run server
-    ```
