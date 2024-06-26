@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -14,16 +12,24 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
-import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { Checkbox, FormControlLabel } from '@mui/material';
 
 const defaultTheme = createTheme();
 
 export default function DangNhap() {
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState(localStorage.getItem('email') || '');
+  const [password, setPassword] = React.useState(localStorage.getItem('password') || '');
+  const [rememberMe, setRememberMe] = React.useState(localStorage.getItem('rememberMe') === 'true');
   const [loading, setLoading] = React.useState(false); // Loading state
+  const [forgotPassword, setForgotPassword] = React.useState(false); // State to toggle between forms
+  const [showPassword, setShowPassword] = React.useState(false); // State to toggle password visibility
 
   const handleLoginWithGoogle = async () => {
     const auth = getAuth();
@@ -50,6 +56,15 @@ export default function DangNhap() {
     setLoading(true); // Start loading
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      if (rememberMe) {
+        localStorage.setItem('email', email);
+        localStorage.setItem('password', password);
+        localStorage.setItem('rememberMe', true);
+      } else {
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
+        localStorage.removeItem('rememberMe');
+      }
       navigate('/');
     } catch (error) {
       setLoading(false);
@@ -63,6 +78,31 @@ export default function DangNhap() {
     } finally {
       setLoading(false); // Stop loading
     }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    const auth = getAuth();
+    if (!email) {
+      alert('Vui lòng nhập email để lấy lại mật khẩu!');
+      return;
+    }
+    setLoading(true); // Start loading
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('Vui lòng kiểm tra email để đặt lại mật khẩu của bạn.');
+      setForgotPassword(false); // Switch back to login form
+    } catch (error) {
+      console.error(error);
+      alert('Đặt lại mật khẩu thất bại.');
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
   };
 
   return (
@@ -97,9 +137,9 @@ export default function DangNhap() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Đăng Nhập
+              {forgotPassword ? 'Quên Mật Khẩu' : 'Đăng Nhập'}
             </Typography>
-            <Box component="form" noValidate onSubmit={handleLoginWithEmail} sx={{ mt: 1 }}>
+            <Box component="form" noValidate onSubmit={forgotPassword ? handleForgotPassword : handleLoginWithEmail} sx={{ mt: 1 ,width: '77%'}}>
               <TextField
                 margin="normal"
                 required
@@ -109,23 +149,43 @@ export default function DangNhap() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Mật khẩu"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Lưu tài khoản"
-              />
+              {!forgotPassword && (
+                <>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    autoFocus={email.length > 0}
+                    name="password"
+                    label="Mật khẩu"
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />}
+                    label="Lưu tài khoản"
+                  />
+                </>
+              )}
               <Box>
                 <Button
                   type="submit"
@@ -139,20 +199,28 @@ export default function DangNhap() {
                     },
                     marginY: '10px'
                   }}
-                  disabled={loading} // Disable button while loading
+                  disabled={loading}
                 >
-                  {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Đăng nhập'}
+                  {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : (forgotPassword ? 'Đặt lại mật khẩu' : 'Đăng nhập')}
                 </Button>
-                <Button variant='outlined' fullWidth onClick={handleLoginWithGoogle} className="google">
-                  <GoogleIcon sx={{ marginRight: '10px' }} />
-                  Đăng nhập bằng Google
-                </Button>
+                {!forgotPassword && (
+                  <Button variant='outlined' fullWidth onClick={handleLoginWithGoogle} className="google" disabled={loading}>
+                    <GoogleIcon sx={{ marginRight: '10px' }} />
+                    Đăng nhập bằng Google
+                  </Button>
+                )}
               </Box>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Quên mật khẩu?
-                  </Link>
+                  {forgotPassword ? (
+                    <Link href="#" variant="body2" onClick={() => setForgotPassword(false)}>
+                      Quay lại đăng nhập
+                    </Link>
+                  ) : (
+                    <Link href="#" variant="body2" onClick={() => setForgotPassword(true)}>
+                      Quên mật khẩu?
+                    </Link>
+                  )}
                 </Grid>
                 {/* <Grid item>
                   <Link href="#" variant="body2">
