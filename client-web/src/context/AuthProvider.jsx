@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useState } from 'react'
 import { getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { apiTimNhanVienTheoEmail } from '../../utils/NhanVienUtils';
+import { apiTimKhachHangTheoEmail } from '../../utils/KhachHangUtils';
 
 export const AuthContext = createContext();
 
@@ -10,6 +11,7 @@ export const AuthContext = createContext();
 export default function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [nhanVien,setNhanVien] = useState(null);
+    const [khachHang,setKhachHang] = useState(null);
     const navigate = useNavigate();
     const auth = getAuth();
     useEffect(() => {
@@ -17,18 +19,21 @@ export default function AuthProvider({ children }) {
             if (user?.uid) {
                 setUser(user);
                 localStorage.setItem('accessToken', user.accessToken);
-                const data = await apiTimNhanVienTheoEmail(user.email);
-                
-                if (!data) {
-                  alert('Tài khoản của bạn không có quyền truy cập vào hệ thống 1');
-                  user.auth.signOut();
-                  return;
+                const dataKH = await apiTimKhachHangTheoEmail(user.email);
+                if (dataKH) {
+                    setKhachHang(dataKH);
+                    return;
                 }
-                setNhanVien(data);
+                const dataNV = await apiTimNhanVienTheoEmail(user.email);
+                if (dataNV) {
+                    setNhanVien(dataNV);
+                    return;
+                }
+                alert('Tài khoản không tồn tại');
                 return;
             }
             setUser({});
-            localStorage.clear();
+            localStorage.setItem('accessToken', null);
         });
 
         return () => {

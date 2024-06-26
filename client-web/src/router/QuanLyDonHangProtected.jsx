@@ -18,6 +18,9 @@ const QuanLyDonHangProtected = () => {
             } else {
                 setLoading(false);
             }
+        }else{
+            alert('Tài khoản của bạn không có quyền truy cập vào hệ thống');
+            navigate('/');
         }
     }, [nhanVien]);
 

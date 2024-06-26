@@ -156,6 +156,10 @@ export const resolvers = {
             const data = await DonHangModel.find({ khachHang: args.idKhachHang });
             return data;
         },
+        TimKhachHangTheoEmail: async (parent, args) => {
+            const data = await KhachHangModel.findOne({ email: args.email });
+            return data;
+        },
         ThongKe: async (parent, args) => {
             const today = new Date();
             const currentMonth = today.getMonth(); 

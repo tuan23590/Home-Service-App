@@ -134,6 +134,7 @@ export const typeDefs = `#graphql
         danhSachDichVuDangHoatDong: [DichVu],
         TimKhachHangTheoId(idKhachHang: String): KhachHang,
         DanhSachDonHangTheoKhachHang(idKhachHang: String): [DonHang],
+        TimKhachHangTheoEmail(email: String): KhachHang,
     },
     type Mutation {
         themDonHang(

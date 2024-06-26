@@ -1,6 +1,6 @@
 import { Autocomplete, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { apiDanhSachKhachHang } from '../../../utils/KhachHangUtil';
+import { apiDanhSachKhachHang } from '../../../utils/KhachHangUtils';
 
 const ThongTinKhachHang = ({data}) => {
     const {khachHangData, setKhachHangData} = data;

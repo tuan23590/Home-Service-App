@@ -34,7 +34,7 @@ import ThongKe from "../components/ThongKe";
 import QuanLyNhanVien from "../components/QuanLyNhanVien";
 import { apiDanhSachNhanVien } from "../../utils/NhanVienUtils";
 import QuanLyKhachHang from "../components/QuanLyKhachHang";
-import { apiDanhSachKhachHang } from "../../utils/KhachHangUtil";
+import { apiDanhSachKhachHang } from "../../utils/KhachHangUtils";
 const MainLayout = () => {
     return <DonHangProvider>
         <Outlet />

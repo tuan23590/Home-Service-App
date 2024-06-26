@@ -21,4 +21,23 @@ export const apiDanhSachKhachHang = async () => {
     const {KhachHangs} = await GraphQLrequest({query});
     return KhachHangs;
   };
-  
+  export const apiTimKhachHangTheoEmail = async (email) => {
+    const query = `query TimKhachHangTheoEmail {
+  TimKhachHangTheoEmail {
+    danhSachDiaChi {
+      ghiChu
+      id
+      quanHuyen
+      soNhaTenDuong
+      tinhTP
+      xaPhuong
+    }
+    email
+    id
+    soDienThoai
+    tenKhachHang
+  }
+}`;
+    const {TimKhachHangTheoEmail} = await GraphQLrequest({query,variables: {email}})
+    return TimKhachHangTheoEmail;
+  };
