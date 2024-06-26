@@ -34,8 +34,6 @@ chạy server:
 
     ```
     cd server 
-    ```
 
-    ```
     npm run server
     ```
