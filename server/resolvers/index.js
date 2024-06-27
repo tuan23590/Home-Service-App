@@ -296,6 +296,10 @@ export const resolvers = {
         dichVu: async (parent) => {
             const data = await DichVuModel.find({ _id: { $in: parent.dichVu } });
             return data;
+        },
+        diaChi: async (parent) => {
+            const data = await DiaChiModel.findById({ _id: parent.diaChi });
+            return data;
         }
     },
     LichThucHien: {
@@ -400,7 +404,18 @@ export const resolvers = {
             return khachHang;
         },
         themNhanVien: async (parent, args) => {
+            const diaChi = JSON.parse(args.diaChi);
+            const newDiaChi = new DiaChiModel({
+                tinhTP: diaChi.tinhTP,
+                quanHuyen: diaChi.quanHuyen,
+                xaPhuong: diaChi.xaPhuong,
+                soNhaTenDuong: diaChi.soNhaTenDuong,
+                ghiChu: diaChi.ghiChuDiaChi
+            });
+            const resDiaChi = await newDiaChi.save();
             const nhanVienMoi = args;
+            nhanVienMoi.diaChi = resDiaChi._id;
+            nhanVienMoi.trangThaiTaiKhoan = "Đang hoạt động";
             const nhanVien = new NhanVienModel(nhanVienMoi);
             await nhanVien.save();
             return nhanVien;
@@ -610,6 +625,21 @@ export const resolvers = {
             donHang.save();
             return donHang;
         },
+        capNhatSoDienThoaiKhachHang: async (parent, args) => {
+            const khachHang = await KhachHangModel.findById(args.idKhachHang);
+            khachHang.soDienThoai = args.soDienThoai;
+            khachHang.save();
+            return khachHang;
+        },
+        xoaNhanVien: async (parent, args) => {
+            const nhanVien = await NhanVienModel.findByIdAndDelete(args.idNhanVien);
+            return nhanVien;
+        },
+        suaNhanVien: async (parent, args) => {
+            const nhanVien = await NhanVienModel.findByIdAndUpdate
+                (args.idNhanVien, args, { new: true });
+            return nhanVien;
+        }
                 
     }
 };

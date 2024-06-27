@@ -8,7 +8,14 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         tenNhanVien
         gioiTinh
         ngaySinh
-        diaChi
+        diaChi {
+      id
+      ghiChu
+      quanHuyen
+      soNhaTenDuong
+      tinhTP
+      xaPhuong
+    }
         soDienThoai
         email
         cccd
@@ -45,7 +52,14 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         tenNhanVien
         gioiTinh
         ngaySinh
-        diaChi
+        diaChi {
+      id
+      ghiChu
+      quanHuyen
+      soNhaTenDuong
+      tinhTP
+      xaPhuong
+    }
         soDienThoai
         email
         cccd
@@ -77,7 +91,14 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
         tenNhanVien
         gioiTinh
         ngaySinh
-        diaChi
+        diaChi {
+      id
+      ghiChu
+      quanHuyen
+      soNhaTenDuong
+      tinhTP
+      xaPhuong
+    }
         soDienThoai
         phanQuyen
         email
@@ -110,7 +131,6 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     tenNhanVien
     gioiTinh
     ngaySinh
-    diaChi
     soDienThoai
     email
     cccd
@@ -125,8 +145,68 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     phanQuyen
     anhDaiDien
     chuyenMon
+    diaChi {
+      id
+      ghiChu
+      quanHuyen
+      soNhaTenDuong
+      tinhTP
+      xaPhuong
+    }
   }
 }`;
     const {NhanViens} = await GraphQLrequest({query})
     return NhanViens;
+  };
+
+  export const apiXoaNhanVien = async (idNhanVien) => {
+    const query = `mutation XoaNhanVien($idNhanVien: String) {
+  xoaNhanVien(idNhanVien: $idNhanVien) {
+    id
+  }
+}`;
+    const {xoaNhanVien} = await GraphQLrequest({query,variables:{ idNhanVien }})
+    return xoaNhanVien;
+  };
+
+
+  export const apiSuaNhanVien = async () => {
+    const query = `mutation SuaNhanVien($idNhanVien: String, $tenNhanVien: String, $gioiTinh: String, $ngaySinh: String, $diaChi: String, $soDienThoai: String, $email: String, $cccd: String, $ghiChu: String, $trangThaiTaiKhoan: String, $danhGia: Float, $trangThaiHienTai: String, $chuyenMon: String) {
+  suaNhanVien(idNhanVien: $idNhanVien, tenNhanVien: $tenNhanVien, gioiTinh: $gioiTinh, ngaySinh: $ngaySinh, diaChi: $diaChi, soDienThoai: $soDienThoai, email: $email, cccd: $cccd, ghiChu: $ghiChu, trangThaiTaiKhoan: $trangThaiTaiKhoan, danhGia: $danhGia, trangThaiHienTai: $trangThaiHienTai, chuyenMon: $chuyenMon) {
+    id
+  }
+}`;
+    const {suaNhanVien} = await GraphQLrequest({query})
+    return suaNhanVien;
+  };
+  export const apiThemNhanVien = async (formData) => {
+    console.log(formData);
+    const query = `mutation ThemNhanVien($tenNhanVien: String, $gioiTinh: String, $diaChi: String, $ngaySinh: Float, $soDienThoai: String, $email: String, $cccd: String, $ghiChu: String, $danhGia: Float, $chuyenMon: String, $anhDaiDien: String, $taiLieu: [String], $phanQuyen: String) {
+  themNhanVien(tenNhanVien: $tenNhanVien, gioiTinh: $gioiTinh, diaChi: $diaChi, ngaySinh: $ngaySinh, soDienThoai: $soDienThoai, email: $email, cccd: $cccd, ghiChu: $ghiChu, danhGia: $danhGia, chuyenMon: $chuyenMon, anhDaiDien: $anhDaiDien, taiLieu: $taiLieu, phanQuyen: $phanQuyen) {
+    id
+  }
+}`;
+    const ngaySinh = new Date(formData.ngaySinh).getTime();
+    const diaChi = JSON.stringify({
+      tinhTP: formData.tinhTP.name_with_type,
+      quanHuyen: formData.quanHuyen.name_with_type,
+      xaPhuong: formData.xaPhuong.name_with_type,
+      soNhaTenDuong: formData.soNhaTenDuong,
+      ghiChuDiaChi: formData.ghiChuDiaChi
+    });
+    const {themNhanVien} = await GraphQLrequest({query,variables: {
+      tenNhanVien: formData.tenNhanVien,
+      gioiTinh: formData.gioiTinh,
+      diaChi: diaChi,
+      ngaySinh: ngaySinh,
+      soDienThoai: formData.soDienThoai,
+      email: formData.email,
+      cccd: formData.cccd,
+      ghiChu: formData.ghiChu,
+      chuyenMon: formData.chuyenMon,
+      anhDaiDien: formData.anhDaiDien,
+      taiLieu: formData.taiLieu,
+      phanQuyen: formData.phanQuyen
+    }})
+    return themNhanVien;
   };

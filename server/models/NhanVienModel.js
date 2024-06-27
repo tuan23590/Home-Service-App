@@ -13,7 +13,7 @@ const NhanVienSchema = new mongoose.Schema({
         type: String
     },
     ngaySinh:{
-        type: String
+        type: Number
     },
     diaChi:{
         type: String
@@ -50,6 +50,9 @@ const NhanVienSchema = new mongoose.Schema({
     chuyenMon:{
         type: String
     },
+    taiLieu:{
+        type: [String]
+    }
     
 },{timestamps: true});
 

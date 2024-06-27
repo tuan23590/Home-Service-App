@@ -31,7 +31,7 @@ import ThongTinCongViec from "../../pages/ThongTinCongViec";
 import QuanLyDonHangProtected from "./QuanLyDonHangProtected";
 import XemChiTietDonHang from './../components/XemChiTietDonHang';
 import ThongKe from "../components/ThongKe";
-import QuanLyNhanVien from "../components/QuanLyNhanVien";
+import QuanLyNhanVien from "../components/QuanLyNhanVien/index";
 import { apiDanhSachNhanVien } from "../../utils/NhanVienUtils";
 import QuanLyKhachHang from "../components/QuanLyKhachHang";
 import { apiDanhSachKhachHang } from "../../utils/KhachHangUtils";

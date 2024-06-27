@@ -52,6 +52,17 @@ export default function DangNhap() {
       alert('Vui lòng nhập đầy đủ thông tin !');
       return;
     }
+
+    const isValidEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+    if (!isValidEmail(email)) {
+      alert('Vui lòng nhập một địa chỉ email hợp lệ !');
+      return;
+    }
+
+
     const auth = getAuth();
     setLoading(true); // Start loading
     try {
@@ -68,7 +79,8 @@ export default function DangNhap() {
       navigate('/');
     } catch (error) {
       setLoading(false);
-      if (error.code === 'auth/invalid-credential') {
+      console.error(error.code);
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
         alert('Tài khoản hoặc mật khẩu không đúng !');
       } else if (error.code === 'auth/too-many-requests') {
         alert('Quá nhiều lần thử đăng nhập, vui lòng thử lại sau 1 phút !');
@@ -80,11 +92,19 @@ export default function DangNhap() {
     }
   };
 
-  const handleForgotPassword = async (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
     const auth = getAuth();
     if (!email) {
       alert('Vui lòng nhập email để lấy lại mật khẩu!');
+      return;
+    }
+    const isValidEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+    if (!isValidEmail(email)) {
+      alert('Vui lòng nhập một địa chỉ email hợp lệ để lấy lại mật khẩu!');
       return;
     }
     setLoading(true); // Start loading
@@ -137,9 +157,9 @@ export default function DangNhap() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              {forgotPassword ? 'Quên Mật Khẩu' : 'Đăng Nhập'}
+              {forgotPassword ? 'Đặt lại mật khẩu' : 'Đăng Nhập'}
             </Typography>
-            <Box component="form" noValidate onSubmit={forgotPassword ? handleForgotPassword : handleLoginWithEmail} sx={{ mt: 1 ,width: '77%'}}>
+            <Box component="form" noValidate onSubmit={forgotPassword ? handleResetPassword : handleLoginWithEmail} sx={{ mt: 1 ,width: '77%'}}>
               <TextField
                 margin="normal"
                 required
@@ -218,7 +238,7 @@ export default function DangNhap() {
                     </Link>
                   ) : (
                     <Link href="#" variant="body2" onClick={() => setForgotPassword(true)}>
-                      Quên mật khẩu?
+                      Đặt lại mật khẩu
                     </Link>
                   )}
                 </Grid>

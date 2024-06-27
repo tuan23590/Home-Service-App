@@ -3,7 +3,7 @@ import React, { createContext, useEffect, useState } from 'react'
 import { getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { apiTimNhanVienTheoEmail } from '../../utils/NhanVienUtils';
-import { apiTimKhachHangTheoEmail } from '../../utils/KhachHangUtils';
+import { apiThemKhachHang, apiTimKhachHangTheoEmail } from '../../utils/KhachHangUtils';
 
 export const AuthContext = createContext();
 
@@ -19,15 +19,24 @@ export default function AuthProvider({ children }) {
             if (user?.uid) {
                 setUser(user);
                 localStorage.setItem('accessToken', user.accessToken);
+                setKhachHang(null);
+                setNhanVien(null);
+                const dataNV = await apiTimNhanVienTheoEmail(user.email);
+                if (dataNV) {
+                    setNhanVien(dataNV);
+                    return;
+                }
                 const dataKH = await apiTimKhachHangTheoEmail(user.email);
                 if (dataKH) {
                     setKhachHang(dataKH);
                     return;
                 }
-                const dataNV = await apiTimNhanVienTheoEmail(user.email);
-                if (dataNV) {
-                    setNhanVien(dataNV);
-                    return;
+                else{
+                    const dataKH = await apiThemKhachHang(user);
+                    if (dataKH) {
+                        setKhachHang(dataKH);
+                        return;
+                    }
                 }
                 alert('Tài khoản không tồn tại');
                 return;
@@ -41,7 +50,7 @@ export default function AuthProvider({ children }) {
         };
     }, [auth]);
     return (
-        <AuthContext.Provider value={{ user, setUser,nhanVien,setNhanVien }}>
+        <AuthContext.Provider value={{ user, setUser,nhanVien,setNhanVien, khachHang,setKhachHang }}>
             {children}
         </AuthContext.Provider>
     );

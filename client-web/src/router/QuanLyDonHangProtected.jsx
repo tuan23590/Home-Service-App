@@ -4,11 +4,15 @@ import { Outlet, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthProvider';
 
 const QuanLyDonHangProtected = () => {
-    const { user, nhanVien } = useContext(AuthContext);
+    const { user, nhanVien,khachHang} = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     if (!user?.uid) {
         navigate('/DangNhap');
+    }
+    if (khachHang) {
+        alert('Tài khoản của bạn không có quyền truy cập vào hệ thống');
+        navigate('/');
     }
     useEffect(() => {
         if (nhanVien) {
@@ -18,9 +22,6 @@ const QuanLyDonHangProtected = () => {
             } else {
                 setLoading(false);
             }
-        }else{
-            alert('Tài khoản của bạn không có quyền truy cập vào hệ thống');
-            navigate('/');
         }
     }, [nhanVien]);
 
