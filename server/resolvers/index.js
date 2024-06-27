@@ -1,5 +1,12 @@
 import { DiaChiModel, DichVuModel, DonHangModel, KhachHangModel, LichThucHienModel, NhanVienModel } from '../models/index.js';
 import fs from 'fs';
+import archiver from 'archiver';
+import path, {dirname} from 'path';
+import { fileURLToPath } from 'url';
+import jsonfile from 'jsonfile';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function epochToText(epoch) {
     const dateObject = new Date(epoch * 1000);
@@ -160,6 +167,105 @@ export const resolvers = {
             const data = await KhachHangModel.findOne({ email: args.email });
             return data;
         },
+        SaoLuuDuLieu: async () => {
+            const copyRecursiveSync = (src, dest) => {
+                if (fs.existsSync(src)) {
+                    fs.mkdirSync(dest, { recursive: true });
+            
+                    fs.readdirSync(src).forEach(file => {
+                        const srcFile = path.join(src, file);
+                        const destFile = path.join(dest, file);
+            
+                        if (fs.lstatSync(srcFile).isDirectory()) {
+                            copyRecursiveSync(srcFile, destFile);
+                        } else {
+                            fs.copyFileSync(srcFile, destFile);
+                        }
+                    });
+                }
+            };
+            try {
+                const diaChiData = await DiaChiModel.find();
+                const dichVuData = await DichVuModel.find();
+                const donHangData = await DonHangModel.find();
+                const khachHangData = await KhachHangModel.find();
+                const lichThucHienData = await LichThucHienModel.find();
+                const nhanVienData = await NhanVienModel.find();
+        
+                const urlFolderData = path.join(__dirname, '../uploads');
+                const backupDir = path.join(__dirname, '../backup');
+                const backupUploadsDir = path.join(backupDir, 'uploads');
+                const backupListDir = path.join(__dirname, '../backupList');
+        
+                // Tạo thư mục backupList nếu chưa tồn tại
+                if (!fs.existsSync(backupListDir)) {
+                    fs.mkdirSync(backupListDir);
+                }
+        
+                // Tạo thư mục backup nếu không tồn tại
+                if (!fs.existsSync(backupDir)) {
+                    fs.mkdirSync(backupDir);
+                }
+        
+                // Lưu dữ liệu vào file .json
+                await jsonfile.writeFile(path.join(backupDir, 'diaChiData.json'), diaChiData);
+                await jsonfile.writeFile(path.join(backupDir, 'dichVuData.json'), dichVuData);
+                await jsonfile.writeFile(path.join(backupDir, 'donHangData.json'), donHangData);
+                await jsonfile.writeFile(path.join(backupDir, 'khachHangData.json'), khachHangData);
+                await jsonfile.writeFile(path.join(backupDir, 'lichThucHienData.json'), lichThucHienData);
+                await jsonfile.writeFile(path.join(backupDir, 'nhanVienData.json'), nhanVienData);
+        
+                // Tạo thư mục uploads trong backup nếu không tồn tại
+                if (!fs.existsSync(backupUploadsDir)) {
+                    fs.mkdirSync(backupUploadsDir);
+                }
+        
+                // Sao chép thư mục uploads vào thư mục backup/uploads
+                copyRecursiveSync(urlFolderData, backupUploadsDir);
+        
+                // Lấy ngày, tháng, năm (UTC+7)
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1; // Tháng bắt đầu từ 0, cộng thêm 1 để đúng tháng hiện tại
+                const day = now.getDate();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+        
+                // Định dạng thành chuỗi ngày-tháng-năm-giờ-phút
+                const formattedDate = `${day}-${month}-${year}_${hours}-${minutes}`;
+        
+                // Đặt tên file backup với thời gian
+                const backupFileName = `backup_${formattedDate}.zip`;
+                const output = fs.createWriteStream(path.join(backupListDir, backupFileName));
+                const archive = archiver('zip', {
+                    zlib: { level: 9 } // Mức độ nén
+                });
+        
+                output.on('close', function () {
+                    console.log(archive.pointer() + ' total bytes');
+                    console.log('Archiver has been finalized and the output file descriptor has closed.');
+                });
+        
+                archive.on('error', function (err) {
+                    throw err;
+                });
+        
+                archive.pipe(output);
+        
+                archive.directory(backupDir, false);
+        
+                await archive.finalize();
+
+                return `${backupFileName}`;
+        
+            } catch (err) {
+                return err.message ;
+            }
+
+        },
+        PhucHoiDuLieu: async () => {
+        },
+
         ThongKe: async (parent, args) => {
             const today = new Date();
             const currentMonth = today.getMonth(); 
