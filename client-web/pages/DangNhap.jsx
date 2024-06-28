@@ -16,9 +16,11 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail} from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile, updatePhoneNumber } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { AuthContext } from '../src/context/AuthProvider';
+import { apiThemKhachHang } from '../utils/KhachHangUtils';
 
 const defaultTheme = createTheme();
 
@@ -29,8 +31,12 @@ export default function DangNhap() {
   const [rememberMe, setRememberMe] = React.useState(localStorage.getItem('rememberMe') === 'true');
   const [loading, setLoading] = React.useState(false); // Loading state
   const [forgotPassword, setForgotPassword] = React.useState(false); // State to toggle between forms
-  const [showPassword, setShowPassword] = React.useState(false); // State to toggle password visibility
-
+  const [registering, setRegistering] = React.useState(false); // State to toggle registering form
+  const [rePassword, setRePassword] = React.useState('');
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [displayName, setDisplayName] = React.useState('');
+  // Phone number validation regex pattern
+  const phoneNumberRegex = /^(03|05|07|08|09)\d{8}$/;
   const handleLoginWithGoogle = async () => {
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
@@ -61,7 +67,6 @@ export default function DangNhap() {
       alert('Vui lòng nhập một địa chỉ email hợp lệ !');
       return;
     }
-
 
     const auth = getAuth();
     setLoading(true); // Start loading
@@ -120,9 +125,69 @@ export default function DangNhap() {
     }
   };
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const [showPassword1, setShowPassword1] = React.useState(false);
+const [showPassword2, setShowPassword2] = React.useState(false);
+
+const handleClickShowPassword1 = () => {
+  setShowPassword1(!showPassword1);
+};
+
+const handleClickShowPassword2 = () => {
+  setShowPassword2(!showPassword2);
+};
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (!email || !password || !displayName || !phoneNumber) {
+      alert('Vui lòng nhập đầy đủ thông tin !');
+      return;
+    }
+    if (password !== rePassword) {
+      alert('Mật khẩu không khớp !');
+      return;
+    }
+    const isValidEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+    if (!isValidEmail(email)) {
+      alert('Vui lòng nhập một địa chỉ email hợp lệ !');
+      return;
+    }
+
+    if (!phoneNumberRegex.test(phoneNumber)) {
+      alert('Vui lòng nhập một số điện thoại hợp lệ !');
+      return;
+    }
+
+    const auth = getAuth();
+    setLoading(true); 
+    try {
+      localStorage.setItem('phoneNumber', phoneNumber);
+      localStorage.setItem('displayName', displayName);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await updateProfile(auth.currentUser, {
+        displayName: displayName,
+      });
+      navigate('/');
+    } catch (error) {
+      setLoading(false);
+      console.error(error.code);
+      if (error.code === 'auth/email-already-in-use') {
+        alert('Email đã được sử dụng bởi một tài khoản khác !');
+      } else if (error.code === 'auth/invalid-email') {
+        alert('Địa chỉ email không hợp lệ !');
+      } else {
+        alert('Đăng ký tài khoản thất bại');
+      }
+    } finally {
+      setLoading(false); // Stop loading
+    }
   };
 
   return (
@@ -157,9 +222,44 @@ export default function DangNhap() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              {forgotPassword ? 'Đặt lại mật khẩu' : 'Đăng Nhập'}
+              {forgotPassword ? 'Đặt lại mật khẩu' : registering ? 'Đăng ký tài khoản' : 'Đăng Nhập'}
             </Typography>
-            <Box component="form" noValidate onSubmit={forgotPassword ? handleResetPassword : handleLoginWithEmail} sx={{ mt: 1 ,width: '77%'}}>
+            <Box component="form" noValidate onSubmit={forgotPassword ? handleResetPassword : registering ? handleRegister : handleLoginWithEmail} sx={{ mt: 1, width: '77%' }}>
+              {registering && (
+                <>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    autoFocus={displayName.length === 0}
+                    name="displayName"
+                    label="Tên"
+                    type="text"
+                    id="displayName"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="phoneNumber"
+                    label="Số điện thoại"
+                    type="number"
+                    sx={{
+                      "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                          display: "none",
+                      },
+                      "& input[type=number]": {
+                          MozAppearance: "textfield",
+                      },
+                  }}
+                    id="phoneNumber"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                </>
+              )}
               <TextField
                 margin="normal"
                 required
@@ -181,7 +281,7 @@ export default function DangNhap() {
                     autoFocus={email.length > 0}
                     name="password"
                     label="Mật khẩu"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword1 ? 'text' : 'password'}
                     id="password"
                     autoComplete="current-password"
                     value={password}
@@ -191,20 +291,49 @@ export default function DangNhap() {
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
+                            onClick={handleClickShowPassword1}
                             onMouseDown={handleMouseDownPassword}
                           >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                            {showPassword1 ? <Visibility /> : <VisibilityOff />}
                           </IconButton>
                         </InputAdornment>
                       ),
                     }}
                   />
-                  <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />}
-                    label="Lưu tài khoản"
+                  {registering && (
+                    <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="rePassword"
+                    label="Nhập lại mật khẩu"
+                    type={showPassword2 ? 'text' : 'password'}
+                    id="rePassword"
+                    autoComplete="current-password"
+                    value={rePassword}
+                    onChange={(e) => setRePassword(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword2}
+                            onMouseDown={handleMouseDownPassword}
+                          >
+                            {showPassword2 ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
+                  )}
                 </>
+              )}
+              {!forgotPassword && !registering &&(
+                <FormControlLabel
+                control={<Checkbox value="remember" color="primary" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />}
+                label="Lưu tài khoản"
+              />
               )}
               <Box>
                 <Button
@@ -221,9 +350,9 @@ export default function DangNhap() {
                   }}
                   disabled={loading}
                 >
-                  {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : (forgotPassword ? 'Đặt lại mật khẩu' : 'Đăng nhập')}
+                  {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : (forgotPassword ? 'Đặt lại mật khẩu' : registering ? 'Đăng ký tài khoản' : 'Đăng nhập')}
                 </Button>
-                {!forgotPassword && (
+                {!forgotPassword && !registering && (
                   <Button variant='outlined' fullWidth onClick={handleLoginWithGoogle} className="google" disabled={loading}>
                     <GoogleIcon sx={{ marginRight: '10px' }} />
                     Đăng nhập bằng Google
@@ -236,17 +365,23 @@ export default function DangNhap() {
                     <Link href="#" variant="body2" onClick={() => setForgotPassword(false)}>
                       Quay lại đăng nhập
                     </Link>
+                  ) : registering ? (
+                    <Link href="#" variant="body2" onClick={() => setRegistering(false)}>
+                      Quay lại đăng nhập
+                    </Link>
                   ) : (
                     <Link href="#" variant="body2" onClick={() => setForgotPassword(true)}>
                       Đặt lại mật khẩu
                     </Link>
                   )}
                 </Grid>
-                {/* <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                <Grid item>
+                  {!registering && (
+                    <Link href="#" variant="body2" onClick={() => setRegistering(true)}>
+                    Đăng ký tài khoản
                   </Link>
-                </Grid> */}
+                  )}
+                </Grid>
               </Grid>
             </Box>
           </Box>

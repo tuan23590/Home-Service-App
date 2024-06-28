@@ -46,12 +46,16 @@ export const apiDanhSachKhachHang = async () => {
     tenKhachHang
   }
 }`;
+    const phoneNumber =localStorage.getItem('phoneNumber') || null
+    const displayName = localStorage.getItem('displayName') || null
     const {themKhachHang} = await GraphQLrequest({query,variables: {
       uid: data.uid,
-      tenKhachHang: data.displayName,
-      soDienThoai: data.phoneNumber,
+      tenKhachHang: displayName || data.displayName,
+      soDienThoai: phoneNumber || null,
       email: data.email
     }})
+    localStorage.removeItem('phoneNumber');
+    localStorage.removeItem('displayName');
     return themKhachHang;
   };
 

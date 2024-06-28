@@ -12,7 +12,7 @@ export default function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [nhanVien,setNhanVien] = useState(null);
     const [khachHang,setKhachHang] = useState(null);
-    const navigate = useNavigate();
+
     const auth = getAuth();
     useEffect(() => {
         const unsubscribed = auth.onIdTokenChanged(async (user) => {
