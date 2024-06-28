@@ -16,6 +16,7 @@ import { apiTinhTP, apiQuanHuyen, apiXaPhuong } from '../../../utils/DiaChiUtil'
 import { apiThemNhanVien } from '../../../utils/NhanVienUtils'
 import FileUpload from '../FileUpload';
 import dayjs from 'dayjs';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
     const [dsTinhTP, setDsTinhTP] = useState([]);
     const [dsQuanHuyen, setDsQuanHuyen] = useState([]);
@@ -50,10 +51,12 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
                 setDsXaPhuong([]);
                 const data = await apiQuanHuyen(formData.tinhTP.code);
                 setDsQuanHuyen(data);
+               if(nhanVien.diaChi.quanHuyen){
                 setFormData((prevFormData) => ({
                     ...prevFormData,
                     quanHuyen: data.find((quanHuyen) => quanHuyen.name_with_type === nhanVien.diaChi.quanHuyen) || '',
                 }));
+               }
             }
             fetchQuanHuyen();
         }
@@ -63,10 +66,12 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
         const fetchXaPhuong = async () => {
             const data = await apiXaPhuong(formData.quanHuyen.code);
             setDsXaPhuong(data);
+            if(nhanVien.diaChi.xaPhuong){
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 xaPhuong: data.find((xaPhuong) => xaPhuong.name_with_type === nhanVien.diaChi.xaPhuong) || '',
             }));
+        }
         }
         fetchXaPhuong();
        }
@@ -166,6 +171,16 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
     const handleSubmitAdd = async () => {
         if(validateForm()){
            const data = await apiThemNhanVien(formData);
+           const auth = getAuth();
+           await createUserWithEmailAndPassword(auth, formData.email,formData.email)
+           .then((userCredential) => {
+            const user = userCredential.user;
+            console.log(user);
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+          });
         if (data) {
             alert('Thêm nhân viên mới thành công');
             handleClose();

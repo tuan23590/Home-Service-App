@@ -1,5 +1,7 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import React from 'react';
+import { IMAGE_SERVER } from '../../../utils/constants';
+import { EPOCHTODATE } from './../../function/index';
 
 const ThongTinNhanVien = ({nhanVienDaChon}) => {
     return (
@@ -18,7 +20,7 @@ const ThongTinNhanVien = ({nhanVienDaChon}) => {
             transition: 'transform 0.2s, box-shadow 0.2s', // Thêm hiệu ứng chuyển đổi khi di chuột
           }}
           alt="The house from the offer."
-          src={nhanVienDaChon && nhanVienDaChon.anhDaiDien}
+          src={nhanVienDaChon && `${IMAGE_SERVER}${nhanVienDaChon.anhDaiDien}`}
         />
         <Box>
           {nhanVienDaChon && (
@@ -52,7 +54,7 @@ const ThongTinNhanVien = ({nhanVienDaChon}) => {
                   <strong>Ngày sinh: </strong>
                 </Typography>
                 <Typography sx={{ width: '80%' }}>
-                  {nhanVienDaChon.ngaySinh}
+                  {EPOCHTODATE(nhanVienDaChon.ngaySinh)}
                 </Typography>
               </Grid>
               <Grid item xs={6} sx={{ display: 'flex' }}>

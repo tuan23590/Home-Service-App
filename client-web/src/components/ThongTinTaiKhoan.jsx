@@ -4,6 +4,7 @@ import { Avatar, Box, Menu, MenuItem, Typography, Dialog, DialogActions, DialogC
 import { Link, useNavigate } from 'react-router-dom';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import { apiCapNhatSoDienThoaiKhachHang } from '../../utils/KhachHangUtils';
+import { IMAGE_SERVER } from '../../utils/constants';
 
 const ThongTinTaiKhoan = () => {
     const { user, nhanVien, khachHang } = useContext(AuthContext);
@@ -44,8 +45,8 @@ const ThongTinTaiKhoan = () => {
     return (
         <>
             <Box sx={{ display: 'flex' }} onClick={xuLyNhan}>
-                <Avatar alt='Avatar' src={user?.photoURL} sx={{ width: '25px', height: '25px', marginRight: '5px' }} />
-                <Typography>{user?.displayName}</Typography>
+                <Avatar alt='Avatar' src={user?.photoURL||`${IMAGE_SERVER}${nhanVien?.anhDaiDien}`} sx={{ width: '25px', height: '25px', marginRight: '5px' }} />
+                <Typography>{user?.displayName||nhanVien?.tenNhanVien||khachHang?.TenKhachHang}</Typography>
                 <DehazeIcon sx={{ marginLeft: '20px' }} />
             </Box>
             <Menu

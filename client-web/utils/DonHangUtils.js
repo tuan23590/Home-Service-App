@@ -373,7 +373,6 @@ export const apiTimDanhSachDonHangTheoDanhSachLichThucHien = async (idLichThucHi
         id
         anhDaiDien
         cccd
-        diaChi
         email
         ghiChu
         gioiTinh
@@ -384,17 +383,6 @@ export const apiTimDanhSachDonHangTheoDanhSachLichThucHien = async (idLichThucHi
           tenDichVu
         }
         danhGia
-      }
-      nhanVienCu {
-        anhDaiDien
-        cccd
-        diaChi
-        email
-        ghiChu
-        gioiTinh
-        ngaySinh
-        soDienThoai
-        tenNhanVien
       }
       soGioThucHien
       soThangLapLai
