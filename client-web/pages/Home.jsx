@@ -1,13 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect  } from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton,Divider, Typography, Container, Button, Menu, MenuItem, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { AppBar, Toolbar, IconButton,Divider, Typography, Container, Button, Menu, MenuItem, Card, CardContent, CardMedia, Grid, Box } from '@mui/material';
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 import { getAuth } from 'firebase/auth';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'; // Import GoogleMap, LoadScript và Marker từ react-google-maps/api
 import './Home.css';
 import ThongTinTaiKhoan from '../src/components/ThongTinTaiKhoan';
+import BotChat from '../src/components/BotChat';
 
 export default function Home() {
   const [anchorElAboutUs, setAnchorElAboutUs] = useState(null);
@@ -235,6 +236,10 @@ export default function Home() {
           <Button color="inherit">Privacy Policy</Button>
           <Button color="inherit">Terms of Use</Button>
         </Toolbar>
+
+        <Box sx={{position: 'fixed', bottom: '10vh', right: '10vw'}}>
+          <BotChat/>
+        </Box>
     </div>
   );
 }
