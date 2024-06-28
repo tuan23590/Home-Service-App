@@ -42,10 +42,10 @@ export default function DSDonHangThuGon({ data }) {
                         <strong>Trạng thái đơn hàng: </strong> {donHang.trangThaiDonHang}
                     </Typography>
                     <Typography>
-                        <strong>Khách hàng: </strong> {donHang.khachHang.tenKhachHang}
+                        <strong>Khách hàng: </strong> {donHang?.khachHang?.tenKhachHang}
                     </Typography>
                     <Typography>
-                        <strong>SĐT của KH: </strong> {donHang.khachHang.soDienThoai}
+                        <strong>SĐT của KH: </strong> {donHang?.khachHang?.soDienThoai}
                     </Typography>
                     <Typography>
                         <strong>Địa chỉ: </strong> {donHang?.diaChi?.soNhaTenDuong}, {donHang.diaChi?.xaPhuong}, {donHang.diaChi?.quanHuyen}, {donHang.diaChi?.tinhTP}

@@ -18,13 +18,11 @@ import AuthProvider from "../context/AuthProvider";
 import ErrorPage from "../../pages/ErrorPage";
 import SignUp from "../../pages/SignUp";
 import ForgotPassword from "../../pages/ForgotPassword";
-
-
 import DanhSachDonHang from "../components/DanhSachDonHang";
 import ChiThietDonHangChoDuyet from "../components/ChiTietDonHang/ChiThietDonHangChoDuyet";
 import ChiThietDonHangDaDuyet from "../components/ChiTietDonHang/ChiThietDonHangDaDuyet";
 import ChiThietDonHangDaTuChoi from "../components/ChiTietDonHang/ChiThietDonHangDaTuChoi";
-import QuanLyDonHang from "../../pages/QuanLyDonHang";
+import QuanLy from "../../pages/QuanLy";
 import QuanLyDichVu from "../components/QuanLyDichVu";
 import { apiDanhSachDichVu } from "../../utils/DichVuUtils";
 import ThongTinCongViec from "../../pages/ThongTinCongViec";
@@ -35,6 +33,8 @@ import QuanLyNhanVien from "../components/QuanLyNhanVien/index";
 import { apiDanhSachNhanVien } from "../../utils/NhanVienUtils";
 import QuanLyKhachHang from "../components/QuanLyKhachHang";
 import { apiDanhSachKhachHang } from "../../utils/KhachHangUtils";
+import SaoLuuPhucHoi from "../components/SaoLuuPhucHoi";
+import TraCuuDonHang from "../../pages/TraCuuDonHang";
 const MainLayout = () => {
     return <DonHangProvider>
         <Outlet />
@@ -57,6 +57,17 @@ export default createBrowserRouter([
                 path: '/',
             },
             {
+                element: <TraCuuDonHang />,
+                path: '/TraCuuDonHang',
+                children: [
+                    {
+                        element: <XemChiTietDonHang />,
+                        path: `/TraCuuDonHang/:id`,
+                        loader: apiChiTietDonHang,
+                    }
+                ]
+            },
+            {
                 element: <ThongTinCongViec />,
                 path: '/ThongTinCongViec',
                 children: [
@@ -75,67 +86,71 @@ export default createBrowserRouter([
                 element: <QuanLyDonHangProtected />,
                 children: [
                     {
-                        element: <QuanLyDonHang />,
-                        path: '/QuanLyDonHang',
+                        element: <QuanLy />,
+                        path: '/QuanLy',
                         children: [
                             {
                                 element: <ThongKe />,
-                                path: '/QuanLyDonHang/ThongKe',
+                                path: '/QuanLy/ThongKe',
                             },
                             {
                                 element: <DanhSachDonHang />,
-                                path: `/QuanLyDonHang/DanhSachDonHangChoDuyet`,
+                                path: `/QuanLy/DanhSachDonHangChoDuyet`,
                                 loader: APIDanhSachDonHangChoDuyet,
                                 children: [
                                     {
                                         element: <ChiThietDonHangChoDuyet />,
-                                        path: `/QuanLyDonHang/DanhSachDonHangChoDuyet/:id`,
+                                        path: `/QuanLy/DanhSachDonHangChoDuyet/:id`,
                                         loader: apiChiTietDonHang,
                                     },
                                 ]
                             },
                             {
                                 element: <DanhSachDonHang />,
-                                path: `/QuanLyDonHang/DanhSachDonHangDaDuyet`,
+                                path: `/QuanLy/DanhSachDonHangDaDuyet`,
                                 loader: APIDanhSachDonHangDaDuyet,
                                 children: [
                                     {
                                         element: <ChiThietDonHangDaDuyet />,
-                                        path: `/QuanLyDonHang/DanhSachDonHangDaDuyet/:id`,
+                                        path: `/QuanLy/DanhSachDonHangDaDuyet/:id`,
                                         loader: apiChiTietDonHang,
                                     },
                                 ],
                             },
                             {
                                 element: <DanhSachDonHang />,
-                                path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi`,
+                                path: `/QuanLy/DanhSachDonHangDaTuChoi`,
                                 loader: APIDanhSachDonHangDaTuChoi,
                                 children: [
                                     {
                                         element: <ChiThietDonHangDaTuChoi />,
-                                        path: `/QuanLyDonHang/DanhSachDonHangDaTuChoi/:id`,
+                                        path: `/QuanLy/DanhSachDonHangDaTuChoi/:id`,
                                         loader: apiChiTietDonHang,
                                     },
                                 ],
                             },
                             {
                                 element: <ThemDonHang />,
-                                path: `/QuanLyDonHang/ThemDonHang`,
+                                path: `/QuanLy/ThemDonHang`,
                             },
                             {
                                 element: <QuanLyDichVu />,
-                                path: `/QuanLyDonHang/QuanLyDichVu`,
+                                path: `/QuanLy/QuanLyDichVu`,
                                 loader: apiDanhSachDichVu,
                             },
                             {
                                 element: <QuanLyNhanVien />,
-                                path: `/QuanLyDonHang/QuanLyNhanVien`,
+                                path: `/QuanLy/QuanLyNhanVien`,
                                 loader: apiDanhSachNhanVien,
                             },
                             {
                                 element: <QuanLyKhachHang />,
-                                path: `/QuanLyDonHang/QuanLyKhachHang`,
+                                path: `/QuanLy/QuanLyKhachHang`,
                                 loader: apiDanhSachKhachHang,
+                            },
+                            {
+                                element: <SaoLuuPhucHoi />,
+                                path: `/QuanLy/SaoLuuPhucHoi`,
                             }
                         ],
                     },

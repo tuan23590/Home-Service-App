@@ -12,7 +12,7 @@ import 'dotenv/config'
 
 import {resolvers} from './resolvers/index.js'
 import {typeDefs} from './schemas/index.js'
-import './imageServer.js';
+import './FileServer.js';
 
 const app = experss();
 const httpServer = http.createServer(app);

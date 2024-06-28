@@ -56,6 +56,11 @@ const ThongTinTaiKhoan = () => {
                 <MenuItem>
                     <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/'>Trang chủ</Link>
                 </MenuItem>
+                {khachHang && (
+                    <MenuItem>
+                        <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/TraCuuDonHang'>Tra cứu đơn hàng</Link>
+                    </MenuItem>
+                )}
                 {nhanVien?.phanQuyen === 'Tasker' && (
                     <MenuItem>
                         <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/ThongTinCongViec'>Lịch Làm Việc</Link>
@@ -63,11 +68,11 @@ const ThongTinTaiKhoan = () => {
                 )}
                 {nhanVien?.phanQuyen === 'NVCSKH' && (
                     <MenuItem>
-                        <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/QuanLyDonHang'>Quản lý đơn hàng</Link>
+                        <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/QuanLy'>Quản lý đơn hàng</Link>
                     </MenuItem>
                 )}{nhanVien?.phanQuyen === 'Admin' && (
                     <MenuItem>
-                        <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/QuanLyDonHang'>Quản lý hệ thống</Link>
+                        <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/QuanLy'>Quản lý hệ thống</Link>
                     </MenuItem>
                 )}
                 {!user?.uid ? (

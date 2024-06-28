@@ -3,7 +3,9 @@ import { IMAGE_SERVER } from './constants';
 
 const uploadFile = (file, fileType, onUploadProgress) => {
     const formData = new FormData();
-    formData.append(fileType === 'image' ? 'hinhAnh' : 'taiLieu', file);
+    const fieldName = fileType === 'image' ? 'hinhAnh' : fileType === 'document' ? 'taiLieu' : 'saoLuu';
+    console.log(`Uploading ${fileType}: `, file);
+    formData.append(fieldName, file);
 
     return axios.post(`${IMAGE_SERVER}/upload-${fileType}`, formData, {
         onUploadProgress
@@ -18,8 +20,12 @@ const fetchUploadedDocuments = () => {
     return axios.get(`${IMAGE_SERVER}/list-documents`);
 };
 
+const fetchUploadedBackups = () => {
+    return axios.get(`${IMAGE_SERVER}/list-backups`);
+};
+
 const deleteFile = (fileType, filename) => {
-    const deleteEndpoint = fileType === 'image' ? 'delete-image' : 'delete-document';
+    const deleteEndpoint = fileType === 'image' ? 'delete-image' : fileType === 'document' ? 'delete-document' : 'delete-backup';
     return axios.delete(`${IMAGE_SERVER}/${deleteEndpoint}/${encodeURIComponent(filename)}`)
         .then(response => {
             console.log(`${fileType} deleted successfully`);
@@ -31,4 +37,4 @@ const deleteFile = (fileType, filename) => {
         });
 };
 
-export { uploadFile, fetchUploadedImages, fetchUploadedDocuments, deleteFile };
+export { uploadFile, fetchUploadedImages, fetchUploadedDocuments, fetchUploadedBackups, deleteFile };

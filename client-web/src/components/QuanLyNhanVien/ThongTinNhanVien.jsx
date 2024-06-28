@@ -401,7 +401,7 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
                     </Grid>
                     <Grid item xs={6}>
                         <FileUpload
-                            accept=""
+                            accept="application/*"
                             onUploadSuccess={handleDocumentUploadSuccess}
                         />
                     </Grid>

@@ -11,7 +11,7 @@ const FileUpload = ({ accept, onUploadSuccess }) => {
     const deleteUploadedFiles = () => {
         const deletePromises = uploadedFilePaths.map((path) => {
             const filename = path.substring(path.lastIndexOf('/') + 1);
-            return deleteFile(accept === 'image/*' ? 'image' : 'document', filename)
+            return deleteFile(getFileType(), filename)
                 .then(() => {
                     console.log('File deleted successfully');
                 })
@@ -28,6 +28,12 @@ const FileUpload = ({ accept, onUploadSuccess }) => {
         });
     };
 
+    const getFileType = () => {
+        if (accept === 'image/*') return 'image';
+        if (accept === 'application/*') return 'document';
+        return 'backup';
+    };
+
     const handleFileChange = (event) => {
         const files = event.target.files;
         if (files.length > 0) {
@@ -40,7 +46,7 @@ const FileUpload = ({ accept, onUploadSuccess }) => {
             }
 
             const uploadPromises = Array.from(files).map((file) =>
-                uploadFile(file, accept === 'image/*' ? 'image' : 'document')
+                uploadFile(file, getFileType())
                     .then(response => response.data.path)
                     .catch(error => {
                         console.error('Error uploading file: ', error);
@@ -57,15 +63,21 @@ const FileUpload = ({ accept, onUploadSuccess }) => {
         }
     };
 
+    const getLabel = () => {
+        if (accept === 'image/*') return 'Chọn hình ảnh đại diện';
+        if (accept === 'application/*') return 'Chọn tài liệu đính kèm';
+        return 'Chọn tập tin sao lưu (.zip)';
+    };
+
     return (
         <TextField
-            sx={{ padding: 0, margin: 0 }}
+            sx={{ padding: 0, margin: 0}}
             type="file"
-            inputProps={{ accept, multiple: accept !== 'image/*' }}
+            inputProps={{ accept: accept === 'backup' ? '.zip' : accept, multiple: accept !== 'image/*' }}
             onChange={handleFileChange}
             variant="outlined"
             margin="normal"
-            label={accept === 'image/*' ? 'Chọn hình ảnh đại diện' : 'Chọn tài liệu đính kèm'}
+            label={getLabel()}
             InputLabelProps={{ shrink: true }}
             fullWidth
             InputProps={{

@@ -129,7 +129,7 @@ const ThongTinDonHang = ({ donHang }) => {
             {donHang.ghiChu || 'Không có ghi chú'}
           </Typography>
         </Grid>
-        {donHang.trangThaiDonHang === 'Đã hoàn thành' && !donHang.saoDanhGia && (
+        {donHang.trangThaiDonHang === 'Đã hoàn thành' && donHang.saoDanhGia && (
           <>
           <Grid item xs={6} sx={{ display: 'flex' }}>
                   <Typography sx={{ width: '20%' }}>

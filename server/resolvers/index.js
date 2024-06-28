@@ -4,6 +4,7 @@ import archiver from 'archiver';
 import path, {dirname} from 'path';
 import { fileURLToPath } from 'url';
 import jsonfile from 'jsonfile';
+import unzipper from 'unzipper';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,6 +13,22 @@ function epochToText(epoch) {
     const dateObject = new Date(epoch * 1000);
     const formattedDate = dateObject.toLocaleString();
 }
+const copyRecursiveSync = (src, dest) => {
+    if (fs.existsSync(src)) {
+        fs.mkdirSync(dest, { recursive: true });
+
+        fs.readdirSync(src).forEach(file => {
+            const srcFile = path.join(src, file);
+            const destFile = path.join(dest, file);
+
+            if (fs.lstatSync(srcFile).isDirectory()) {
+                copyRecursiveSync(srcFile, destFile);
+            } else {
+                fs.copyFileSync(srcFile, destFile);
+            }
+        });
+    }
+};
 export const resolvers = {
     Query: {
         danhSachDichVuDangHoatDong: async () => {
@@ -168,22 +185,6 @@ export const resolvers = {
             return data;
         },
         SaoLuuDuLieu: async () => {
-            const copyRecursiveSync = (src, dest) => {
-                if (fs.existsSync(src)) {
-                    fs.mkdirSync(dest, { recursive: true });
-            
-                    fs.readdirSync(src).forEach(file => {
-                        const srcFile = path.join(src, file);
-                        const destFile = path.join(dest, file);
-            
-                        if (fs.lstatSync(srcFile).isDirectory()) {
-                            copyRecursiveSync(srcFile, destFile);
-                        } else {
-                            fs.copyFileSync(srcFile, destFile);
-                        }
-                    });
-                }
-            };
             try {
                 const diaChiData = await DiaChiModel.find();
                 const dichVuData = await DichVuModel.find();
@@ -256,15 +257,71 @@ export const resolvers = {
         
                 await archive.finalize();
 
-                return `${backupFileName}`;
+                return `${backupFileName}.zip`;
         
             } catch (err) {
                 return err.message ;
             }
 
         },
-        PhucHoiDuLieu: async () => {
+        PhucHoiDuLieu: async (parent, args) => {
+            try {
+                const backupFileName =  `/${args.backupFileName}`;
+                const backupListDir = path.join(__dirname, '../backupList');
+                const backupFilePath = path.join(backupListDir, backupFileName);
+                
+                if (!fs.existsSync(backupFilePath)) {
+                    throw new Error(`File backup ${backupFileName} không tồn tại.`);
+                }
+        
+                // Giải nén file backup
+                const extractDir = path.join(__dirname, '../../DataBackup/extracted_backup');
+                if (!fs.existsSync(extractDir)) {
+                    fs.mkdirSync(extractDir);
+                }
+                await fs.createReadStream(backupFilePath)
+                    .pipe(unzipper.Extract({ path: extractDir }))
+                    .promise();
+        
+                // Đọc dữ liệu từ các file .json và lưu vào database
+                const diaChiData = await jsonfile.readFile(path.join(extractDir, 'diaChiData.json'));
+                const dichVuData = await jsonfile.readFile(path.join(extractDir, 'dichVuData.json'));
+                const donHangData = await jsonfile.readFile(path.join(extractDir, 'donHangData.json'));
+                const khachHangData = await jsonfile.readFile(path.join(extractDir, 'khachHangData.json'));
+                const lichThucHienData = await jsonfile.readFile(path.join(extractDir, 'lichThucHienData.json'));
+                const nhanVienData = await jsonfile.readFile(path.join(extractDir, 'nhanVienData.json'));
+                
+                // Xóa dữ liệu cũ trong các model
+                await DiaChiModel.deleteMany({});
+                await DichVuModel.deleteMany({});
+                await DonHangModel.deleteMany({});
+                await KhachHangModel.deleteMany({});
+                await LichThucHienModel.deleteMany({});
+                await NhanVienModel.deleteMany({});
+        
+                // Chèn dữ liệu mới từ backup
+                await DiaChiModel.insertMany(diaChiData);
+                await DichVuModel.insertMany(dichVuData);
+                await DonHangModel.insertMany(donHangData);
+                await KhachHangModel.insertMany(khachHangData);
+                await LichThucHienModel.insertMany(lichThucHienData);
+                await NhanVienModel.insertMany(nhanVienData);
+        
+                const urlFolderData = path.join(__dirname, '../uploads');
+                if (!fs.existsSync(urlFolderData)) {
+                    fs.mkdirSync(urlFolderData);
+                }
+                const backupUploadsDir = path.join(extractDir, 'uploads');
+                copyRecursiveSync(backupUploadsDir, urlFolderData);
+        
+                fs.rmdirSync(extractDir, { recursive: true });
+        
+                return `Phục hồi dữ liệu từ ${backupFileName} thành công.`;
+            } catch (err) {
+                return err.message;
+            }
         },
+        
 
         ThongKe: async (parent, args) => {
             const today = new Date();
@@ -364,7 +421,6 @@ export const resolvers = {
             const reconstructedDanhSachDichVu = uniqueServices.flatMap(service => 
                 Array(countMap[service._id]).fill(service)
             );
-            console.log(reconstructedDanhSachDichVu);
             return reconstructedDanhSachDichVu;
         },        
         khachHang: async (parent) => {
@@ -435,7 +491,6 @@ export const resolvers = {
             } else {
                 idDiaChi = diaChi.id;
             }
-            console.log(idDiaChi);
             const khachHang = JSON.parse(args.khachHang);
 
             let idKhachHang;
@@ -461,7 +516,6 @@ export const resolvers = {
             if (lastDonHang) {
                 const lastMaDonHang = lastDonHang.maDonHang;
                 const lastNumber = parseInt(lastMaDonHang.replace("DH", ""), 10);
-                console.log(lastDonHang);
                 newMaDonHang = "DH" + (lastNumber + 1);
             } else {
                 newMaDonHang = "DH1";
@@ -707,7 +761,6 @@ export const resolvers = {
             await lichThucHien.save();
             const DsLichThucHien = await LichThucHienModel.find({ donHang: lichThucHien.donHang });
             const allCompleted = DsLichThucHien.every(item => item.trangThaiLich === "Đã hoàn thành");
-            console.log(allCompleted);
             if (allCompleted) {
                 const donHang = await DonHangModel.findById(lichThucHien.donHang);
                 donHang.trangThaiDonHang = "Đã hoàn thành";
