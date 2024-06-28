@@ -46,7 +46,7 @@ const ThongTinTaiKhoan = () => {
         <>
             <Box sx={{ display: 'flex' }} onClick={xuLyNhan}>
                 <Avatar alt='Avatar' src={user?.photoURL||`${IMAGE_SERVER}${nhanVien?.anhDaiDien}`} sx={{ width: '25px', height: '25px', marginRight: '5px' }} />
-                <Typography>{user?.displayName||nhanVien?.tenNhanVien||khachHang?.TenKhachHang}</Typography>
+                <Typography>{user?.displayName||nhanVien?.tenNhanVien||khachHang?.TenKhachHang} ({nhanVien?.phanQuyen||"Khách Hàng"})</Typography>
                 <DehazeIcon sx={{ marginLeft: '20px' }} />
             </Box>
             <Menu

@@ -6,15 +6,14 @@ import ThongTinDonHang from './ChiTietDonHang/ThongTinDonHang';
 import ThongTinKhachHang from './ChiTietDonHang/ThongTinKhachHang';
 import { apiDanhGiaDonHang, apiNhanVienTuChoiCongViec, apiNhanVienXacNhanCongViec } from '../../utils/DonHangUtils';
 import { AuthContext } from '../context/AuthProvider';
+import ThongTinNhanVien from './ChiTietDonHang/ThongTinNhanVien';
 
 export default function XemChiTietDonHang() {
   const donHang = useLoaderData();
   const { khachHang } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [lyDoNhanVienTuChoiDonHang, setLyDoNhanVienTuChoiDonHang] = useState('');
-  const [openReviewDialog, setOpenReviewDialog] = useState(false);
-  const [rating, setRating] = useState(0); // For star rating (out of 5)
-  const [reviewText, setReviewText] = useState('');
+
   
 
 
@@ -64,25 +63,6 @@ export default function XemChiTietDonHang() {
             }
         }
     };
-
-    const handleOpenReviewDialog = () => {
-      setOpenReviewDialog(true);
-    };
-    
-    const handleCloseReviewDialog = () => {
-      setOpenReviewDialog(false);
-    };
-    const handleSaveReview = async () => {
-      const data = await apiDanhGiaDonHang(donHang.id, rating, reviewText);
-      if (data) {
-        alert('Đánh giá đơn hàng thành công');
-        setOpenReviewDialog(false);
-        window.location.reload();
-      } else {
-        alert('Đánh giá đơn hàng thất bại');
-      }
-    };
-    
   return (
     <Box 
       sx={{
@@ -128,11 +108,14 @@ export default function XemChiTietDonHang() {
 
             <Divider sx={{ margin: '15px' }} />
 
-            {khachHang && !donHang.saoDanhGia &&  (
-              <Paper elevation={3} sx={{ padding: '10px', display: 'flex', justifyContent: 'end' }}>
-                  <Button variant="contained" color='info' sx={{ margin: '10px' }} onClick={handleOpenReviewDialog}>Dánh giá đơn hàng</Button>
-                  </Paper>
+            {donHang.nhanVien ==[] && (
+             <>
+              <ThongTinNhanVien nhanVienDaChon={donHang.nhanVien[0]} />
+              <Divider sx={{ margin: '15px' }} />
+             </>
             )}
+
+            
 
             { donHang.trangThaiDonHang === 'Chờ xác nhận' && (
               <Paper elevation={3} sx={{ padding: '10px', display: 'flex', justifyContent: 'end' }}>
@@ -155,41 +138,7 @@ export default function XemChiTietDonHang() {
           </Box>
         )}
       </Paper>
-      <Dialog open={openReviewDialog} onClose={handleCloseReviewDialog} fullWidth maxWidth="sm">
-  <DialogTitle>Đánh giá đơn hàng</DialogTitle>
-  <DialogContent>
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography variant='h6'>Đánh giá:</Typography>
-      <Rating 
-      size="large"
-        value={rating}
-        onChange={(event, newValue) => {
-          setRating(newValue);
-        }}
-      />
-      <Typography variant='h6'>({rating}/5)</Typography>
-    </Box>
-    <TextField
-      autoFocus
-      margin="dense"
-      label="Nội dung đánh giá"
-      fullWidth
-      multiline
-      value={reviewText}
-      onChange={(event) => {
-        setReviewText(event.target.value);
-      }}
-    />
-  </DialogContent>
-  <DialogActions>
-    <Button variant='outlined' color='error' sx={{width: '100px'}} onClick={handleCloseReviewDialog}>
-      Hủy
-    </Button>
-    <Button variant='contained' color = 'info' sx={{width: '200px'}} onClick={handleSaveReview}>
-      Đánh giá đơn hàng
-    </Button>
-  </DialogActions>
-</Dialog>
+      
 
     </Box>
   );

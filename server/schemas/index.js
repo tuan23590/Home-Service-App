@@ -45,6 +45,7 @@ export const typeDefs = `#graphql
         danhSachDiaChi: [DiaChi],
         soDienThoai: String,
         email: String,
+        uid: String
     },
     type LichThucHien {
         id: String,
@@ -135,7 +136,7 @@ export const typeDefs = `#graphql
         danhSachDichVuDangHoatDong: [DichVu],
         TimKhachHangTheoId(idKhachHang: String): KhachHang,
         DanhSachDonHangTheoKhachHang(idKhachHang: String): [DonHang],
-        TimKhachHangTheoEmail(email: String): KhachHang,
+        TimKhachHangTheoUid(uid: String): KhachHang,
         SaoLuuDuLieu: String,
         PhucHoiDuLieu(backupFileName: String): String,
     },
@@ -154,7 +155,7 @@ export const typeDefs = `#graphql
             giaDichVuTheoYeuCauCuaKhachHang: Float,
             soThangLapLai: Int,
             dichVuChinh: String): DonHang,
-        themKhachHang(tenKhachHang: String, danhSachDiaChi: [String], soDienThoai: String, email: String): KhachHang,
+        themKhachHang(uid:String,tenKhachHang: String, danhSachDiaChi: [String], soDienThoai: String, email: String): KhachHang,
         themNhanVien(
             tenNhanVien: String, 
             gioiTinh: String, 
@@ -173,7 +174,7 @@ export const typeDefs = `#graphql
             trangThaiHienTai: String): NhanVien,
         themLichThucHien(thoiGianBatDauLich: Int, thoiGianKetThucLich: Int, trangThaiLich: String): LichThucHien,
         themNhanVienVaoDonHang(idNhanVien: [String], idDonHang: String): DonHang,
-        themDiaChi(tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String,ghiChu: String): DiaChi,
+        themDiaChi(idKhachHang: String, tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String,ghiChu: String): DiaChi,
         capNhatTrangThaiDonHang(idDonHang: String, trangThaiDonHang: String): DonHang,
         tuChoiDonHang(idDonHang: String,lyDoTuChoi: String): DonHang,
         huyDonHang(idDonHang: String,lyDoHuyDonHang: String): DonHang,
@@ -206,5 +207,8 @@ export const typeDefs = `#graphql
             danhGia: Float,
             chuyenMon: String,
             trangThaiHienTai: String): NhanVien,
+        xoaDiaChi(idDiaChi: String,idKhachHang: String): KhachHang,
+        suaDiaChi(idKhachHang: String, idDiaChi: String,tinhTP: String,quanHuyen: String,xaPhuong: String,soNhaTenDuong: String,ghiChu: String): DiaChi,
+        suaKhachHang(idKhachHang: String, tenKhachHang: String, soDienThoai: String, email: String): KhachHang,
     }
 `

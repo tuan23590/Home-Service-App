@@ -359,6 +359,14 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
                             name="soDienThoai"
                             value={formData.soDienThoai}
                             onChange={handleChange}
+                            sx={{
+                                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                                                         display: "none",
+                                                       },
+                               "& input[type=number]": {
+                                                         MozAppearance: "textfield",
+                                                       },
+                            }}
                         />
                     </Grid>
                     {formData.phanQuyen === 'Tasker' ? (

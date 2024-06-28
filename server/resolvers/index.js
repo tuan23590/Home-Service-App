@@ -180,8 +180,8 @@ export const resolvers = {
             const data = await DonHangModel.find({ khachHang: args.idKhachHang });
             return data;
         },
-        TimKhachHangTheoEmail: async (parent, args) => {
-            const data = await KhachHangModel.findOne({ email: args.email });
+        TimKhachHangTheoUid: async (parent, args) => {
+            const data = await KhachHangModel.findOne({ uid: args.uid });
             return data;
         },
         SaoLuuDuLieu: async () => {
@@ -589,7 +589,10 @@ export const resolvers = {
         themDiaChi: async (parent, args) => {
             const diaChiMoi = args;
             const diaChi = new DiaChiModel(diaChiMoi);
-            await diaChi.save();
+            const resDiaChi = await diaChi.save();
+            const khachHang = await KhachHangModel.findById(args.idKhachHang);
+            khachHang.danhSachDiaChi.push(resDiaChi._id);
+            await khachHang.save();
             return diaChi;
         },
         themNhanVienVaoDonHang: async (parent, args) => {
@@ -629,13 +632,8 @@ export const resolvers = {
             try {
                 const donHang = await DonHangModel.findById(args.idDonHang);
                 const nhanVien = await NhanVienModel.findById(donHang.nhanVien[0]);
-                donHang.trangThaiDonHang = "Nhân viên từ chối";
+                donHang.trangThaiDonHang = "Đang chờ duyệt";
                 donHang.lyDoNhanVienTuChoiDonHang = args.lyDoNhanVienTuChoiDonHang;
-                donHang.danhSachLichThucHien.forEach(async (id) => {
-                    const lichThucHien = await LichThucHienModel.findById(id);
-                    lichThucHien.trangThaiLich = 'Nhân viên từ chối';
-                    await lichThucHien.save();
-                });
                 await donHang.save();
                 for (const lichThucHienId of donHang.danhSachLichThucHien) {
                     const index = nhanVien.lichLamViec.indexOf(lichThucHienId);
@@ -798,7 +796,38 @@ export const resolvers = {
             const nhanVien = await NhanVienModel.findByIdAndUpdate
                 (args.idNhanVien, args, { new: true });
             return nhanVien;
-        }
-                
+        },
+        suaKhachHang: async (parent, args) => {
+            const khachHang = await KhachHangModel.findByIdAndUpdate(args.idKhachHang, args, { new: true });
+            return khachHang;
+        },
+        xoaDiaChi: async (parent, args) => {
+            const khachHang = await KhachHangModel.findById(args.idKhachHang);
+            const index = khachHang.danhSachDiaChi.indexOf(args.idDiaChi);
+            if (index !== -1) {
+                khachHang.danhSachDiaChi.splice(index, 1);
+            }
+            await khachHang.save();
+            return khachHang;
+        },
+        suaDiaChi: async (parent, args) => {
+            console.log(args);
+            const khachHang = await KhachHangModel.findById(args.idKhachHang);
+            const index = khachHang.danhSachDiaChi.indexOf(args.idDiaChi);
+            if (index !== -1) {
+                khachHang.danhSachDiaChi.splice(index, 1);
+            }
+            const newDiaChi = new DiaChiModel({
+                tinhTP: args.tinhTP,
+                quanHuyen: args.quanHuyen,
+                xaPhuong: args.xaPhuong,
+                soNhaTenDuong: args.soNhaTenDuong,
+                ghiChu: args.ghiChu
+            });
+            const resDiaChi = await newDiaChi.save();
+            khachHang.danhSachDiaChi.push(resDiaChi._id);
+            await khachHang.save();
+            return resDiaChi;
+        }       
     }
 };

@@ -21,32 +21,25 @@ export const apiDanhSachKhachHang = async () => {
     const {KhachHangs} = await GraphQLrequest({query});
     return KhachHangs;
   };
-  export const apiTimKhachHangTheoEmail = async (email) => {
-    const query = `query TimKhachHangTheoEmail($email: String) {
-  TimKhachHangTheoEmail(email: $email) {
-    danhSachDiaChi {
-      ghiChu
-      id
-      quanHuyen
-      soNhaTenDuong
-      tinhTP
-      xaPhuong
-    }
-    email
+  export const apiTimKhachHangTheoUid = async (uid) => {
+    const query = `query TimKhachHangTheoUid($uid: String) {
+  TimKhachHangTheoUid(uid: $uid) {
     id
-    soDienThoai
     tenKhachHang
+    soDienThoai
+    email
+    uid
   }
 }`;
-    const {TimKhachHangTheoEmail} = await GraphQLrequest({query,variables: {email}})
-    return TimKhachHangTheoEmail;
+    const {TimKhachHangTheoUid} = await GraphQLrequest({query,variables: {uid}})
+    return TimKhachHangTheoUid;
   };
 
 
 
   export const apiThemKhachHang = async (data) => {
-    const query = `mutation ThemKhachHang($tenKhachHang: String, $soDienThoai: String, $email: String) {
-  themKhachHang(tenKhachHang: $tenKhachHang, soDienThoai: $soDienThoai, email: $email) {
+    const query = `mutation ThemKhachHang($tenKhachHang: String, $soDienThoai: String, $email: String, $uid: String) {
+  themKhachHang(tenKhachHang: $tenKhachHang, soDienThoai: $soDienThoai, email: $email, uid: $uid) {
     id
     email
     soDienThoai
@@ -54,6 +47,7 @@ export const apiDanhSachKhachHang = async () => {
   }
 }`;
     const {themKhachHang} = await GraphQLrequest({query,variables: {
+      uid: data.uid,
       tenKhachHang: data.displayName,
       soDienThoai: data.phoneNumber,
       email: data.email
@@ -76,3 +70,45 @@ export const apiDanhSachKhachHang = async () => {
     }})
     return capNhatSoDienThoaiKhachHang;
   };
+
+  export const apiSuaKhachHang = async (data) => {
+    console.log(data);
+    const query = `mutation SuaKhachHang($idKhachHang: String, $tenKhachHang: String, $soDienThoai: String, $email: String) {
+  suaKhachHang(idKhachHang: $idKhachHang, tenKhachHang: $tenKhachHang, soDienThoai: $soDienThoai, email: $email) {
+    id
+  }
+}`;
+    const {suaKhachHang} = await GraphQLrequest({query,variables: {
+      idKhachHang: data.idKhachHang,
+      tenKhachHang: data.tenKhachHang,
+      soDienThoai: data.soDienThoai,
+      email: data.email
+    }})
+    return suaKhachHang;
+  };
+  export const apiTimKhachHangTheoId = async (idKhachHang) => {
+    const query = `  query TimKhachHangTheoId($idKhachHang: String) {
+    TimKhachHangTheoId(idKhachHang: $idKhachHang) {
+      danhSachDiaChi {
+        ghiChu
+        id
+        quanHuyen
+        soNhaTenDuong
+        tinhTP
+        xaPhuong
+      }
+      email
+      id
+      soDienThoai
+      tenKhachHang
+    }
+  }`;
+    const {TimKhachHangTheoId} = await GraphQLrequest({query,variables: {
+      idKhachHang
+    }
+    })
+    return TimKhachHangTheoId;
+  };
+
+
+

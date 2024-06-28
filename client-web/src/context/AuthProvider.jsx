@@ -3,7 +3,7 @@ import React, { createContext, useEffect, useState } from 'react'
 import { getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { apiTimNhanVienTheoEmail } from '../../utils/NhanVienUtils';
-import { apiThemKhachHang, apiTimKhachHangTheoEmail } from '../../utils/KhachHangUtils';
+import { apiThemKhachHang, apiTimKhachHangTheoUid } from '../../utils/KhachHangUtils';
 
 export const AuthContext = createContext();
 
@@ -26,7 +26,7 @@ export default function AuthProvider({ children }) {
                     setNhanVien(dataNV);
                     return;
                 }
-                const dataKH = await apiTimKhachHangTheoEmail(user.email);
+                const dataKH = await apiTimKhachHangTheoUid(user.uid);
                 if (dataKH) {
                     setKhachHang(dataKH);
                     return;
