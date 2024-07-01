@@ -8,7 +8,6 @@ import { ScrollView } from 'react-native-virtualized-view'
 import ModalProvider from '../../Provider/ModalProvider'
 
 export default function TrangChu() {
-  
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Header/>

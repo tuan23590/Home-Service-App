@@ -20,6 +20,7 @@
     "expo-secure-store": "^12.8.1",
     "expo-status-bar": "~1.11.1",
     "expo-web-browser": "~12.8.2",
+    "firebase": "^10.12.2",
     "graphql": "^15.8.0",
     "graphql-request": "^6.1.0",
     "numeral": "^2.0.6",

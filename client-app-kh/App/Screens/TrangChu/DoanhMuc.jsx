@@ -1,26 +1,32 @@
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import GlobalApi from '../../Utils/GlobalAPI'
 import Colors from '../../Utils/Colors'
 import { Shadow } from 'react-native-shadow-2'
 import Heading from '../../Compunents/Heading'
-import { useNavigation } from '@react-navigation/native'
 import BookingSingle from './../BookingScreen/BookingSingle';
 import DonHangProvider from '../../Provider/DonHangProvider'
 import { ScrollView } from 'react-native-virtualized-view'
 import { ModalContext } from '../../Provider/ModalProvider'
+import { FIREBASE_AUTH } from '../../fireBase/config'
 
 export default function DoanhMuc() {
+    const auth = FIREBASE_AUTH;
     const {isModal1Visible, setModal1Visible} = useContext(ModalContext);
     const [categories, setCategories] = useState([]);
-
-    const navigation = useNavigation();
 
     useEffect(() => {getCategories()}, [])
     const getCategories = async () => {
         GlobalApi.getCategory().then(res => {
             setCategories(res?.categories)
         })
+    }
+    const handlePress = () => {
+      if (!auth.currentUser) {
+        Alert.alert("Lỗi", "Vui lòng đăng nhập để tiếp tục!")
+        return
+      }
+      setModal1Visible(true)
     }
   return (
     
@@ -32,7 +38,7 @@ export default function DoanhMuc() {
       renderItem={({item, index}) => index<=3&&(
         <TouchableOpacity style={styles.container} 
         // onPress={() => navigation.push(item.type, {category: item,index: index})}
-        onPress={() => setModal1Visible(true)}
+        onPress={() => handlePress()}
         >
           <View style={styles.iconContainer}>
           <Shadow distance={5} startColor={Colors.ORANGE} endColor={Colors.WHITE} offset={[2, 3]}>

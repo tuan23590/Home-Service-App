@@ -350,11 +350,35 @@ const apiDanhGiaDonHang=async(danhGiaData)=>{
     ghiChuDanhGia: danhGiaData.ghiChuDanhGia
   }
   const result = await request(API_URL, query,variavles)
-  console.log('result',result);
   return result;
 }
 
+const apiThemKhachHang=async(tenKhachHang,soDienThoai,email,uid)=>{ 
+  
+  const query = gql`
+ mutation ThemKhachHang($tenKhachHang: String, $soDienThoai: String, $email: String, $uid: String) {
+  themKhachHang(tenKhachHang: $tenKhachHang, soDienThoai: $soDienThoai, email: $email, uid: $uid) {
+    id
+    email
+    soDienThoai
+    tenKhachHang
+  }
+}
+  `
+  const variavles = {
+    tenKhachHang: tenKhachHang,
+    soDienThoai: soDienThoai,
+    email: email,
+    uid: uid
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+
+
+
 export default {
+    apiThemKhachHang,
     getSlider,
     getCategory,
     getDiscovers,
