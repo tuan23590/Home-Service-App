@@ -192,23 +192,29 @@ const apiXaPhuong=async(idQuanHuyen)=>{
 }
 const apiThemDiaChi=async(address)=>{ 
   const query = gql`
-  mutation themDiaChiTamThoi($tinhTp: String, $quanHuyen: String, $xaPhuong: String, $soNhaTenDuong: String, $ghiChu: String) {
-  themDiaChiTamThoi(tinhTP: $tinhTp, quanHuyen: $quanHuyen, xaPhuong: $xaPhuong, soNhaTenDuong: $soNhaTenDuong, ghiChu: $ghiChu) {
+mutation ThemDiaChi($idKhachHang: String, $tinhTp: String, $quanHuyen: String, $xaPhuong: String, $soNhaTenDuong: String, $ghiChu: String) {
+  themDiaChi(idKhachHang: $idKhachHang, tinhTP: $tinhTp, quanHuyen: $quanHuyen, xaPhuong: $xaPhuong, soNhaTenDuong: $soNhaTenDuong, ghiChu: $ghiChu) {
     id
+    ghiChu
+    quanHuyen
+    soNhaTenDuong
+    tinhTP
+    xaPhuong
   }
-} 
+}
   `
   const variavles = {
     tinhTp: address.tinhTPName,
     quanHuyen: address.quanHuyenName,
     xaPhuong: address.xaPhuongName,
     soNhaTenDuong: address.soNhaTenDuong,
-    ghiChu: address.ghiChuDiaChi
+    ghiChu: address.ghiChuDiaChi,
+    idKhachHang: address.khachHangId
   }
   const result = await request(API_URL, query,variavles)
   return result;
 }
-const apiDanhSachDiaChi=async()=>{ 
+const apiDanhSachDiaChi=async(id)=>{ 
   
   const query = gql`
   query TimNhanVienTheoEmail($idKhachHang: String) {
@@ -229,7 +235,7 @@ const apiDanhSachDiaChi=async()=>{
 } 
   `
   const variavles = {
-    idKhachHang: "667f10d001e6ae7c8342b558"
+    idKhachHang: id
   }
   const result = await request(API_URL, query,variavles)
   return result;
@@ -272,7 +278,7 @@ console.log('convertedData',convertedData);
   return result;
 }
 
-const apiDanhSachDonHang=async()=>{ 
+const apiDanhSachDonHang=async(id)=>{ 
   
   const query = gql`
   query DanhSachDonHangTheoKhachHang($idKhachHang: String) {
@@ -330,7 +336,7 @@ const apiDanhSachDonHang=async()=>{
 } 
   `
   const variavles = {
-    idKhachHang: "667f10d001e6ae7c8342b558"
+    idKhachHang: id
   }
   const result = await request(API_URL, query,variavles)
   return result;
@@ -375,9 +381,29 @@ const apiThemKhachHang=async(tenKhachHang,soDienThoai,email,uid)=>{
   return result;
 }
 
+const apiKhachHangTheoUid =async(uid)=>{ 
+  
+  const query = gql`
+ query TimKhachHangTheoUid($uid: String) {
+  TimKhachHangTheoUid(uid: $uid) {
+    id
+    tenKhachHang
+    soDienThoai
+    email
+    uid
+  }
+}
+  `
+  const variavles = {
+    uid: uid
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
 
 
 export default {
+  apiKhachHangTheoUid,
     apiThemKhachHang,
     getSlider,
     getCategory,

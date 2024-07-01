@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import GlobalAPI from '../Utils/GlobalAPI';
 import { DonHangContext } from '../Provider/DonHangProvider';
+import { FIREBASE_AUTH } from '../fireBase/config';
 
 export default function MapPicker({ hideModal }) {
     const [tinhTP, setTinhTP] = useState([]);
@@ -21,17 +22,12 @@ export default function MapPicker({ hideModal }) {
     const [selectedDiaChi, setSelectedDiaChi] = useState('');
     const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
     const { diaChi, setDiaChi, khachHang, setKhachHang} = useContext(DonHangContext);
+    const user = FIREBASE_AUTH.currentUser;
 
     useEffect(() => {
-        const fetchData = async () => {
-            const data = await GlobalAPI.apiTinhTP();
-            const dataDC = await GlobalAPI.apiDanhSachDiaChi();
-            setTinhTP(data.DanhSachTinhTp);
-            setKhachHang(dataDC.TimKhachHangTheoId);
-            setDanhSachDiaChi(dataDC.TimKhachHangTheoId.danhSachDiaChi);
-        };
         fetchData();
     }, []);
+
 
     useEffect(() => {
         const fetchQuanHuyen = async () => {
@@ -53,6 +49,18 @@ export default function MapPicker({ hideModal }) {
         fetchXaPhuong();
     }, [selectedQuanHuyen]);
 
+
+    const fetchData = async () => {
+        const { TimKhachHangTheoUid } = await GlobalAPI.apiKhachHangTheoUid(user?.uid);
+        const data = await GlobalAPI.apiTinhTP();
+        const dataDC = await GlobalAPI.apiDanhSachDiaChi(TimKhachHangTheoUid.id);
+        setTinhTP(data.DanhSachTinhTp);
+        setKhachHang(dataDC.TimKhachHangTheoId);
+        setDanhSachDiaChi(dataDC.TimKhachHangTheoId.danhSachDiaChi);
+    };
+
+
+
     const handleSaveAddress = async () => {
         if (!selectedTinhTP || !selectedQuanHuyen || !selectedXaPhuong || !soNhaTenDuong) {
             Alert.alert("Lỗi", "Vui lòng nhập đầy đủ thông tin địa chỉ");
@@ -64,10 +72,15 @@ export default function MapPicker({ hideModal }) {
             xaPhuongName: selectedXaPhuongName,
             soNhaTenDuong: soNhaTenDuong,
             ghiChuDiaChi: ghiChuDiaChi,
+            khachHangId: khachHang.id,
         };
         const data = await GlobalAPI.apiThemDiaChi(address);
-        if (data.themDiaChiTamThoi) {
+        console.log(data);
+        if (data.themDiaChi) {
             Alert.alert("Thông báo", "Lưu địa chỉ thành công");
+            setIsAddingNewAddress(false);
+            fetchData();
+            setDiaChi(data.themDiaChi);
             hideModal();
         } else {
             Alert.alert("Lỗi", "Lưu địa chỉ thất bại");
@@ -79,7 +92,6 @@ export default function MapPicker({ hideModal }) {
         const selectedAddress = danhSachDiaChi.find(item => item.id === itemValue);
         if (selectedAddress) {
             setDiaChi(selectedAddress);
-
         }
     };
 

@@ -3,6 +3,9 @@ import { View, Text, Alert, FlatList, TouchableOpacity, StyleSheet, TextInput } 
 import { useNavigation } from '@react-navigation/native';
 import GlobalAPI from '../../Utils/GlobalAPI';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you are using Ionicons for star icons
+import { FIREBASE_AUTH } from '../../fireBase/config';
+import { User, onAuthStateChanged } from 'firebase/auth';
+
 
 const ActivateScreen = () => {
   const navigation = useNavigation();
@@ -10,34 +13,58 @@ const ActivateScreen = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [rating, setRating] = useState(0); // State for star rating (0 to 5 stars)
   const [reviewContent, setReviewContent] = useState(''); // State for review content
+  const user = FIREBASE_AUTH.currentUser;
+
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await GlobalAPI.apiDanhSachDonHang();
-        setOrders(data.DanhSachDonHangTheoKhachHang);
-      } catch (error) {
-        console.error("Error fetching:", error);
-        Alert.alert("Lỗi", "Thêm đơn hàng thất bại");
-      } 
-    };
-    fetchData();
-  }, []);
+    try{
+      onAuthStateChanged(FIREBASE_AUTH, (user) => {
+        if(user?.uid){
+          fetchData();
+        }else{
+          setOrders([]);
+        }
+      });
+    }catch(e){
+      
+    }
+  }, [FIREBASE_AUTH]);
+  const fetchData = async () => {
+    try {
+      const { TimKhachHangTheoUid } = await GlobalAPI.apiKhachHangTheoUid(user?.uid);
+      const data = await GlobalAPI.apiDanhSachDonHang(TimKhachHangTheoUid.id);
+  
+      // Sort orders by ngayDatHang (order date)
+      const sortedOrders = data.DanhSachDonHangTheoKhachHang.sort((a, b) => {
+        return new Date(b.ngayDatHang) - new Date(a.ngayDatHang);
+      });
+  
+      setOrders(sortedOrders);
+    } catch (error) {
 
+    }
+  };
   const handleOrderPress = (order) => {
     setSelectedOrder(order);
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleOrderPress(item)} style={styles.orderItem}>
+    <TouchableOpacity
+      onPress={() => handleOrderPress(item)}
+      style={[
+        styles.orderItem,
+        selectedOrder && selectedOrder.id === item.id && styles.selectedOrderItem,
+      ]}
+    >
       <Text style={styles.orderText}>Mã đơn hàng: {item.maDonHang}</Text>
       <Text style={styles.orderText}>
-  Ngày đặt hàng: {`${new Date(item.ngayDatHang).toLocaleDateString()} ${new Date(item.ngayDatHang).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
-</Text>
-
+        Ngày đặt hàng: {`${new Date(item.ngayDatHang).toLocaleDateString()} ${new Date(item.ngayDatHang).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
+      </Text>
       <Text style={styles.orderText}>Trạng thái đơn hàng: {item.trangThaiDonHang}</Text>
     </TouchableOpacity>
   );
+  
 
   const handleRating = (stars) => {
     setRating(stars);
@@ -56,6 +83,7 @@ const ActivateScreen = () => {
       setRating(0);
       setReviewContent('');
       setSelectedOrder(null);
+      fetchData();
     }else{
       Alert.alert("Lỗi", "Đánh giá đơn hàng thất bại");
     }
@@ -65,12 +93,21 @@ const ActivateScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Danh sách đơn hàng</Text>
-      <FlatList
+      {!orders.length ? (
+        <Text style={{
+          fontSize: 16,
+          fontWeight: 'bold',
+          textAlign: 'center',
+          top: '50%'
+        }}>Không có đơn hàng nào</Text>
+      ):(
+        <FlatList
         data={orders}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
       />
+      )}
       {selectedOrder && (
         <View style={styles.selectedOrder}>
           <Text style={styles.selectedOrderText}>Chi tiết đơn hàng {selectedOrder.maDonHang}</Text>
@@ -198,6 +235,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#bcbcbc',
     borderRadius: 5,
   },
+  selectedOrderItem: {
+    backgroundColor: '#bcbcbc', // Example background color for selected order
+    
+  },
   selectedOrderText: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -258,3 +299,4 @@ const styles = StyleSheet.create({
 });
 
 export default ActivateScreen;
+

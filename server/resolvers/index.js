@@ -766,15 +766,6 @@ export const resolvers = {
             }
             return lichThucHien;
         },
-        themDiaChiTamThoi: async (parent, args) => {
-            const diaChiMoi = args;
-            const DiaChi = new DiaChiModel(diaChiMoi);
-            await DiaChi.save();
-            const khachHang = await KhachHangModel.findById("665afcd7bb0d528e34df544d");
-            khachHang.danhSachDiaChi.push(DiaChi._id);
-            await khachHang.save();
-            return DiaChi;
-        },
         danhGiaDonHang: async (parent, args) => {
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.ghiChuDanhGia = args.ghiChuDanhGia;
