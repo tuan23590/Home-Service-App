@@ -4,7 +4,7 @@ import Colors from '../../Utils/Colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
 import { DonHangContext } from '../../Provider/DonHangProvider';
-
+import { Alert } from 'react-native';
 
 export default function ChonNgayLam() {
     const {gioLam, setGioLam} = useContext(DonHangContext);
@@ -13,10 +13,41 @@ export default function ChonNgayLam() {
     const [ngayLamViec, setNgayLamViec] = useState([]);
 
     const handleTimeChange = (event, selected) => {
-        const currentTime = selected || gioLam;
+        let currentTime = selected || gioLam;
+        const selectedHour = currentTime.getHours();
+    
+        // Check if selected time is within the allowed range (7:00 to 15:00)
+        if (selectedHour < 7 || selectedHour > 15) {
+            // Notify the user and return without setting the state
+            Alert.alert(
+                'Thông báo',
+                'Vui lòng chọn giờ từ 7:00 đến 15:00.',
+                [{ text: 'OK', onPress: () => console.log('Alert closed') }]
+            );
+            setShowPicker(false);
+            return;
+        }
+    
+        // If within range, proceed to set the time
+        currentTime.setMinutes(0); // Ensure minutes are set to 0
+        currentTime.setSeconds(0); // Ensure seconds are set to 0
+    
         setShowPicker(false);
         setGioLam(currentTime);
     };
+    
+    useEffect(() => {
+        const currentTime = new Date('2021-01-01T07:00:00');
+        currentTime.setMinutes(0);
+        currentTime.setSeconds(0);
+        setShowPicker(false);
+        setGioLam(currentTime);
+    }, []);
+
+    useEffect(() => {
+        setLichLamViec([]);
+        setNgayLamViec([]);
+    }, [gioLam]);
 
     const formatTime = (time) => {
         return time < 10 ? `0${time}` : time.toString();

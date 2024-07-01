@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import Heading from '../../Compunents/Heading'
+import Heading from './../../Compunents/Heading'
 import ThoiLuong from './ThoiLuong'
 import DichVuThem from './DichVuThem';
 import TuyChon from './TuyChon'
@@ -10,12 +10,12 @@ import MapPicker from '../../Compunents/MapPicker'
 import ChonThoiGianLamViec from './ChonThoiGianLamViec';
 import numeral from 'numeral';
 import { DonHangContext } from '../../Provider/DonHangProvider'
+import { ModalContext } from './../../Provider/ModalProvider';
 
 export default function BookingSingle({hideModal}) {
-
-  const [modalVisible, setModalVisible] = useState(false);
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
-  const {tongCong,dichVuChinh} = useContext(DonHangContext);
+  const {tongCong,dichVuChinh,diaChi} = useContext(DonHangContext);
+  const {isModal2Visible, setModal2Visible} = useContext(ModalContext);
   const press = () => {
     setModalThoiGianLamViec(true);
   }
@@ -29,16 +29,17 @@ export default function BookingSingle({hideModal}) {
       <Ionicons name="chevron-back-sharp" size={24} color="black" />
         <Text style={{fontSize:17}}>Tạo đơn</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={()=>setModalVisible(true)}>
-        <Text>Mo Map</Text>
+      <TouchableOpacity onPress={()=>setModal2Visible(true)}>
+      {diaChi ? (
+        <Text>{diaChi?.soNhaTenDuong}, {diaChi?.xaPhuong}, {diaChi?.quanHuyen}, {diaChi?.tinhTP}</Text>
+      ):(
+        <Text>Chọn địa chỉ</Text>
+      )}
       </TouchableOpacity>
       </View>
       <View style={{marginHorizontal:20}}>
         <Heading text={"Thời lượng"} description={"Ước lượng thời gian cần dọn dẹp"}/>
         <ThoiLuong />
-
-        <Heading text={"Dịch vụ thêm"} description={"Chọn dịch vụ thêm"}/>
-        <DichVuThem />
 
         <Heading text={"Tùy chọn"}/>
         <TuyChon />
@@ -46,17 +47,17 @@ export default function BookingSingle({hideModal}) {
           onPress={()=>press()}
         >
           <View style={styles.container}>
-            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(tongCong).format('0,0')} VND/{dichVuChinh?.thoiGian}h</Text>
+            <Text style={{ color: 'white',textAlign: 'center',fontWeight: 'bold'}}> {numeral(dichVuChinh?.gia).format('0,0')} VND/{dichVuChinh?.thoiGian}h</Text>
             <Text style={{color: 'white'}}>Tiếp theo</Text>
           </View>
         </TouchableOpacity>
       </View>
       <Modal
         animationType='slide'
-        visible={modalVisible}
+        visible={isModal2Visible}
         style={{top: -20}}
         >
-          <MapPicker hideModal={()=>setModalVisible(false)}/>
+          <MapPicker hideModal={()=>setModal2Visible(false)}/>
         </Modal>
         <Modal
         animationType='slide'

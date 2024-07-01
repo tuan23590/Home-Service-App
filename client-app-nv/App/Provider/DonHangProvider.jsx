@@ -13,15 +13,19 @@ export default function DonHangProvider({ children }) {
   const [dichVuChinh, setDichVuChinh] = useState();
   const [ghiChu, setGhiChu] = useState('');
   const [tongTien, setTongTien] = useState(0);
+  const [diaChi, setDiaChi] = useState();
+  const [khachHang, setKhachHang] = useState();
+  useEffect(() => {
+    setTongTien(dichVuChinh?.gia);
+    
+  } , [dichVuChinh]);
+  useEffect(() => {
+    const length = lichLamViec && lichLamViec.length > 0 ? lichLamViec.length : 1;
+    setTongTien(dichVuChinh?.gia * length);
+}, [lichLamViec]);
 
-  useEffect(() => {
-    const giaDichVuThem = dichVuThem?.reduce((total, dichVu) => total + (dichVu.gia || 0), 0);
-    setTongCong(dichVuChinh?.gia + giaDichVuThem);
-    setTongTien(dichVuChinh?.gia + giaDichVuThem);
-  } , [dichVuChinh, dichVuThem]);
-  useEffect(() => {
-      setTongTien(tongCong * lichLamViec.length);
-  }, [lichLamViec]);
+useEffect(() => {
+}, [diaChi]);
   return (
     <DonHangContext.Provider value={{ 
       tongTien, 
@@ -42,7 +46,11 @@ export default function DonHangProvider({ children }) {
       gioLam, 
       setGioLam,
       lichLamViec, 
-      setLichLamViec
+      setLichLamViec,
+      diaChi, 
+      setDiaChi,
+      khachHang, 
+      setKhachHang
      }}>
       {children}
     </DonHangContext.Provider>

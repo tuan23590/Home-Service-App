@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import Colors from '../../Utils/Colors'
+import Colors from './../../Utils/Colors'
 import { DonHangContext } from '../../Provider/DonHangProvider';
 import GlobalAPI from '../../Utils/GlobalAPI';
 
@@ -10,17 +10,11 @@ export default function ThoiLuong() {
   const [dataDichVuCaLe, setDataDichVuCaLe] = useState([]);
   const {setThoiLuong,dichVuThem, setDichVuChinh} = useContext(DonHangContext);
   const [itemSelected, setItemSelected] = useState();
-  
+
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await GlobalAPI.getDichVuCaLe();
-        if (data?.DichVuCaLe) {
-          setDataDichVuCaLe(data.DichVuCaLe);
-        }
-      } catch (error) {
-        console.error("Error fetching:", error);
-      }
+      const data = await GlobalAPI.getDichVuCaLe();
+      setDataDichVuCaLe([{thoiGian: 2, khoiLuongCongViec: 'Tối đa 55m2 hoặc 2 phòng',id: data.DichVuCaLe[0].id, gia: data.DichVuCaLe[0].gia*2}, {thoiGian: 3, khoiLuongCongViec: 'Tối đa 85m2 hoặc 3 phòng',id: data.DichVuCaLe[0].id, gia: data.DichVuCaLe[0].gia*3}, {thoiGian: 4, khoiLuongCongViec: 'Tối đa 105m2 hoặc 4 phòng',id: data.DichVuCaLe[0].id, gia: data.DichVuCaLe[0].gia*4}]);
     };
     fetchData();
   }, []);

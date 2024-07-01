@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
-import Heading from '../../Compunents/Heading';
+import Heading from './../../Compunents/Heading';
 import ChonNgayLam from './ChonNgayLam';
 import GhiChuChoTasker from './GhiChuChoTasker';
 import Colors from '../../Utils/Colors';
@@ -22,7 +22,6 @@ export default function ChonThoiGianLamViec({hideModal}) {
       onPress={()=>hideModal()}
       >
         <Ionicons name="chevron-back-sharp" size={24} color="black" />
-      <Text>ChonThoiGianLamViec</Text>
       </TouchableOpacity>
       <Heading text="Thời gian làm việc" />
       <ChonNgayLam />
