@@ -34,10 +34,12 @@ const QuanLyDichVu = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        const formattedValue = new Intl.NumberFormat('vi-VN').format(value.replace(/\D/g, ''));
         setDichVuData({
             ...dichVuData,
-            [name]: value,
+            [name]: name === 'gia' ? formattedValue : value,
         });
+        console.log(formattedValue);
     };
 
     const xuLyThemDichVu = async () => {
@@ -114,7 +116,7 @@ const QuanLyDichVu = () => {
                             <TableRow key={dichVu.id}>
                                 <TableCell>{dichVu.tenDichVu}</TableCell>
                                 <TableCell>{dichVu.loaiDichVu}</TableCell>
-                                <TableCell>{dichVu.gia ? `${dichVu.gia.toLocaleString('vi-VN')} VND` : 'N/A'}</TableCell>
+                                <TableCell>{dichVu.gia ? `${dichVu.gia.toLocaleString()} VND` : 'N/A'}</TableCell>
                                 <TableCell>{dichVu.thoiGian} giờ</TableCell>
                                 <TableCell>{dichVu.trangThai}</TableCell>
                                 <TableCell>
@@ -189,13 +191,13 @@ const QuanLyDichVu = () => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        label="Nhập giá dịch vụ (VND)"
+                                        label='Nhập giá dịch vụ (VND)'
                                         name="gia"
                                         value={dichVuData.gia}
                                         onChange={handleInputChange}
                                         fullWidth
                                         size='small'
-                                        type="number"
+                                        type=''
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
