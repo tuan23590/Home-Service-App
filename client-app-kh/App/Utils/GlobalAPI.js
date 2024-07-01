@@ -3,7 +3,7 @@ import { request, gql } from 'graphql-request'
 
 
 const MASTER_URL = 'https://api-ap-southeast-2.hygraph.com/v2/clv4uoiq108fp07w7579676h9/master'
-const API_URL = 'http://192.168.217.149:4000/graphql'
+const API_URL = 'http://192.168.1.46:4000/graphql'
 const getSlider=async()=>{
 const query = gql`
 query GetSlider {
@@ -229,7 +229,7 @@ const apiDanhSachDiaChi=async()=>{
 } 
   `
   const variavles = {
-    idKhachHang: "665afcd7bb0d528e34df544d"
+    idKhachHang: "667f10d001e6ae7c8342b558"
   }
   const result = await request(API_URL, query,variavles)
   return result;
@@ -294,7 +294,6 @@ const apiDanhSachDonHang=async()=>{
       cccd
       chuyenMon
       danhGia
-      diaChi
       ghiChu
       email
       gioiTinh
@@ -331,7 +330,7 @@ const apiDanhSachDonHang=async()=>{
 } 
   `
   const variavles = {
-    idKhachHang: "665afcd7bb0d528e34df544d"
+    idKhachHang: "667f10d001e6ae7c8342b558"
   }
   const result = await request(API_URL, query,variavles)
   return result;
