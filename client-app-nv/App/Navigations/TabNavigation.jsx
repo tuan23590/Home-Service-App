@@ -39,7 +39,7 @@ export default function TabNavigation() {
       }} />
 
 
-    <Tab.Screen name="KhuyenMai" component={PromotionScreen}
+    {/* <Tab.Screen name="KhuyenMai" component={PromotionScreen}
       options={{
         tabBarLabel: ({color})=>(
           <Text style={{color:color,fontSize: 12,marginTop:-7}}>Khuyến mãi</Text>
@@ -56,7 +56,7 @@ export default function TabNavigation() {
         tabBarIcon: ({color,size})=>(
           <Ionicons name="notifications-outline" size={size} color={color} />
         )
-      }} />
+      }} /> */}
       <Tab.Screen name="TaiKhoan" component={ProfileScreen}
       options={{
         tabBarLabel: ({color})=>(

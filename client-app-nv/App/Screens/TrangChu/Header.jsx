@@ -28,10 +28,10 @@ export default function Header() {
                 <Image source={{ uri: user?.photoURL || 'https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png'}} 
                 style={styles.userImage} />
                 <Text style={{color:Colors.WHITE,fontSize:15}}>
-                    Xin chào, {user?.displayName || 'Khách'}
+                    Xin chào, {user?.displayName || user?.email || 'Nhân viên'}
                 </Text>
                 {user ? (
-            <Button onPress={()=>{FIREBASE_AUTH.signOut();}}>Đăng xuất</Button>
+            <Button onPress={()=>{FIREBASE_AUTH.signOut(); toggleModal()}}>Đăng xuất</Button>
         ):(
             <Button onPress={toggleModal}>Đăng nhập</Button>
         )}

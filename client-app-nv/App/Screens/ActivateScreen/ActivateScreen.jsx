@@ -1,302 +1,251 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Alert, FlatList, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import GlobalAPI from '../../Utils/GlobalAPI';
-import { Ionicons } from '@expo/vector-icons'; // Assuming you are using Ionicons for star icons
 import { FIREBASE_AUTH } from '../../fireBase/config';
-import { User, onAuthStateChanged } from 'firebase/auth';
-
+import ChiTietDonHangModal from '../TrangChu/ChiTietDonHangModal';
 
 const ActivateScreen = () => {
-  const navigation = useNavigation();
-  const [orders, setOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [rating, setRating] = useState(0); // State for star rating (0 to 5 stars)
-  const [reviewContent, setReviewContent] = useState(''); // State for review content
-  const user = FIREBASE_AUTH.currentUser;
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const auth = FIREBASE_AUTH.currentUser;
+  const [lichLamViec, setLichLamViec] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null); 
+  const [modalVisible, setModalVisible] = useState(false); 
 
-
+  const fetchData = async () => {
+    const { TimNhanVienTheoEmail } = await GlobalAPI.apiNhanVienTheoEmail(auth.email);
+    setLichLamViec(TimNhanVienTheoEmail.lichLamViec);
+  }
 
   useEffect(() => {
-    try{
-      onAuthStateChanged(FIREBASE_AUTH, (user) => {
-        if(user?.uid){
-          fetchData();
-        }else{
-          setOrders([]);
-        }
-      });
-    }catch(e){
-      
-    }
-  }, [FIREBASE_AUTH]);
-  const fetchData = async () => {
-    try {
-      const { TimKhachHangTheoUid } = await GlobalAPI.apiKhachHangTheoUid(user?.uid);
-      const data = await GlobalAPI.apiDanhSachDonHang(TimKhachHangTheoUid.id);
+    fetchData();
+  }, []);
+
+  const goToPreviousMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    setSelectedDay(null); 
+  };
+
+  const goToCurrentMonth = () => {
+    setCurrentDate(new Date());
+    setSelectedDay(null); // Reset selected day when going to current month
+  };
+
+  const goToNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    setSelectedDay(null); // Reset selected day when changing month
+  };
+
+  const weekDays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+  const numberOfDaysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+  const daysOfMonth = [];
+  for (let day = 1; day <= numberOfDaysInMonth; day++) {
+    daysOfMonth.push(day);
+  }
+
+  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    daysOfMonth.unshift('');
+  }
+
+  const isWorkDay = (day) => {
+    const timestampOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), day).getTime();
+    return lichLamViec.some(item => {
+      const startTime = new Date(item.thoiGianBatDauLich).setHours(0, 0, 0, 0);
+      return startTime === timestampOfDay;
+    });
+  }
+
+  const selectedDaySchedule = lichLamViec.filter(item => {
+    const dayOfMonth = new Date(item.thoiGianBatDauLich).getDate();
+    return dayOfMonth === selectedDay;
+  });
+
+  const handleDayPress = (day) => {
+    setSelectedDay(day);
+  };
   
-      // Sort orders by ngayDatHang (order date)
-      const sortedOrders = data.DanhSachDonHangTheoKhachHang.sort((a, b) => {
-        return new Date(b.ngayDatHang) - new Date(a.ngayDatHang);
-      });
-  
-      setOrders(sortedOrders);
-    } catch (error) {
-
-    }
-  };
-  const handleOrderPress = (order) => {
-    setSelectedOrder(order);
+  const xemChiTiet = async (item) => {
+    console.log(item.donHang.id);
+    const {DonHangTheoId} = await GlobalAPI.apiChiTietDonHang(item.donHang.id);
+    setSelectedOrder(DonHangTheoId);
+    console.log(DonHangTheoId.khachHang);
+    setModalVisible(true);
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => handleOrderPress(item)}
-      style={[
-        styles.orderItem,
-        selectedOrder && selectedOrder.id === item.id && styles.selectedOrderItem,
-      ]}
-    >
-      <Text style={styles.orderText}>Mã đơn hàng: {item.maDonHang}</Text>
-      <Text style={styles.orderText}>
-        Ngày đặt hàng: {`${new Date(item.ngayDatHang).toLocaleDateString()} ${new Date(item.ngayDatHang).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
-      </Text>
-      <Text style={styles.orderText}>Trạng thái đơn hàng: {item.trangThaiDonHang}</Text>
-    </TouchableOpacity>
-  );
-  
-
-  const handleRating = (stars) => {
-    setRating(stars);
-  };
-
-  const handleSubmitReview = async () => {
-
-    const danhGiaData = {
-      idDonHang: selectedOrder.id,
-      saoDanhGia: rating,
-      ghiChuDanhGia: reviewContent,
-    }
-    const data = await GlobalAPI.apiDanhGiaDonHang(danhGiaData);
-    if(data){
-      Alert.alert("Thành công", "Đánh giá đơn hàng thành công");
-      setRating(0);
-      setReviewContent('');
-      setSelectedOrder(null);
-      fetchData();
-    }else{
-      Alert.alert("Lỗi", "Đánh giá đơn hàng thất bại");
-    }
-
-  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Danh sách đơn hàng</Text>
-      {!orders.length ? (
-        <Text style={{
-          fontSize: 16,
-          fontWeight: 'bold',
-          textAlign: 'center',
-          top: '50%'
-        }}>Không có đơn hàng nào</Text>
-      ):(
-        <FlatList
-        data={orders}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-      />
-      )}
-      {selectedOrder && (
-        <View style={styles.selectedOrder}>
-          <Text style={styles.selectedOrderText}>Chi tiết đơn hàng {selectedOrder.maDonHang}</Text>
-          <View style={styles.detailItem}>
-  <Text style={styles.detailLabel}>Ngày bắt đầu:</Text>
-  <Text style={styles.detailValue}>
-    {`${new Date(selectedOrder.ngayBatDau).toLocaleDateString()} ${new Date(selectedOrder.ngayBatDau).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
-  </Text>
-</View>
-<View style={styles.detailItem}>
-  <Text style={styles.detailLabel}>Ngày kết thúc:</Text>
-  <Text style={styles.detailValue}>
-    {`${new Date(selectedOrder.ngayKetThuc).toLocaleDateString()} ${new Date(selectedOrder.ngayKetThuc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
-  </Text>
-</View>
-
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Địa chỉ:</Text>
-            <Text style={styles.detailValue}>
-              {selectedOrder.diaChi.soNhaTenDuong}, {selectedOrder.diaChi.xaPhuong}, {selectedOrder.diaChi.quanHuyen}, {selectedOrder.diaChi.tinhTP}
-            </Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Dịch vụ:</Text>
-            <Text style={styles.detailValue}>
-              {Array.from(new Set(selectedOrder.danhSachDichVu.map(dv => dv.tenDichVu))).map((tenDichVu, index) => (
-                <Text key={index}>{tenDichVu}, </Text>
-              ))}
-            </Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Tổng tiền:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.tongTien.toLocaleString()} VNĐ</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Số giờ thực hiện:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.soGioThucHien}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Lịch thực hiện:</Text>
-            <Text style={styles.detailValue}>
-  {selectedOrder.danhSachLichThucHien.map((lich, index) => (
-    <React.Fragment key={index}>
-      <Text>
-        {`${new Date(lich.thoiGianBatDauLich).toLocaleDateString()} ${new Date(lich.thoiGianBatDauLich).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} đến `}
-        {`${new Date(lich.thoiGianKetThucLich).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}, `}
-      </Text>
-      {index !== selectedOrder.danhSachLichThucHien.length - 1 && <Text>{'\n'}</Text>}
-    </React.Fragment>
-  ))}
-</Text>
-
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Vật nuôi:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.vatNuoi}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Ghi chú:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.ghiChu}</Text>
-          </View>
-          {selectedOrder.lyDoTuChoi && (
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>Lý do từ chối:</Text>
-              <Text style={styles.detailValue}>{selectedOrder.lyDoTuChoi}</Text>
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Các ngày trong tháng {currentDate.getMonth() + 1}</Text>
+        <View style={styles.weekDaysContainer}>
+          {weekDays.map((day, index) => (
+            <View key={index} style={styles.weekDayItem}>
+              <Text style={styles.weekDayText}>{day}</Text>
             </View>
-          )}
-          {selectedOrder.trangThaiDonHang === 'Đã hoàn thành' && !selectedOrder.saoDanhGia && (
-  <View style={styles.reviewContainer}>
-    <Text style={styles.reviewLabel}>Đánh giá đơn hàng</Text>
-    <View style={styles.ratingContainer}>
-      {[1, 2, 3, 4, 5].map((star, index) => (
-        <TouchableOpacity key={index} onPress={() => handleRating(star)}>
-          <Ionicons
-            name={star <= rating ? 'star' : 'star-outline'}
-            size={30}
-            color={star <= rating ? '#ffc107' : '#888'}
-          />
-        </TouchableOpacity>
-      ))}
-    </View>
-    <TextInput
-      style={styles.reviewInput}
-      placeholder="Nhập nội dung đánh giá"
-      value={reviewContent}
-      onChangeText={text => setReviewContent(text)}
-      multiline
-    />
-    <TouchableOpacity onPress={handleSubmitReview} style={styles.submitButton}>
-      <Text style={styles.submitButtonText}>Gửi đánh giá</Text>
-    </TouchableOpacity>
-  </View>
-)}
-
-          <TouchableOpacity onPress={() => setSelectedOrder(null)} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Đóng</Text>
+          ))}
+        </View>
+        <View style={styles.daysContainer}>
+          {daysOfMonth.map((day, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.dayItem, 
+                day === '' && styles.nonCurrentMonthDayItem, 
+                isWorkDay(day) && styles.workDayItem, 
+                day === selectedDay && styles.selectedDayItem
+              ]}
+              onPress={() => handleDayPress(day)}
+            >
+              {day !== '' && (
+                <Text style={[
+                  styles.dayText, 
+                  isWorkDay(day) && styles.workDayText
+                ]}>
+                  {day}
+                </Text>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={goToPreviousMonth}>
+            <Text>Tháng trước</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={goToCurrentMonth}>
+            <Text>Ngày hiện tại</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={goToNextMonth}>
+            <Text>Tháng sau</Text>
           </TouchableOpacity>
         </View>
-      )}
-    </View>
+        {selectedDay !== null && (
+          <View style={styles.selectedDayInfo}>
+            <Text style={styles.selectedDayTitle}>Thông tin lịch làm việc ngày {selectedDay}</Text>
+            {selectedDaySchedule.map((item, index) => (
+              <TouchableOpacity key={index} onPress={() => xemChiTiet(item)}>
+                <View style={styles.scheduleItem}>
+                  <Text style={styles.scheduleText}>Mã đơn hàng: {item.donHang?.maDonHang}</Text>
+                  <Text style={styles.scheduleText}>Thời gian bắt đầu: {new Date(item.thoiGianBatDauLich).toLocaleString()}</Text>
+                  <Text style={styles.scheduleText}>Thời gian kết thúc: {new Date(item.thoiGianKetThucLich).toLocaleString()}</Text>
+                  <Text style={styles.scheduleText}>Trạng thái lịch: {item.trangThaiLich}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+            <ChiTietDonHangModal
+                visible={modalVisible}
+                closeModal={() => setModalVisible(false)}
+                order={selectedOrder}
+                fetchData={fetchData}
+            />
+            </ScrollView>
+    </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: 20,
   },
-  header: {
+  container: {
+    alignItems: 'center',
+    paddingHorizontal: 15,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#ccc',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  orderItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
-    padding: 10,
-  },
-  orderText: {
-    fontSize: 16,
-  },
-  selectedOrder: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#bcbcbc',
-    borderRadius: 5,
-  },
-  selectedOrderItem: {
-    backgroundColor: '#bcbcbc', // Example background color for selected order
-    
-  },
-  selectedOrderText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  detailItem: {
+  weekDaysContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
     marginBottom: 5,
   },
-  detailLabel: {
-    fontWeight: 'bold',
-    marginRight: 5,
+  weekDayItem: {
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  detailValue: {
-    flex: 1,
-  },
-  closeButton: {
-    marginTop: 10,
-    backgroundColor: '#dcdcdc',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'flex-end',
-  },
-  closeButtonText: {
-    color: '#333',
+  weekDayText: {
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  reviewContainer: {
+  daysContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+  },
+  dayItem: {
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5,
+  },
+  nonCurrentMonthDayItem: {
+    borderColor: 'transparent',
+  },
+  workDayItem: {
+    backgroundColor: '#b3e6ff',
+  },
+  selectedDayItem: {
+    backgroundColor: '#ffc266', 
+  },
+  dayText: {
+    fontSize: 18,
+  },
+  workDayText: {
+    fontWeight: 'bold',
+    color: '#333', // Màu chữ cho ngày làm việc
+  },
+  selectedDayInfo: {
     marginTop: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    width: '100%',
   },
-  reviewLabel: {
+  selectedDayTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  ratingContainer: {
-    flexDirection: 'row',
+  scheduleItem: {
     marginBottom: 10,
-  },
-  reviewInput: {
     borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: 5,
+    borderColor: '#ccc',
     padding: 10,
-    marginBottom: 10,
-    minHeight: 50, // Adjust height as needed
   },
-  submitButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  scheduleText: {
+    fontSize: 15,
   },
 });
 
 export default ActivateScreen;
-

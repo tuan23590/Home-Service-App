@@ -402,7 +402,225 @@ const apiKhachHangTheoUid =async(uid)=>{
 }
 
 
+const apiNhanVienTheoEmail =async(email)=>{ 
+  
+  const query = gql`
+ query TimNhanVienTheoEmail($email: String) {
+  TimNhanVienTheoEmail(email: $email) {
+     id
+        tenNhanVien
+        gioiTinh
+        ngaySinh
+        diaChi {
+      id
+      ghiChu
+      quanHuyen
+      soNhaTenDuong
+      tinhTP
+      xaPhuong
+    }
+        soDienThoai
+        phanQuyen
+        email
+        cccd
+        dichVu {
+          tenDichVu
+        }
+        ghiChu
+        trangThaiTaiKhoan
+        danhGia
+        trangThaiHienTai
+        lichLamViec {
+          id
+          thoiGianBatDauLich
+          thoiGianKetThucLich
+          trangThaiLich
+          lyDoDungLich
+          donHang {
+            id
+            maDonHang
+          }
+        }
+        anhDaiDien
+        chuyenMon
+  }
+}
+  `
+  const variavles = {
+    email: email
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+
+
+const apiDanhSachDonHangChoNhan =async(idNhanVien)=>{ 
+  
+  const query = gql`
+query DanhSachDonHangChoXacNhanTheoNhanVien($idNhanVien: String) {
+  DanhSachDonHangChoXacNhanTheoNhanVien(idNhanVien: $idNhanVien) {
+   danhSachDichVu {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+        thoiGian
+      }
+      danhSachLichThucHien {
+        id
+        lyDoDungLich
+        thoiGianBatDauLich
+        thoiGianKetThucLich
+        trangThaiLich
+        donHang{
+        id
+        }
+      }
+      diaChi {
+        ghiChu
+        quanHuyen
+        soNhaTenDuong
+        tinhTP
+      }
+      ghiChu
+      khachHang {
+        email
+        soDienThoai
+        tenKhachHang
+      }
+      maDonHang
+      ngayBatDau
+      ngayDatHang
+      id
+      ngayKetThuc
+      soGioThucHien
+      soThangLapLai
+      tongTien
+      trangThaiDonHang
+      vatNuoi
+  }
+}  
+  `
+  const variavles = {
+    idNhanVien: idNhanVien
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+
+
+
+const apiNhanVienXacNhanCongViec =async(idDonHang)=>{ 
+  
+  const query = gql`
+mutation NhanVienXacNhanCongViec($idDonHang: String) {
+  nhanVienXacNhanCongViec(idDonHang: $idDonHang) {
+    maDonHang
+  }
+}
+  `
+  const variavles = {
+    idDonHang: idDonHang
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+const apiNhanVienTuChoiCongViec =async(idDonHang,lyDoNhanVienTuChoiDonHang)=>{ 
+  
+  const query = gql`
+mutation NhanVienTuChoiCongViec($idDonHang: String, $lyDoNhanVienTuChoiDonHang: String) {
+  nhanVienTuChoiCongViec(idDonHang: $idDonHang, lyDoNhanVienTuChoiDonHang: $lyDoNhanVienTuChoiDonHang) {
+    maDonHang
+  }
+}
+  `
+  const variavles = {
+    idDonHang: idDonHang,
+    lyDoNhanVienTuChoiDonHang: lyDoNhanVienTuChoiDonHang
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+
+const apiChiTietDonHang =async(idDonHang)=>{ 
+  
+  const query = gql`
+query DonHangTheoId($idDonHang: String) {
+    DonHangTheoId(idDonHang: $idDonHang) {
+      danhSachDichVu {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+        thoiGian
+      }
+      danhSachLichThucHien {
+        id
+        lyDoDungLich
+        thoiGianBatDauLich
+        thoiGianKetThucLich
+        trangThaiLich
+      }
+      diaChi {
+        ghiChu
+        quanHuyen
+        soNhaTenDuong
+        tinhTP
+      }
+      ghiChu
+      khachHang {
+        email
+        soDienThoai
+        tenKhachHang
+      }
+      lyDoDoiNhanVien
+      lyDoTuChoi
+      maDonHang
+      lyDoNhanVienTuChoiDonHang
+      ngayBatDau
+      ngayDatHang
+      ghiChuDanhGia
+      saoDanhGia
+      id
+      ngayKetThuc
+      nhanVien {
+        id
+        anhDaiDien
+        cccd
+        email
+        ghiChu
+        gioiTinh
+        ngaySinh
+        soDienThoai
+        tenNhanVien
+        dichVu {
+          tenDichVu
+        }
+        danhGia
+      }
+      soGioThucHien
+      soThangLapLai
+      tongTien
+      trangThaiDonHang
+      uuTienTasker
+      vatNuoi
+    }
+  }  
+  `
+  const variavles = {
+    idDonHang: idDonHang,
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+
+
 export default {
+  apiChiTietDonHang,
+  apiNhanVienXacNhanCongViec,
+  apiNhanVienTuChoiCongViec,
+  apiDanhSachDonHangChoNhan,
+  apiNhanVienTheoEmail,
   apiKhachHangTheoUid,
     apiThemKhachHang,
     getSlider,

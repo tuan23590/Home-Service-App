@@ -226,12 +226,6 @@ export const apiDanhSachDonHangChoXacNhanTheoNhanVien = async (idNhanVien)=> {
         soNhaTenDuong
         tinhTP
       }
-      dichVuChinh {
-        gia
-        khoiLuongCongViec
-        loaiDichVu
-        tenDichVu
-      }
       ghiChu
       khachHang {
         email
