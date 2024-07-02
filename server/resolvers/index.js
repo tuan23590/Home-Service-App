@@ -658,6 +658,7 @@ export const resolvers = {
             return donHang;
         },
         tuChoiDonHang: async (parent, args) => {
+            console.log('args',args)
             const donHang = await DonHangModel.findById(args.idDonHang);
             donHang.trangThaiDonHang = "Đã từ chối";
             donHang.lyDoTuChoi = args.lyDoTuChoi;

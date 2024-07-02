@@ -614,8 +614,60 @@ query DonHangTheoId($idDonHang: String) {
   return result;
 }
 
+const apiDanhSachDonHangDaXacNhanTheoNhanVien =async(idNhanVien)=>{ 
+  
+  const query = gql`
+query DanhSachDonHangDaXacNhanTheoNhanVien($idNhanVien: String) {
+  DanhSachDonHangDaXacNhanTheoNhanVien(idNhanVien: $idNhanVien) {
+   danhSachDichVu {
+        gia
+        khoiLuongCongViec
+        loaiDichVu
+        tenDichVu
+        thoiGian
+      }
+      danhSachLichThucHien {
+        id
+        lyDoDungLich
+        thoiGianBatDauLich
+        thoiGianKetThucLich
+        trangThaiLich
+      }
+      diaChi {
+        ghiChu
+        quanHuyen
+        soNhaTenDuong
+        tinhTP
+      }
+      ghiChu
+      khachHang {
+        email
+        soDienThoai
+        tenKhachHang
+      }
+      maDonHang
+      ngayBatDau
+      ngayDatHang
+      id
+      ngayKetThuc
+      soGioThucHien
+      soThangLapLai
+      tongTien
+      trangThaiDonHang
+      vatNuoi
+  }
+}  
+  `
+  const variavles = {
+    idNhanVien: idNhanVien,
+  }
+  const result = await request(API_URL, query,variavles)
+  return result;
+}
+
 
 export default {
+  apiDanhSachDonHangDaXacNhanTheoNhanVien,
   apiChiTietDonHang,
   apiNhanVienXacNhanCongViec,
   apiNhanVienTuChoiCongViec,

@@ -4,34 +4,33 @@ import GlobalAPI from '../../Utils/GlobalAPI';
 import { FIREBASE_AUTH } from '../../fireBase/config';
 import ChiTietDonHangModal from './ChiTietDonHangModal'; // Import modal component
 import { ScrollView } from 'react-native-virtualized-view'
-import { onAuthStateChanged } from 'firebase/auth';
+import {User, onAuthStateChanged } from 'firebase/auth';
 
 const DanhSachDonHang = () => {
     const [danhSachDonHang, setDanhSachDonHang] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null); // State to hold selected order
     const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
-    const auth = FIREBASE_AUTH.currentUser;
+
 
 
     useEffect(() => {
         onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (!user) {
-            setDanhSachDonHang([]);
-          }else{
-            fetchData();
-          }
-        });
-      }, [FIREBASE_AUTH]);
+            if(user){
+                fetchData(user);
+            }else{
+                setDanhSachDonHang([]);
+            }
+          });
+    }, [User,FIREBASE_AUTH]);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-
-    const fetchData = async () => {
-        const { TimNhanVienTheoEmail } = await GlobalAPI.apiNhanVienTheoEmail(auth.email);
+    const fetchData = async (user) => {
+        try{
+        const { TimNhanVienTheoEmail } = await GlobalAPI.apiNhanVienTheoEmail(user.email);
         const { DanhSachDonHangChoXacNhanTheoNhanVien } = await GlobalAPI.apiDanhSachDonHangChoNhan(TimNhanVienTheoEmail.id);
         setDanhSachDonHang(DanhSachDonHangChoXacNhanTheoNhanVien);
+        }catch(e){
+            console.error(e);
+        }
     }
 
     const handleOrderPress = (order) => {

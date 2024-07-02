@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import GlobalAPI from '../../Utils/GlobalAPI';
 import { FIREBASE_AUTH } from '../../fireBase/config';
 import ChiTietDonHangModal from '../TrangChu/ChiTietDonHangModal';
+import {User, onAuthStateChanged } from 'firebase/auth';
+import { EPOCHTODATE, EPOCHTODATETIMETOTIME } from '../../function';
+
 
 const ActivateScreen = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -12,14 +15,20 @@ const ActivateScreen = () => {
   const [selectedOrder, setSelectedOrder] = useState(null); 
   const [modalVisible, setModalVisible] = useState(false); 
 
-  const fetchData = async () => {
-    const { TimNhanVienTheoEmail } = await GlobalAPI.apiNhanVienTheoEmail(auth.email);
+  const fetchData = async (user) => {
+    const { TimNhanVienTheoEmail } = await GlobalAPI.apiNhanVienTheoEmail(user.email);
     setLichLamViec(TimNhanVienTheoEmail.lichLamViec);
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+        if(user){
+            fetchData(user);
+        }else{
+          setLichLamViec([]);
+        }
+      });
+}, [User,FIREBASE_AUTH]);
 
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
@@ -80,7 +89,7 @@ const ActivateScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
-        <Text style={styles.title}>Các ngày trong tháng {currentDate.getMonth() + 1}</Text>
+        <Text style={styles.title}>Các ngày trong tháng {currentDate.getMonth() + 1}/{currentDate.getFullYear()}</Text>
         <View style={styles.weekDaysContainer}>
           {weekDays.map((day, index) => (
             <View key={index} style={styles.weekDayItem}>
@@ -129,8 +138,8 @@ const ActivateScreen = () => {
               <TouchableOpacity key={index} onPress={() => xemChiTiet(item)}>
                 <View style={styles.scheduleItem}>
                   <Text style={styles.scheduleText}>Mã đơn hàng: {item.donHang?.maDonHang}</Text>
-                  <Text style={styles.scheduleText}>Thời gian bắt đầu: {new Date(item.thoiGianBatDauLich).toLocaleString()}</Text>
-                  <Text style={styles.scheduleText}>Thời gian kết thúc: {new Date(item.thoiGianKetThucLich).toLocaleString()}</Text>
+                  <Text style={styles.scheduleText}>Ngày làm việc: {EPOCHTODATE(item.thoiGianBatDauLich)}</Text>
+                  <Text style={styles.scheduleText}>Làm trong: {EPOCHTODATETIMETOTIME(item.thoiGianBatDauLich,item.thoiGianKetThucLich)}</Text>
                   <Text style={styles.scheduleText}>Trạng thái lịch: {item.trangThaiLich}</Text>
                 </View>
               </TouchableOpacity>
@@ -198,6 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
+    height: 420,
   },
   dayItem: {
     width: 50,
