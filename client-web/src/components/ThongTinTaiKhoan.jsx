@@ -62,7 +62,7 @@ const ThongTinTaiKhoan = () => {
                         <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/TraCuuDonHang'>Tra cứu đơn hàng</Link>
                     </MenuItem>
                 )}
-                {nhanVien?.phanQuyen === 'Tasker' && (
+                {nhanVien?.phanQuyen === 'NV' && (
                     <MenuItem>
                         <Link style={{ textDecoration: 'none', color: '#000000', padding: '5px' }} to='/ThongTinCongViec'>Lịch Làm Việc</Link>
                     </MenuItem>

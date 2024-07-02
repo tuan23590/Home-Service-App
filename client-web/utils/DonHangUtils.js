@@ -122,19 +122,19 @@ export const APIDanhSachDonHangDaTuChoi = async ()=> {
 }
 
 export const apiThemDonHang = async (formData) => {
-  const query = `mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $diaChi: String, $tongTien: Float, $soThangLapLai: Int) {
-    themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, diaChi: $diaChi, tongTien: $tongTien, soThangLapLai: $soThangLapLai) {
+  const query = `mutation ThemDonHang($soGioThucHien: Int, $khachHang: String, $vatNuoi: String, $ghiChu: String, $uuTienTasker: Boolean, $diaChi: String, $tongTien: Float, $dichVuTheoYeuCauCuaKhachHang: String, $giaDichVuTheoYeuCauCuaKhachHang: Float, $soThangLapLai: Int, $dichVuChinh: String, $danhSachLichThucHien: [String], $danhSachDichVu: [String]) {
+    themDonHang(soGioThucHien: $soGioThucHien, khachHang: $khachHang, vatNuoi: $vatNuoi, ghiChu: $ghiChu, uuTienTasker: $uuTienTasker, diaChi: $diaChi, tongTien: $tongTien, dichVuTheoYeuCauCuaKhachHang: $dichVuTheoYeuCauCuaKhachHang, giaDichVuTheoYeuCauCuaKhachHang: $giaDichVuTheoYeuCauCuaKhachHang, soThangLapLai: $soThangLapLai, dichVuChinh: $dichVuChinh, danhSachLichThucHien: $danhSachLichThucHien, danhSachDichVu: $danhSachDichVu) {
       maDonHang
     }
   }
   `;
- const dsdv = formData.danhSachDichVu.flatMap(dichVu => Array.from({ length: dichVu.soLanSuDung }, () => dichVu.id))
-  const {ThemDonHang} = await GraphQLrequest ({query,
+  console.log(formData.danhSachDichVu);
+  const {themDonHang} = await GraphQLrequest ({query,
     variables: {
       soGioThucHien: formData.soGioThucHien,
       danhSachLichThucHien: JSON.stringify(formData.danhSachLichThucHien),
       khachHang: JSON.stringify(formData.khachHang),
-      danhSachDichVu: dsdv,
+      danhSachDichVu: formData.danhSachDichVu.map(dichVu => dichVu.id),
       vatNuoi: formData.vatNuoi,
       ghiChu: formData.ghiChu,
       uuTienTasker: null,
@@ -142,7 +142,7 @@ export const apiThemDonHang = async (formData) => {
       tongTien: formData.tongTien,
       soThangLapLai: formData.soThangLapLai.value,
     }});
-  return ThemDonHang;
+  return themDonHang;
 };
 
 

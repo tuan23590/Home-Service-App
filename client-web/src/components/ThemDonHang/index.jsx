@@ -138,9 +138,12 @@ const ThemDonHang = () => {
         }
         try {
             const data = await apiThemDonHang(donHangData);
-            alert('Tạo đơn hàng thành công')
-            console.log(data);
-            window.location.reload();
+            if(data){
+                alert('Tạo đơn hàng thành công');
+                window.location.reload();
+            }else{
+                alert('Tạo đơn hàng thất bại');
+            }
         } catch (error) {
             alert('Tạo đơn hàng thất bại')
         }

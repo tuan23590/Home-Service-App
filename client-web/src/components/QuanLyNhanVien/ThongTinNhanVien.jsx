@@ -171,23 +171,11 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
     const handleSubmitAdd = async () => {
         if(validateForm()){
            const data = await apiThemNhanVien(formData);
-           const auth = getAuth();
-           await createUserWithEmailAndPassword(auth, formData.email,formData.email)
-           .then((userCredential) => {
-            const user = userCredential.user;
-            console.log(user);
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-          });
-        if (data) {
-            alert('Thêm nhân viên mới thành công');
-            handleClose();
-            window.location.reload();
-        } else {
-            alert('Thêm nhân viên mới thất bại');
-        }
+              if(data){
+                alert('Thêm nhân viên thành công: ');
+                handleClose();
+                window.location.reload();
+              }
         }
     };
     const handleImageUploadSuccess = (filePath) => {
@@ -225,7 +213,7 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
                                 )}
                                 <MenuItem value="NVQL">Nhân viên quản lý</MenuItem>
                                 <MenuItem value="NVCSKH">Nhân viên châm sóc khách hàng</MenuItem>
-                                <MenuItem value="Tasker">Tasker</MenuItem>
+                                <MenuItem value="NV">Nhân viên</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

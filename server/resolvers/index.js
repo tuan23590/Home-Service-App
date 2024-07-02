@@ -493,6 +493,9 @@ export const resolvers = {
             }
             const khachHang = JSON.parse(args.khachHang);
 
+
+            console.log('idDiaChi',idDiaChi)
+
             let idKhachHang;
             if (khachHang.id === undefined) {
                 const khachHangMoi = new KhachHangModel({
@@ -520,7 +523,7 @@ export const resolvers = {
             } else {
                 newMaDonHang = "DH1";
             }
-
+            console.log('newMaDonHang',newMaDonHang)
             const donHangMoi = {
                 ...args,
                 khachHang: idKhachHang,
@@ -546,6 +549,7 @@ export const resolvers = {
                 const resLichThucHien = await danhSachLichThucHienMoi.save();
                 danhSachIdLichThucHien.push(resLichThucHien._id);
             }
+            console.log('danhSachIdLichThucHien',danhSachIdLichThucHien)
 
             const ngayBatDauMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[0]);
             const ngayKetThucMoi = await LichThucHienModel.findById(danhSachIdLichThucHien[danhSachIdLichThucHien.length - 1]);
@@ -554,7 +558,7 @@ export const resolvers = {
                 DonHang.ngayKetThuc = ngayKetThucMoi ? ngayKetThucMoi.thoiGianKetThucLich : null,
                 DonHang.danhSachLichThucHien = danhSachIdLichThucHien;
             await DonHang.save();
-
+            console.log('DonHang',DonHang)
             return DonHang;
         },
         themKhachHang: async (parent, args) => {
@@ -732,7 +736,7 @@ export const resolvers = {
         themDichVu: async (parent, args) => {
             const dichVuMoi = args;
             const DichVu = new DichVuModel(dichVuMoi);
-            DichVu.trangThai = "Dừng hoạt động";
+            DichVu.trangThai = "Đang hoạt động";
             await DichVu.save();
             return DichVu;
         },

@@ -1,4 +1,4 @@
-import { Autocomplete, Grid, Table, TableBody, TableCell, Checkbox, TableHead, TableRow, TextField, Typography, Box, FormControlLabel, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TablePagination } from '@mui/material';
+import { Autocomplete, Grid, Table, TableBody, TableCell, Checkbox, TableHead, TableRow, TextField, Typography, Box, FormControlLabel, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TablePagination, Tab } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { apiDanhSachDichVuDangHoatDong } from '../../../utils/DichVuUtils';
 import { EPOCHTODATE, EPOCHTODATETIME } from '../../function/index';
@@ -21,7 +21,7 @@ const ThongTinDonHang = ({ data }) => {
     const [viTri, setViTri] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const danhSachLoaiDichVu = ['Dịch vụ cho gia đình','Dịch vụ chăm sóc và hỗ trợ', 'Dịch vụ bảo dưỡng điện máy', 'Dịch vụ dành cho doanh nghiệp', 'Dịch vụ tiện ích nâng cao']
+    const danhSachLoaiDichVu = ['Dịch vụ cho gia đình', 'Dịch vụ chăm sóc và hỗ trợ', 'Dịch vụ bảo dưỡng điện máy', 'Dịch vụ dành cho doanh nghiệp', 'Dịch vụ tiện ích nâng cao']
     dayjs.locale('vi');
     useEffect(() => {
         setDonHangData(prevData => ({
@@ -92,7 +92,7 @@ const ThongTinDonHang = ({ data }) => {
     };
     const handleSelect = (item) => {
         const existingService = selectedDichVu.find((dichVu) => dichVu.id === item.id);
-        
+
         let newSelectedDichVu;
         if (existingService) {
             newSelectedDichVu = selectedDichVu.map((dichVu) =>
@@ -101,11 +101,11 @@ const ThongTinDonHang = ({ data }) => {
         } else {
             newSelectedDichVu = [...selectedDichVu, { ...item, soLanSuDung: 1 }];
         }
-    
-        const newTotalTime = newSelectedDichVu.reduce((total, dichVu) => 
+
+        const newTotalTime = newSelectedDichVu.reduce((total, dichVu) =>
             total + (dichVu.thoiGian || 0) * (dichVu.soLanSuDung || 1), 0
         );
-    
+
         if (newTotalTime <= 4) {
             setSelectedDichVu(newSelectedDichVu);
         } else {
@@ -115,11 +115,11 @@ const ThongTinDonHang = ({ data }) => {
     useEffect(() => {
         setDonHangData(prevData => ({
             ...prevData,
-            soGioThucHien: selectedDichVu.reduce((total, dichVu) => 
+            soGioThucHien: selectedDichVu.reduce((total, dichVu) =>
                 total + (dichVu.thoiGian || 0) * (dichVu.soLanSuDung || 1), 0),
         }));
     }, [selectedDichVu]);
-    
+
 
 
     const handleButtonClick = (day) => {
@@ -209,79 +209,66 @@ const ThongTinDonHang = ({ data }) => {
                     <Typography variant="h6">Thông tin đơn hàng</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                <Autocomplete
-                required
-                getOptionLabel={(option) => option}
-                options={danhSachLoaiDichVu}
-                value={loaiDichVu}
-                onChange={handleLoaiDichVuChange}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Chọn loại dịch vụ"
-                        variant="outlined"
-                        size="small"
-                        fullWidth
+                    <Autocomplete
+                        required
+                        getOptionLabel={(option) => option}
+                        options={danhSachLoaiDichVu}
+                        value={loaiDichVu}
+                        onChange={handleLoaiDichVuChange}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Chọn loại dịch vụ"
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                            />
+                        )}
                     />
-                )}
-            />
                 </Grid>
                 <Grid item xs={12}>
                     <Typography><strong>Danh sách dịch vụ</strong></Typography>
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell>Chọn dịch vụ</TableCell>
                                 <TableCell>Tên Dịch Vụ</TableCell>
                                 <TableCell>Giá tiền</TableCell>
-                                <TableCell>Số giờ thực hiện</TableCell>
+                                <TableCell>Thời gian thực hiện</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {filteredDanhSachDichVuThem.map((dichVu) => (
-    <TableRow key={dichVu.id} sx={{
-        cursor: 'pointer',
-        '&:hover': {
-            backgroundColor: '#bec2cc',
-        },
-    }}>
-        
-        <TableCell>{dichVu.tenDichVu}</TableCell>
-        <TableCell>{dichVu.gia !== null ? dichVu.gia.toLocaleString('vi-VN') + ' VNĐ' : ''} / giờ</TableCell>
-        {/* <TableCell>{dichVu.thoiGian !== null ? '+ ' + dichVu.thoiGian + ' giờ' : ''} / lần</TableCell> */}
-        <TableCell>
-            <Box display="flex" alignItems="center">
-                <Button
-                variant="outlined"
-                size='small'
-                color='primary'
-                    disabled={!selectedDichVu.some((item) => item.id === dichVu.id)}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        const updatedSelectedDichVu = selectedDichVu.map((item) =>
-                            item.id === dichVu.id ? { ...item, soLanSuDung: item.soLanSuDung - 1 } : item
-                        ).filter((item) => item.soLanSuDung > 0);
-                        setSelectedDichVu(updatedSelectedDichVu);
-                    }}
-                >
-                    -
-                </Button>
-                <Typography variant="body1" component="span" style={{ margin: '0 8px' }}>
-                    {selectedDichVu.find((item) => item.id === dichVu.id)?.soLanSuDung || 0} giờ
-                </Typography>
-                <Button onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelect(dichVu);
-                }}
-                variant="outlined"
-                color='primary'
-                size='small'
-                >
-                    +
-                </Button>
-            </Box>
-        </TableCell>
-    </TableRow>
-))}
+                            {filteredDanhSachDichVuThem.map((dichVu) => (
+                                <TableRow key={dichVu.id} sx={{
+                                    cursor: 'pointer',
+                                    '&:hover': {
+                                        backgroundColor: '#bec2cc',
+                                    },
+                                }}>
+                                    <TableCell>
+                                        <Box display="flex" alignItems="center">
+                                            <Checkbox
+                                                color="primary"
+                                                checked={selectedDichVu.some((item) => item.id === dichVu.id)}
+                                                onChange={(e) => {
+                                                    e.stopPropagation();
+                                                    if (e.target.checked) {
+                                                        handleSelect(dichVu);
+                                                    } else {
+                                                        const updatedSelectedDichVu = selectedDichVu.map((item) =>
+                                                            item.id === dichVu.id ? { ...item, soLanSuDung: item.soLanSuDung - 1 } : item
+                                                        ).filter((item) => item.soLanSuDung > 0);
+                                                        setSelectedDichVu(updatedSelectedDichVu);
+                                                    }
+                                                }}
+                                            />
+                                        </Box>
+                                    </TableCell>
+                                    <TableCell>{dichVu.tenDichVu}</TableCell>
+                                    <TableCell>{dichVu.gia !== null ? dichVu.gia.toLocaleString('vi-VN') + ' VNĐ' : ''}</TableCell>
+                                    <TableCell>{dichVu.thoiGian} giờ</TableCell>
+                                </TableRow>
+                            ))}
 
                         </TableBody>
                     </Table>

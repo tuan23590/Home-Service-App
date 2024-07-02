@@ -34,12 +34,11 @@ const QuanLyDichVu = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        const formattedValue = new Intl.NumberFormat('vi-VN').format(value.replace(/\D/g, ''));
+        // const formattedValue = new Intl.NumberFormat('vi-VN').format(value.replace(/\D/g, ''));
         setDichVuData({
             ...dichVuData,
-            [name]: name === 'gia' ? formattedValue : value,
+            [name]: value,
         });
-        console.log(formattedValue);
     };
 
     const xuLyThemDichVu = async () => {

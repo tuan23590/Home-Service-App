@@ -10,12 +10,11 @@ import {
   Paper,
   Box,
   TablePagination,
-  Autocomplete,
-  TextField,
+  Typography,
   TableSortLabel,
-  Typography
+  Snackbar,
+  Alert
 } from '@mui/material';
-import { Snackbar, Alert } from '@mui/material';
 import { EPOCHTODATE } from '../function/index';
 
 const DanhSachDonHangChoDuyet = () => {
@@ -25,7 +24,7 @@ const DanhSachDonHangChoDuyet = () => {
   const [rowsPerPage, setRowsPerPage] = useState(15);
 
   // State để xử lý sắp xếp
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ key: 'ngayDatHang', direction: 'desc' });
 
   const handleRowClick = (item) => {
     navigate(`./${item.id}`);
@@ -39,7 +38,6 @@ const DanhSachDonHangChoDuyet = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
 
   // Hàm sắp xếp
   const requestSort = (key) => {
@@ -190,7 +188,6 @@ const DanhSachDonHangChoDuyet = () => {
                     >
                       {row.trangThaiDonHang}
                     </Typography>
-
                   </TableCell>
                 </TableRow>
               ))}

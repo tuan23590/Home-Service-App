@@ -106,6 +106,7 @@ const DiaChiLamViec = ({data}) => {
             soNhaTenDuong: value.soNhaTenDuong,
             ghiChu: value.ghiChu
         });
+        console.log(value);
     }
     return (
         <Grid container spacing={2}>
