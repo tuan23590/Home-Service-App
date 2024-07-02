@@ -5,8 +5,8 @@ import { apiDanhSachKhachHang } from '../../../utils/KhachHangUtils';
 const ThongTinKhachHang = ({data}) => {
     const {khachHangData, setKhachHangData} = data;
     const [danhSachKhachHang, setDanhSachKhachHang] = useState([]);
-    // const addNewKhachHang = khachHangData.tenKhachHang === 'Thêm khách hàng mới';
-    // console.log('addNewKhachHang', addNewKhachHang);
+    const [errors, setErrors] = useState({ email: '', soDienThoai: '' });
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -20,15 +20,40 @@ const ThongTinKhachHang = ({data}) => {
         fetchData();
     }, []);
 
+    const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
+
+    const validatePhoneNumber = (phoneNumber) => {
+        const regex = /^(0|\+84)\d{9}$/;
+        return regex.test(phoneNumber);
+    };
 
     const handleChangeKhachHang = (e) => {
+        const { name, value } = e.target;
+        let newErrors = { ...errors };
+
+        if (name === 'email' && !validateEmail(value)) {
+            newErrors.email = 'Địa chỉ email không hợp lệ';
+        } else {
+            newErrors.email = '';
+        }
+
+        if (name === 'soDienThoai' && !validatePhoneNumber(value)) {
+            newErrors.soDienThoai = 'Số điện thoại không hợp lệ';
+        } else {
+            newErrors.soDienThoai = '';
+        }
+
+        setErrors(newErrors);
         setKhachHangData({
             ...khachHangData,
-            [e.target.name]: e.target.value
+            [name]: value
         });
-        
-    }
-    const handleChangeAutocompleteKhachHang = (event,value) => {
+    };
+
+    const handleChangeAutocompleteKhachHang = (event, value) => {
         setKhachHangData({
             ...khachHangData,
             id: value.id,
@@ -37,7 +62,8 @@ const ThongTinKhachHang = ({data}) => {
             email: value.email,
             danhSachDiaChi: value.danhSachDiaChi
         });
-        if(value.tenKhachHang === 'Thêm khách hàng mới'){
+
+        if (value.tenKhachHang === 'Thêm khách hàng mới') {
             setKhachHangData({
                 ...khachHangData,
                 id: null,
@@ -47,13 +73,14 @@ const ThongTinKhachHang = ({data}) => {
                 danhSachDiaChi: []
             });
         }
-    }
+    };
+
     return (
         <Grid container spacing={2}>
-        <Grid item xs={12}>
-            <Typography variant="h6">Thông tin khách hàng</Typography>
-        </Grid>
-        <Grid item xs={12}>
+            <Grid item xs={12}>
+                <Typography variant="h6">Thông tin khách hàng</Typography>
+            </Grid>
+            <Grid item xs={12}>
                 <Autocomplete
                     required
                     getOptionLabel={(option) => {
@@ -64,7 +91,7 @@ const ThongTinKhachHang = ({data}) => {
                         }
                     }}
                     options={danhSachKhachHang}
-                    onChange={(event,value) => handleChangeAutocompleteKhachHang(event,value)}
+                    onChange={handleChangeAutocompleteKhachHang}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -77,57 +104,60 @@ const ThongTinKhachHang = ({data}) => {
                 />
             </Grid>
             <>
-             <Grid item xs={6}>
-            <TextField
-                fullWidth
-
-                required
-                disabled = {khachHangData.id ==null ? false : true}
-                value={khachHangData.tenKhachHang}
-                name="tenKhachHang"
-                variant="outlined"
-                size="small"
-                label="Tên khách hàng"
-                InputLabelProps={{
-                    shrink: true,
-                  }}
-                onChange={handleChangeKhachHang}
-            />
-        </Grid>
-        <Grid item xs={6}>
-            <TextField
-                fullWidth
-                required
-                disabled = {khachHangData.id ==null ? false : true}
-                label="Số điện thoại"
-                name="soDienThoai"
-                variant="outlined"
-                size="small"
-                value={khachHangData.soDienThoai}
-                onChange={handleChangeKhachHang}
-                InputLabelProps={{
-                    shrink: true,
-                  }}
-            />
-        </Grid>
-        <Grid item xs={6}>
-            <TextField
-                fullWidth
-                required
-                disabled = {khachHangData.id ==null ? false : true}
-                label="Email"
-                name="email"
-                variant="outlined"
-                size="small"
-                value={khachHangData.email}
-                onChange={handleChangeKhachHang}
-                InputLabelProps={{
-                    shrink: true,
-                  }}
-            />
-        </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        fullWidth
+                        required
+                        disabled={khachHangData.id == null ? false : true}
+                        value={khachHangData.tenKhachHang}
+                        name="tenKhachHang"
+                        variant="outlined"
+                        size="small"
+                        label="Tên khách hàng"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={handleChangeKhachHang}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        fullWidth
+                        required
+                        disabled={khachHangData.id == null ? false : true}
+                        label="Số điện thoại"
+                        name="soDienThoai"
+                        variant="outlined"
+                        size="small"
+                        value={khachHangData.soDienThoai}
+                        onChange={handleChangeKhachHang}
+                        error={!!errors.soDienThoai}
+                        helperText={errors.soDienThoai}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        fullWidth
+                        required
+                        disabled={khachHangData.id == null ? false : true}
+                        label="Email"
+                        name="email"
+                        variant="outlined"
+                        size="small"
+                        value={khachHangData.email}
+                        onChange={handleChangeKhachHang}
+                        error={!!errors.email}
+                        helperText={errors.email}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
             </>
-    </Grid>
+        </Grid>
     );
 };
 

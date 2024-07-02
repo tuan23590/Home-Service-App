@@ -122,6 +122,7 @@ const QuanLyNhanVien = () => {
                             <TableCell />
                             <SortableTableCell label="Tên nhân viên" sortKey="tenNhanVien" />
                             <SortableTableCell label="Email" sortKey="email" />
+                            <SortableTableCell label="Chuyên nôn" sortKey="chuyenMon" />
                             <SortableTableCell
                                 label="Trạng thái tài khoản"
                                 sortKey="trangThaiTaiKhoan"
@@ -146,6 +147,7 @@ const QuanLyNhanVien = () => {
                                     </TableCell>
                                     <TableCell onClick={() => handleClickRow(nhanVien)}>{nhanVien.tenNhanVien}</TableCell>
                                     <TableCell onClick={() => handleClickRow(nhanVien)}>{nhanVien.email}</TableCell>
+                                    <TableCell onClick={() => handleClickRow(nhanVien)}>{nhanVien.chuyenMon||'Không có chuyên môn'}</TableCell>
                                     <TableCell onClick={() => handleClickRow(nhanVien)}>{nhanVien.trangThaiTaiKhoan}</TableCell>
                                     <TableCell onClick={() => handleClickRow(nhanVien)}>{nhanVien.phanQuyen}</TableCell>
                                     {nhanVien.phanQuyen !== 'Admin' ? (

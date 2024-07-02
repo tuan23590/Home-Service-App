@@ -26,11 +26,11 @@ export default function QuanLyDonHang() {
             }}>
     <Grid item xs={2} sx={{height: '99vh'}}>
          <SideBarList listItem={[
-            {'link':'ThongKe','text':'Thống kê', 'phanQuyen': ['NVCSKH','Admin']},
-            {'link':'DanhSachDonHangChoDuyet','text':'Danh sách chờ duyệt', 'phanQuyen': ['Admin'],'tab':true},
-            {'link':'DanhSachDonHangDaDuyet','text':'Danh sách đã duyệt', 'phanQuyen': ['Admin'],'tab':true},
-            {'link':'DanhSachDonHangDaTuChoi','text':'Danh sách đã từ chối', 'phanQuyen': ['Admin'],'tab':true},
-            {'link':'ThemDonHang','text':'Thêm đơn hàng', 'phanQuyen': ['NVCSKH','Admin']},
+            {'link':'ThongKe','text':'Thống kê', 'phanQuyen': ['NVCSKH','Admin','NVQL']},
+            {'link':'DanhSachDonHangChoDuyet','text':'Danh sách chờ duyệt', 'phanQuyen': ['Admin','NVQL'],'tab':true},
+            {'link':'DanhSachDonHangDaDuyet','text':'Danh sách đã duyệt', 'phanQuyen': ['Admin','NVQL'],'tab':true},
+            {'link':'DanhSachDonHangDaTuChoi','text':'Danh sách đã từ chối', 'phanQuyen': ['Admin','NVQL'],'tab':true},
+            {'link':'ThemDonHang','text':'Thêm đơn hàng', 'phanQuyen': ['NVCSKH','Admin','NVQL']},
             {'link':'QuanLyDichVu','text':'Quản lý dịch vụ', 'phanQuyen': ['Admin']},
             {'link':'QuanLyNhanVien','text':'Quản lý nhân viên', 'phanQuyen': ['Admin']},
             {'link':'QuanLyKhachHang','text':'Quản lý khách hàng', 'phanQuyen': ['Admin']},

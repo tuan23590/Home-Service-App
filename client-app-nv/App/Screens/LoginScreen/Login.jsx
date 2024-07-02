@@ -65,12 +65,14 @@ export default function Login({ visible, onClose }) {
       return;
     }
     try {
+      console.log('email', email);
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res.user) {
         saveCredentials();
         onClose();
       }
     } catch (error) {
+      console.error("Login failed:", error);
       if (error.code === 'auth/user-not-found') {
         Alert.alert("Đăng nhập thất bại", "Tài khoản không tồn tại!");
       } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-email') {

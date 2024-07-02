@@ -20,7 +20,7 @@ const ThongTinNhanVien = ({nhanVienDaChon}) => {
             transition: 'transform 0.2s, box-shadow 0.2s', // Thêm hiệu ứng chuyển đổi khi di chuột
           }}
           alt="The house from the offer."
-          src={nhanVienDaChon && `${IMAGE_SERVER}${nhanVienDaChon.anhDaiDien}`}
+          src={nhanVienDaChon.anhDaiDien ? `${IMAGE_SERVER}/${nhanVienDaChon.anhDaiDien}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'}
         />
         <Box>
           {nhanVienDaChon && (

@@ -14,6 +14,7 @@ function epochToText(epoch) {
     const dateObject = new Date(epoch * 1000);
     const formattedDate = dateObject.toLocaleString();
 }
+
 const copyRecursiveSync = (src, dest) => {
     if (fs.existsSync(src)) {
         fs.mkdirSync(dest, { recursive: true });
@@ -496,15 +497,24 @@ export const resolvers = {
             const khachHang = JSON.parse(args.khachHang);
 
 
-            console.log('idDiaChi',idDiaChi)
+            
 
             let idKhachHang;
             if (khachHang.id === undefined) {
+                const userRecord = await getAuth().createUser({
+                    email: khachHang.email,
+                    emailVerified: false,
+                    phoneNumber: khachHang.soDienThoai.replace(/^0/, '+84'),
+                    password: khachHang.email,
+                    displayName: khachHang.tenKhachHang,
+                    disabled: false
+                  });
                 const khachHangMoi = new KhachHangModel({
                     tenKhachHang: khachHang.tenKhachHang,
                     soDienThoai: khachHang.soDienThoai,
                     email: khachHang.email,
-                    danhSachDiaChi: [idDiaChi]
+                    danhSachDiaChi: [idDiaChi],
+                    uid: userRecord.uid
                 });
                 const resKhachHang = await khachHangMoi.save();
                 idKhachHang = resKhachHang._id;
@@ -570,9 +580,7 @@ export const resolvers = {
             return khachHang;
         },
         themNhanVien: async (parent, args) => {
-            let error = null;
             try {
-                console.log(args.soDienThoai.replace(/^0/, '+84'))
                 const userRecord = await getAuth().createUser({
                   email: args.email,
                   emailVerified: false,
@@ -803,11 +811,11 @@ export const resolvers = {
         },
         xoaNhanVien: async (parent, args) => {
             try{
-                await NhanVienModel.findByIdAndDelete('6677008d0528d114ccef1e8b');
+              const nhanVien =  await NhanVienModel.findByIdAndDelete(args.idNhanVien);
+              return nhanVien;
             }catch(err){
                 console.log(err);
             }
-            return { "message": "Xóa nhân viên thành công" };
         },
         suaNhanVien: async (parent, args) => {
             const nhanVien = await NhanVienModel.findByIdAndUpdate

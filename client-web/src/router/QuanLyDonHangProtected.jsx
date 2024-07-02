@@ -16,7 +16,7 @@ const QuanLyDonHangProtected = () => {
     }
     useEffect(() => {
         if (nhanVien) {
-            if (nhanVien.phanQuyen !== 'NVCSKH' && nhanVien.phanQuyen !== 'Admin') {
+            if (nhanVien.phanQuyen !== 'NVCSKH' && nhanVien.phanQuyen !== 'Admin'&& nhanVien.phanQuyen !== 'NVQL') {
                 alert('Tài khoản của bạn không có quyền truy cập vào hệ thống');
                 navigate('/');
             } else {
