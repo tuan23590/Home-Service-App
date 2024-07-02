@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Modal,Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Heading from './../../Compunents/Heading'
 import ThoiLuong from './ThoiLuong'
@@ -14,10 +14,16 @@ import { ModalContext } from './../../Provider/ModalProvider';
 
 export default function BookingSingle({hideModal}) {
   const [modalThoiGianLamViec, setModalThoiGianLamViec] = useState(false);
-  const {tongCong,dichVuChinh,diaChi} = useContext(DonHangContext);
+  const {tongCong,dichVuChinh,diaChi,khachHang} = useContext(DonHangContext);
   const {isModal2Visible, setModal2Visible} = useContext(ModalContext);
   const press = () => {
+    if(khachHang===undefined){
+      Alert.alert('Chọn địa chỉ','Vui lòng chọn địa chỉ!');
+      
+    }
+    else
     setModalThoiGianLamViec(true);
+    
   }
   return (
       <View>

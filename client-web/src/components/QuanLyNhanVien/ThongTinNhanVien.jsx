@@ -151,19 +151,45 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
             'xaPhuong',
             'soNhaTenDuong',
         ];
-        if(new Date(formData.ngaySinh).getFullYear() > new Date().getFullYear() - 18 && valid){
+    
+        // Kiểm tra ngày sinh có lớn hơn 18 tuổi
+        if (new Date(formData.ngaySinh).getFullYear() > new Date().getFullYear() - 18 && valid) {
             valid = false;
             alert('Nhân viên phải đủ 18 tuổi trở lên');
         }
+    
+        // Kiểm tra các trường bắt buộc
         requiredFields.forEach((field) => {
             if (!formData[field] && valid) {
                 valid = false;
                 alert(`Vui lòng nhập đầy đủ thông tin`);
             }
         });
+    
+        // Kiểm tra email hợp lệ
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email) && valid) {
+            valid = false;
+            alert('Vui lòng nhập địa chỉ email hợp lệ');
+        }
+    
+        // Kiểm tra số điện thoại Việt Nam
+        const phoneRegex = /^(84|0[3|5|7|8|9])+([0-9]{8})$/;
+        if (!phoneRegex.test(formData.soDienThoai) && valid) {
+            valid = false;
+            alert('Vui lòng nhập số điện thoại Việt Nam hợp lệ');
+        }
+    
+        // Kiểm tra CCCD có 12 số
+        const cccdRegex = /^[0-9]{12}$/;
+        if (!cccdRegex.test(formData.cccd) && valid) {
+            valid = false;
+            alert('Vui lòng nhập CCCD có đúng 12 số');
+        }
+    
         return valid;
     };
-
+    
 
     const handleSubmitEdit = () => {
         
@@ -175,7 +201,10 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
                 alert('Thêm nhân viên thành công: ');
                 handleClose();
                 window.location.reload();
-              }
+              }else
+                {
+                    alert('Thêm nhân viên thất bại');
+                }
         }
     };
     const handleImageUploadSuccess = (filePath) => {

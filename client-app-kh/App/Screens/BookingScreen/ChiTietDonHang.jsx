@@ -73,6 +73,7 @@ export default function ChiTietDonHang({hideModal}) {
       <Text style={styles.boldText}>Thông tin cá nhân</Text>
         <Text>Họ và tên: {khachHang.tenKhachHang}</Text>
         <Text>Số Điện thoại: {khachHang.soDienThoai}</Text>
+        <Text>Email: {khachHang.email}</Text>
         <Text style={styles.boldText}>Chi tiết địa chỉ</Text>
         <Text>({diaChi?.ghiChu}){diaChi?.soNhaTenDuong}, {diaChi?.xaPhuong}, {diaChi?.quanHuyen}, {diaChi?.tinhTP}</Text>
       </View>

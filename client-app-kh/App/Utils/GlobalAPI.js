@@ -109,8 +109,8 @@ const themDonHang=async(lichLamViec,dichVuChinh,dichVuThem,vatNuoi,ghiChu,uuTien
     ngayKetThuc: 3492394892038,
     soGioThucHien: dichVuChinh.thoiGian,
     danhSachLichThucHien: resultIDs,
-    khachHang: "663e5bc32b0d073597bbf0d3",
-    danhSachDichVu: [...dichVuThem.map(item => item.id), dichVuChinh.id],
+    khachHang: khachHang.id,
+    danhSachDichVu: [...dichVuThem.map(item => item.id)],
     vatNuoi: vatNuoi,
     ghiChu: ghiChu,
     uuTienTasker: uuTienTasker,
@@ -242,6 +242,7 @@ const apiDanhSachDiaChi=async(id)=>{
 }
 
 const apiThemDonHang=async(donHangData)=>{ 
+  console.log('donHangData',donHangData);
   console.log('donHangData',donHangData.diaChi.id);
   const query = gql`
   mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $diaChi: String, $tongTien: Float, $soThangLapLai: Int) {
@@ -259,20 +260,18 @@ const apiThemDonHang=async(donHangData)=>{
         thoiGianKetThuc
     };
 });
-console.log('convertedData',convertedData);
 
   const variables = {
     soGioThucHien: donHangData.dichVuChinh.thoiGian,
     danhSachLichThucHien: JSON.stringify(convertedData),
     khachHang: JSON.stringify(donHangData.khachHang),
-    danhSachDichVu: Array(donHangData.dichVuChinh.thoiGian).fill(donHangData.dichVuChinh.id),
+    danhSachDichVu: [donHangData.dichVuChinh.id],
     vatNuoi: donHangData.vatNuoi,
     ghiChu: donHangData.ghiChu,
     diaChi: JSON.stringify(donHangData.diaChi),
     tongTien: donHangData.tongTien,
     soThangLapLai: 0
 };
-//   console.log('variables',variables);
   const result = await request(API_URL, query,variables)
   console.log('result',result);
   return result;

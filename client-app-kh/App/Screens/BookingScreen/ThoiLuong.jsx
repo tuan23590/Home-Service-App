@@ -13,8 +13,9 @@ export default function ThoiLuong() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await GlobalAPI.getDichVuCaLe();
-      setDataDichVuCaLe([{thoiGian: 2, khoiLuongCongViec: 'Tối đa 55m2 hoặc 2 phòng',id: data.DichVuCaLe[0].id, gia: data.DichVuCaLe[0].gia*2}, {thoiGian: 3, khoiLuongCongViec: 'Tối đa 85m2 hoặc 3 phòng',id: data.DichVuCaLe[0].id, gia: data.DichVuCaLe[0].gia*3}, {thoiGian: 4, khoiLuongCongViec: 'Tối đa 105m2 hoặc 4 phòng',id: data.DichVuCaLe[0].id, gia: data.DichVuCaLe[0].gia*4}]);
+      setDataDichVuCaLe([{thoiGian: 2, khoiLuongCongViec: 'Tối đa 55m2 hoặc 2 phòng',id: "668361d61708f5efd2183fad", gia: 240000},
+         {thoiGian: 3, khoiLuongCongViec: 'Tối đa 85m2 hoặc 3 phòng',id: "6683621d44991d0ba0880d33", gia: 350000},
+          {thoiGian: 4, khoiLuongCongViec: 'Tối đa 105m2 hoặc 4 phòng',id: "668425c907a9f646fe0badb3", gia: 450000}]);
     };
     fetchData();
   }, []);
@@ -32,10 +33,10 @@ export default function ThoiLuong() {
 
   useEffect(() => { 
     handlePress(dataDichVuCaLe[0]);
+
    }, [dataDichVuCaLe]);
 
   
-
   const handlePress = (item) => {
     setThoiLuong(item);
     setDichVuChinh(item);

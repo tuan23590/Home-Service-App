@@ -371,9 +371,10 @@ export const resolvers = {
                 });
                 const soKhachHangMoiThangTruoc = khachHangsThangTruoc.length;
         
-                const phanTramSoDonHang = soDonHangThangTruoc !== 0 ? ((soDonHangThangHienTai - soDonHangThangTruoc) / soDonHangThangTruoc) * 100 : 0;
-                const phanTramTongTien = tongTienThangTruoc !== 0 ? ((tongTienThangHienTai - tongTienThangTruoc) / tongTienThangTruoc) * 100 : 0;
-                const phanTramSoKhachHang = soKhachHangMoiThangTruoc !== 0 ? ((soKhachHangMoi - soKhachHangMoiThangTruoc) / soKhachHangMoiThangTruoc) * 100 : 0;
+                const phanTramSoDonHang = soDonHangThangTruoc !== 0 ? Math.round(((soDonHangThangHienTai - soDonHangThangTruoc) / soDonHangThangTruoc) * 100) : 0;
+                const phanTramTongTien = tongTienThangTruoc !== 0 ? Math.round(((tongTienThangHienTai - tongTienThangTruoc) / tongTienThangTruoc) * 100) : 0;
+                const phanTramSoKhachHang = soKhachHangMoiThangTruoc !== 0 ? Math.round(((soKhachHangMoi - soKhachHangMoiThangTruoc) / soKhachHangMoiThangTruoc) * 100) : 0;
+                
         
                 thongKeThangHienTai = {
                     soDonHangThangHienTai,
@@ -595,14 +596,10 @@ export const resolvers = {
                 nhanVienMoi.uid = userRecord.uid;
                 const nhanVien = new NhanVienModel(nhanVienMoi);
                 await nhanVien.save();
+                return nhanVien;
               } catch (e) {
                 console.log('Error creating new user:', e);
                 error = e;
-              }
-              if(error) {
-                return { "message": error.message };
-              }else{
-                return { "message": 'pass' };
               }
         },
         themLichThucHien: async (parent, args) => {
@@ -650,7 +647,6 @@ export const resolvers = {
                 await donHang.save();
                 return donHang;
             } catch (err) {
-                return { "message": 'err' };
             }
         },
         nhanVienTuChoiCongViec: async (parent, args) => {
@@ -807,11 +803,11 @@ export const resolvers = {
         },
         xoaNhanVien: async (parent, args) => {
             try{
-                await NhanVienModel.findByIdAndDelete(args.idNhanVien);
+                await NhanVienModel.findByIdAndDelete('6677008d0528d114ccef1e8b');
             }catch(err){
                 console.log(err);
             }
-            return { "message": "pass" };
+            return { "message": "Xóa nhân viên thành công" };
         },
         suaNhanVien: async (parent, args) => {
             const nhanVien = await NhanVienModel.findByIdAndUpdate
