@@ -331,6 +331,14 @@ const apiDanhSachDonHang=async(id)=>{
       loaiDichVu
       tenDichVu
       thoiGian
+      gia
+    }
+    khachHang {
+      id
+      tenKhachHang
+      soDienThoai
+      email
+      uid
     }
   }
 } 
@@ -341,7 +349,7 @@ const apiDanhSachDonHang=async(id)=>{
   const result = await request(API_URL, query,variavles)
   return result;
 }
-const apiDanhGiaDonHang=async(danhGiaData)=>{ 
+const apiDanhGiaDonHang=async(idDonHang,saoDanhGia,ghiChuDanhGia)=>{ 
   
   const query = gql`
   mutation DanhGiaDonHang($idDonHang: String, $saoDanhGia: Float, $ghiChuDanhGia: String) {
@@ -351,9 +359,9 @@ const apiDanhGiaDonHang=async(danhGiaData)=>{
 }
   `
   const variavles = {
-    idDonHang: danhGiaData.idDonHang,
-    saoDanhGia: parseFloat(danhGiaData.saoDanhGia),
-    ghiChuDanhGia: danhGiaData.ghiChuDanhGia
+    idDonHang: idDonHang,
+    saoDanhGia: parseFloat(saoDanhGia),
+    ghiChuDanhGia: ghiChuDanhGia
   }
   const result = await request(API_URL, query,variavles)
   return result;

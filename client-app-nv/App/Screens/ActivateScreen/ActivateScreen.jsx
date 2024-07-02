@@ -17,7 +17,9 @@ const ActivateScreen = () => {
 
   const fetchData = async (user) => {
     const { TimNhanVienTheoEmail } = await GlobalAPI.apiNhanVienTheoEmail(user.email);
-    setLichLamViec(TimNhanVienTheoEmail.lichLamViec);
+    const lichLamViecNhanVien = TimNhanVienTheoEmail.lichLamViec.filter(item => item.trangThaiLich === "Đang thực hiện");
+    setLichLamViec(lichLamViecNhanVien);
+    console.log("TimNhanVienTheoEmail.lichLamViec: ",TimNhanVienTheoEmail.lichLamViec);
   }
 
   useEffect(() => {
@@ -78,10 +80,8 @@ const ActivateScreen = () => {
   };
   
   const xemChiTiet = async (item) => {
-    console.log(item.donHang.id);
     const {DonHangTheoId} = await GlobalAPI.apiChiTietDonHang(item.donHang.id);
     setSelectedOrder(DonHangTheoId);
-    console.log(DonHangTheoId.khachHang);
     setModalVisible(true);
   };
 

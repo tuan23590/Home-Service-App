@@ -357,7 +357,7 @@ const ThongTinNhanVien = ({ open, handleClose, nhanVien, action }) => {
                             }}
                         />
                     </Grid>
-                    {formData.phanQuyen === 'Tasker' ? (
+                    {formData.phanQuyen === 'NV' ? (
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <InputLabel>Chuyên môn*</InputLabel>

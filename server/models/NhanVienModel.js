@@ -52,7 +52,10 @@ const NhanVienSchema = new mongoose.Schema({
     },
     taiLieu:{
         type: [String]
-    }
+    },
+    uid:{
+        type: String
+    },
     
 },{timestamps: true});
 

@@ -5,6 +5,7 @@ import path, {dirname} from 'path';
 import { fileURLToPath } from 'url';
 import jsonfile from 'jsonfile';
 import unzipper from 'unzipper';
+import { getAuth } from "firebase-admin/auth";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -568,21 +569,41 @@ export const resolvers = {
             return khachHang;
         },
         themNhanVien: async (parent, args) => {
-            const diaChi = JSON.parse(args.diaChi);
-            const newDiaChi = new DiaChiModel({
-                tinhTP: diaChi.tinhTP,
-                quanHuyen: diaChi.quanHuyen,
-                xaPhuong: diaChi.xaPhuong,
-                soNhaTenDuong: diaChi.soNhaTenDuong,
-                ghiChu: diaChi.ghiChuDiaChi
-            });
-            const resDiaChi = await newDiaChi.save();
-            const nhanVienMoi = args;
-            nhanVienMoi.diaChi = resDiaChi._id;
-            nhanVienMoi.trangThaiTaiKhoan = "Đang hoạt động";
-            const nhanVien = new NhanVienModel(nhanVienMoi);
-            await nhanVien.save();
-            return nhanVien;
+            let error = null;
+            try {
+                console.log(args.soDienThoai.replace(/^0/, '+84'))
+                const userRecord = await getAuth().createUser({
+                  email: args.email,
+                  emailVerified: false,
+                  phoneNumber: args.soDienThoai.replace(/^0/, '+84'),
+                  password: args.email,
+                  displayName: args.tenNhanVien,
+                  disabled: false
+                });
+                const diaChi = JSON.parse(args.diaChi);
+                const newDiaChi = new DiaChiModel({
+                    tinhTP: diaChi.tinhTP,
+                    quanHuyen: diaChi.quanHuyen,
+                    xaPhuong: diaChi.xaPhuong,
+                    soNhaTenDuong: diaChi.soNhaTenDuong,
+                    ghiChu: diaChi.ghiChuDiaChi
+                });
+                const resDiaChi = await newDiaChi.save();
+                const nhanVienMoi = args;
+                nhanVienMoi.diaChi = resDiaChi._id;
+                nhanVienMoi.trangThaiTaiKhoan = "Đang hoạt động";
+                nhanVienMoi.uid = userRecord.uid;
+                const nhanVien = new NhanVienModel(nhanVienMoi);
+                await nhanVien.save();
+              } catch (e) {
+                console.log('Error creating new user:', e);
+                error = e;
+              }
+              if(error) {
+                return { "message": error.message };
+              }else{
+                return { "message": 'pass' };
+              }
         },
         themLichThucHien: async (parent, args) => {
             const lichThucHienMoi = args;
@@ -785,8 +806,12 @@ export const resolvers = {
             return khachHang;
         },
         xoaNhanVien: async (parent, args) => {
-            const nhanVien = await NhanVienModel.findByIdAndDelete(args.idNhanVien);
-            return nhanVien;
+            try{
+                await NhanVienModel.findByIdAndDelete(args.idNhanVien);
+            }catch(err){
+                console.log(err);
+            }
+            return { "message": "pass" };
         },
         suaNhanVien: async (parent, args) => {
             const nhanVien = await NhanVienModel.findByIdAndUpdate

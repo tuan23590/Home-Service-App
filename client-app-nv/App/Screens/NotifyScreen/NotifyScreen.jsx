@@ -14,7 +14,6 @@ export default function NotifyScreen() {
   const fetchData = async (user) => {
     const { TimNhanVienTheoEmail } = await GlobalAPI.apiNhanVienTheoEmail(user.email);
     const { DanhSachDonHangDaXacNhanTheoNhanVien } = await GlobalAPI.apiDanhSachDonHangDaXacNhanTheoNhanVien(TimNhanVienTheoEmail.id);
-    setDanhSachDonHang(DanhSachDonHangDaXacNhanTheoNhanVien);
   }
 
   useEffect(() => {

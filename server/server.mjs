@@ -13,7 +13,7 @@ import 'dotenv/config'
 import {resolvers} from './resolvers/index.js'
 import {typeDefs} from './schemas/index.js'
 import './FileServer.js';
-
+import './firebaseConfig.js';
 const app = experss();
 const httpServer = http.createServer(app);
 
@@ -29,6 +29,7 @@ const server = new ApolloServer({
 });
 
 await server.start();
+
 app.use(cors(),bodyParser.json(),expressMiddleware(server));
 
 mongoose.connect(URI).then(async () =>{

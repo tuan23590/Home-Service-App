@@ -38,6 +38,7 @@ export const typeDefs = `#graphql
         anhDaiDien: String,
         chuyenMon: String,
         taiLieu: [String],
+        uid: String
     },
     type KhachHang {
         id: String,

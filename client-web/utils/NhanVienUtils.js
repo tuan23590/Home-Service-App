@@ -180,7 +180,6 @@ export const apiDanhSachNhanVienNhanDonHang = async (idDonHang) => {
     return suaNhanVien;
   };
   export const apiThemNhanVien = async (formData) => {
-    console.log(formData);
     const query = `mutation ThemNhanVien($tenNhanVien: String, $gioiTinh: String, $diaChi: String, $ngaySinh: Float, $soDienThoai: String, $email: String, $cccd: String, $ghiChu: String, $danhGia: Float, $chuyenMon: String, $anhDaiDien: String, $taiLieu: [String], $phanQuyen: String) {
   themNhanVien(tenNhanVien: $tenNhanVien, gioiTinh: $gioiTinh, diaChi: $diaChi, ngaySinh: $ngaySinh, soDienThoai: $soDienThoai, email: $email, cccd: $cccd, ghiChu: $ghiChu, danhGia: $danhGia, chuyenMon: $chuyenMon, anhDaiDien: $anhDaiDien, taiLieu: $taiLieu, phanQuyen: $phanQuyen) {
     id

@@ -4,7 +4,7 @@ import GlobalAPI from '../../Utils/GlobalAPI';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { EPOCHTODATE, EPOCHTODATETIMETOTIME } from '../../function/index';
 
-const ChiTietDonHangModal = ({ visible, closeModal, order,fetchData }) => {
+const ChiTietDonHangModal = ({ visible, closeModal, order }) => {
     const [rejectReason, setRejectReason] = useState('');
     const [showRejectReason, setShowRejectReason] = useState(false);
     const scrollViewRef = useRef();
@@ -38,7 +38,6 @@ const ChiTietDonHangModal = ({ visible, closeModal, order,fetchData }) => {
                         const {nhanVienXacNhanCongViec} = await GlobalAPI.apiNhanVienXacNhanCongViec(order.id);
                         if(nhanVienXacNhanCongViec){
                             Alert.alert('Thành công', 'Nhận đơn hàng thành công');
-                            fetchData();
                             closeModal();
                         } else {
                             Alert.alert('Thất bại', 'Nhận đơn hàng thất bại');
@@ -67,7 +66,6 @@ const ChiTietDonHangModal = ({ visible, closeModal, order,fetchData }) => {
                         const {nhanVienTuChoiCongViec} = await GlobalAPI.apiNhanVienTuChoiCongViec(order.id, rejectReason);
                         if(nhanVienTuChoiCongViec){
                             Alert.alert('Thành công', 'Từ chối đơn hàng thành công');
-                            fetchData();
                             closeModal();
                         } else {
                             Alert.alert('Thất bại', 'Từ chối đơn hàng thất bại');

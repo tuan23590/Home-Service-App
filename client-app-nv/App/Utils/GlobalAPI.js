@@ -242,7 +242,6 @@ const apiDanhSachDiaChi=async(id)=>{
 }
 
 const apiThemDonHang=async(donHangData)=>{ 
-  console.log('donHangData',donHangData.diaChi.id);
   const query = gql`
   mutation ThemDonHang($soGioThucHien: Int, $danhSachLichThucHien: [String], $khachHang: String, $danhSachDichVu: [String], $vatNuoi: String, $ghiChu: String, $diaChi: String, $tongTien: Float, $soThangLapLai: Int) {
     themDonHang(soGioThucHien: $soGioThucHien, danhSachLichThucHien: $danhSachLichThucHien, khachHang: $khachHang, danhSachDichVu: $danhSachDichVu, vatNuoi: $vatNuoi, ghiChu: $ghiChu, diaChi: $diaChi, tongTien: $tongTien, soThangLapLai: $soThangLapLai) {
@@ -259,8 +258,6 @@ const apiThemDonHang=async(donHangData)=>{
         thoiGianKetThuc
     };
 });
-console.log('convertedData',convertedData);
-
   const variables = {
     soGioThucHien: donHangData.dichVuChinh.thoiGian,
     danhSachLichThucHien: JSON.stringify(convertedData),
@@ -274,7 +271,6 @@ console.log('convertedData',convertedData);
 };
 //   console.log('variables',variables);
   const result = await request(API_URL, query,variables)
-  console.log('result',result);
   return result;
 }
 

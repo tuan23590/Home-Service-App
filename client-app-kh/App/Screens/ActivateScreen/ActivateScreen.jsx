@@ -1,212 +1,128 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Alert, FlatList, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import GlobalAPI from '../../Utils/GlobalAPI';
-import { Ionicons } from '@expo/vector-icons'; // Assuming you are using Ionicons for star icons
 import { FIREBASE_AUTH } from '../../fireBase/config';
-import { User, onAuthStateChanged } from 'firebase/auth';
-
+import { onAuthStateChanged, User } from 'firebase/auth';
+import ChiTietDonHangModal from './ChiTietDonHangModal';
 
 const ActivateScreen = () => {
-  const navigation = useNavigation();
-  const [orders, setOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [rating, setRating] = useState(0); // State for star rating (0 to 5 stars)
-  const [reviewContent, setReviewContent] = useState(''); // State for review content
   const user = FIREBASE_AUTH.currentUser;
-
-
+  const [danhSachDonHang, setDanhSachDonHang] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null); // State to hold selected order
+  const [modalVisible, setModalVisible] = useState(false);
+  const [filter, setFilter] = useState('Tất cả'); // State to hold selected filter option
 
   useEffect(() => {
-    try{
-      onAuthStateChanged(FIREBASE_AUTH, (user) => {
-        if(user?.uid){
-          fetchData();
-        }else{
-          setOrders([]);
-        }
-      });
-    }catch(e){
-      
-    }
-  }, [FIREBASE_AUTH]);
-  const fetchData = async () => {
-    try {
-      const { TimKhachHangTheoUid } = await GlobalAPI.apiKhachHangTheoUid(user?.uid);
-      const data = await GlobalAPI.apiDanhSachDonHang(TimKhachHangTheoUid.id);
-  
-      // Sort orders by ngayDatHang (order date)
-      const sortedOrders = data.DanhSachDonHangTheoKhachHang.sort((a, b) => {
-        return new Date(b.ngayDatHang) - new Date(a.ngayDatHang);
-      });
-  
-      setOrders(sortedOrders);
-    } catch (error) {
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user?.uid) {
+        fetchData(user);
+      } else {
+        setDanhSachDonHang([]);
+      }
+    });
+  }, [User,FIREBASE_AUTH]);
 
+  const fetchData = async (user) => {
+    try{
+      const { TimKhachHangTheoUid } = await GlobalAPI.apiKhachHangTheoUid(user.uid);
+    const { DanhSachDonHangTheoKhachHang } = await GlobalAPI.apiDanhSachDonHang(TimKhachHangTheoUid.id);
+    DanhSachDonHangTheoKhachHang.sort((a, b) => new Date(b.ngayDatHang) - new Date(a.ngayDatHang));
+    setDanhSachDonHang(DanhSachDonHangTheoKhachHang);
+    }catch(error){
+      console.log(error);
     }
   };
+  
   const handleOrderPress = (order) => {
     setSelectedOrder(order);
+    setModalVisible(true);
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => handleOrderPress(item)}
-      style={[
-        styles.orderItem,
-        selectedOrder && selectedOrder.id === item.id && styles.selectedOrderItem,
-      ]}
-    >
-      <Text style={styles.orderText}>Mã đơn hàng: {item.maDonHang}</Text>
-      <Text style={styles.orderText}>
-        Ngày đặt hàng: {`${new Date(item.ngayDatHang).toLocaleDateString()} ${new Date(item.ngayDatHang).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
-      </Text>
-      <Text style={styles.orderText}>Trạng thái đơn hàng: {item.trangThaiDonHang}</Text>
+  const renderDonHangItem = ({ item }) => (
+    <TouchableOpacity onPress={() => handleOrderPress(item)}>
+      <View style={[styles.item, { backgroundColor: getStatusColor(item.trangThaiDonHang) }]}>
+        <Text><Text style={styles.boldText}>Mã đơn hàng:</Text> {item.maDonHang}</Text>
+        <Text><Text style={styles.boldText}>Ngày đặt hàng:</Text> {new Date(item.ngayDatHang).toLocaleDateString()}</Text>
+        <Text><Text style={styles.boldText}>Tổng tiền:</Text> {item.tongTien} VNĐ</Text>
+        <Text><Text style={styles.boldText}>Trạng thái đơn hàng:</Text> {item.trangThaiDonHang}</Text>
+        <Text><Text style={styles.boldText}>Khách hàng:</Text> {item.khachHang?.tenKhachHang}</Text>
+        <Text><Text style={styles.boldText}>Địa chỉ:</Text> ({item.diaChi.ghiChu}) {item.diaChi.soNhaTenDuong}, {item.diaChi.quanHuyen}, {item.diaChi.tinhTP}</Text>
+        <Text><Text style={styles.boldText}>Vật nuôi:</Text> {item.vatNuoi || "Không có vật nuôi"}</Text>
+        <Text><Text style={styles.boldText}>Sao đánh giá:</Text> {item.saoDanhGia ? (`${item.saoDanhGia} sao`):("Chưa có đánh giá")}</Text>
+      </View>
     </TouchableOpacity>
   );
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Đang chờ duyệt':
+      case 'Nhân viên từ chối':
+      case 'Chờ xác nhận':
+      case 'Đang thực hiện':
+      case 'Đã từ chối':
+      case 'Đã hoàn thành':
+        return getStatusColorByStatus(status);
+      default:
+        return '#e0e0e0'; // Default color
+    }
+  };
   
-
-  const handleRating = (stars) => {
-    setRating(stars);
+  const getStatusColorByStatus = (status) => {
+    switch (status) {
+      case 'Đang chờ duyệt':
+      case 'Chờ xác nhận':
+      case 'Đang thực hiện':
+        return '#a5d6a7'; // Greenish
+      case 'Nhân viên từ chối':
+      case 'Đã từ chối':
+        return '#ef9a9a'; // Reddish
+      case 'Đã hoàn thành':
+        return '#b3e5fc'; // Bluish
+      default:
+        return '#e0e0e0'; // Default color
+    }
+  };
+  const filterOrders = (donHang) => {
+    if (filter === 'Tất cả') return true;
+    if (filter === 'Đang xử lý') return donHang.trangThaiDonHang === 'Đang chờ duyệt' || donHang.trangThaiDonHang === 'Chờ xác nhận';
+    if (filter === 'Đang thực hiện') return donHang.trangThaiDonHang === 'Đang thực hiện';
+    if (filter === 'Đã hoàn thành') return donHang.trangThaiDonHang === 'Đã hoàn thành';
+    if (filter === 'Đã từ chối') return donHang.trangThaiDonHang === 'Đã từ chối';
+    return false;
   };
 
-  const handleSubmitReview = async () => {
-
-    const danhGiaData = {
-      idDonHang: selectedOrder.id,
-      saoDanhGia: rating,
-      ghiChuDanhGia: reviewContent,
-    }
-    const data = await GlobalAPI.apiDanhGiaDonHang(danhGiaData);
-    if(data){
-      Alert.alert("Thành công", "Đánh giá đơn hàng thành công");
-      setRating(0);
-      setReviewContent('');
-      setSelectedOrder(null);
-      fetchData();
-    }else{
-      Alert.alert("Lỗi", "Đánh giá đơn hàng thất bại");
-    }
-
-  };
+  const filteredOrders = danhSachDonHang.filter(filterOrders);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Danh sách đơn hàng</Text>
-      {!orders.length ? (
-        <Text style={{
-          fontSize: 16,
-          fontWeight: 'bold',
-          textAlign: 'center',
-          top: '50%'
-        }}>Không có đơn hàng nào</Text>
-      ):(
+      <Text style={styles.title}>Danh sách đơn hàng</Text>
+      <View style={styles.filterContainer}>
+        <Text style={styles.filterLabel}>Chọn trạng thái:</Text>
+        <Picker
+          selectedValue={filter}
+          style={styles.picker}
+          onValueChange={(itemValue) => setFilter(itemValue)}
+        >
+          {['Tất cả', 'Đang xử lý', 'Đang thực hiện', 'Đã hoàn thành', 'Đã từ chối'].map((option, index) => (
+            <Picker.Item key={index} label={option} value={option} />
+          ))}
+        </Picker>
+      </View>
+      {filteredOrders.length > 0 ? (
         <FlatList
-        data={orders}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
+          data={filteredOrders}
+          renderItem={renderDonHangItem}
+          keyExtractor={(item) => item.id}
+        />
+      ) : (
+        <Text style={styles.emptyText}>Không có đơn hàng nào hiện tại.</Text>
+      )}
+      <ChiTietDonHangModal
+        visible={modalVisible}
+        closeModal={() => setModalVisible(false)}
+        order={selectedOrder}
       />
-      )}
-      {selectedOrder && (
-        <View style={styles.selectedOrder}>
-          <Text style={styles.selectedOrderText}>Chi tiết đơn hàng {selectedOrder.maDonHang}</Text>
-          <View style={styles.detailItem}>
-  <Text style={styles.detailLabel}>Ngày bắt đầu:</Text>
-  <Text style={styles.detailValue}>
-    {`${new Date(selectedOrder.ngayBatDau).toLocaleDateString()} ${new Date(selectedOrder.ngayBatDau).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
-  </Text>
-</View>
-<View style={styles.detailItem}>
-  <Text style={styles.detailLabel}>Ngày kết thúc:</Text>
-  <Text style={styles.detailValue}>
-    {`${new Date(selectedOrder.ngayKetThuc).toLocaleDateString()} ${new Date(selectedOrder.ngayKetThuc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
-  </Text>
-</View>
-
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Địa chỉ:</Text>
-            <Text style={styles.detailValue}>
-              {selectedOrder.diaChi.soNhaTenDuong}, {selectedOrder.diaChi.xaPhuong}, {selectedOrder.diaChi.quanHuyen}, {selectedOrder.diaChi.tinhTP}
-            </Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Dịch vụ:</Text>
-            <Text style={styles.detailValue}>
-              {Array.from(new Set(selectedOrder.danhSachDichVu.map(dv => dv.tenDichVu))).map((tenDichVu, index) => (
-                <Text key={index}>{tenDichVu}, </Text>
-              ))}
-            </Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Tổng tiền:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.tongTien.toLocaleString()} VNĐ</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Số giờ thực hiện:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.soGioThucHien}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Lịch thực hiện:</Text>
-            <Text style={styles.detailValue}>
-  {selectedOrder.danhSachLichThucHien.map((lich, index) => (
-    <React.Fragment key={index}>
-      <Text>
-        {`${new Date(lich.thoiGianBatDauLich).toLocaleDateString()} ${new Date(lich.thoiGianBatDauLich).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} đến `}
-        {`${new Date(lich.thoiGianKetThucLich).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}, `}
-      </Text>
-      {index !== selectedOrder.danhSachLichThucHien.length - 1 && <Text>{'\n'}</Text>}
-    </React.Fragment>
-  ))}
-</Text>
-
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Vật nuôi:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.vatNuoi}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Ghi chú:</Text>
-            <Text style={styles.detailValue}>{selectedOrder.ghiChu}</Text>
-          </View>
-          {selectedOrder.lyDoTuChoi && (
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>Lý do từ chối:</Text>
-              <Text style={styles.detailValue}>{selectedOrder.lyDoTuChoi}</Text>
-            </View>
-          )}
-          {selectedOrder.trangThaiDonHang === 'Đã hoàn thành' && !selectedOrder.saoDanhGia && (
-  <View style={styles.reviewContainer}>
-    <Text style={styles.reviewLabel}>Đánh giá đơn hàng</Text>
-    <View style={styles.ratingContainer}>
-      {[1, 2, 3, 4, 5].map((star, index) => (
-        <TouchableOpacity key={index} onPress={() => handleRating(star)}>
-          <Ionicons
-            name={star <= rating ? 'star' : 'star-outline'}
-            size={30}
-            color={star <= rating ? '#ffc107' : '#888'}
-          />
-        </TouchableOpacity>
-      ))}
-    </View>
-    <TextInput
-      style={styles.reviewInput}
-      placeholder="Nhập nội dung đánh giá"
-      value={reviewContent}
-      onChangeText={text => setReviewContent(text)}
-      multiline
-    />
-    <TouchableOpacity onPress={handleSubmitReview} style={styles.submitButton}>
-      <Text style={styles.submitButtonText}>Gửi đánh giá</Text>
-    </TouchableOpacity>
-  </View>
-)}
-
-          <TouchableOpacity onPress={() => setSelectedOrder(null)} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Đóng</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 };
@@ -214,89 +130,44 @@ const ActivateScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    marginTop: 20,
+    marginHorizontal: 10,
   },
-  header: {
-    fontSize: 20,
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  orderItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
-    padding: 10,
+  item: {
+    backgroundColor: '#e0e0e0',
+    padding: 20,
+    marginVertical: 8,
+    borderRadius: 10,
   },
-  orderText: {
+  boldText: {
+    fontWeight: 'bold',
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  filterLabel: {
+    marginRight: 10,
     fontSize: 16,
   },
-  selectedOrder: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#bcbcbc',
-    borderRadius: 5,
-  },
-  selectedOrderItem: {
-    backgroundColor: '#bcbcbc', // Example background color for selected order
-    
-  },
-  selectedOrderText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    marginBottom: 5,
-  },
-  detailLabel: {
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  detailValue: {
+  picker: {
     flex: 1,
-  },
-  closeButton: {
-    marginTop: 10,
-    backgroundColor: '#dcdcdc',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'flex-end',
-  },
-  closeButtonText: {
-    color: '#333',
-    fontWeight: 'bold',
-  },
-  reviewContainer: {
-    marginTop: 20,
-  },
-  reviewLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  reviewInput: {
+    height: 40,
     borderWidth: 1,
-    borderColor: '#cccccc',
+    borderColor: '#ccc',
     borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    minHeight: 50, // Adjust height as needed
   },
-  submitButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  emptyText: {
+    marginTop: 20,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
 
 export default ActivateScreen;
-
