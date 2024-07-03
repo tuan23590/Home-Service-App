@@ -80,11 +80,14 @@ export const resolvers = {
         DanhSachNhanVienTrongViec: async (parent, args) => {
             const data = await DonHangModel.findOne({ _id: args.idDonHang });
             const thoiGianBatDauDonHang = data.ngayBatDau;
-            const danhSachNhanVien = await NhanVienModel.find({ phanQuyen: 'Tasker' });
+            const danhSachNhanVien = await NhanVienModel.find({ phanQuyen: 'NV' });
             const nhanVienKhongTrungLich = [];
 
             for (let i = 0; i < danhSachNhanVien.length; i++) {
-                const lichLamViecCuaNhanVien = await LichThucHienModel.find({ _id: { $in: danhSachNhanVien[i].lichLamViec } });
+                const lichLamViecCuaNhanVien = await LichThucHienModel.find({
+                    _id: { $in: danhSachNhanVien[i].lichLamViec },
+                    trangThaiLich: 'Đang thực hiện'  // Thêm điều kiện trạng thái lịch
+                });
                 let coTrungLich = false;
 
                 for (let j = 0; j < lichLamViecCuaNhanVien.length; j++) {
@@ -390,7 +393,8 @@ export const resolvers = {
                     const endDateThang = new Date(currentYear, thang, 0, 23, 59, 59);
         
                     const donHangs = await DonHangModel.find({
-                        ngayDatHang: { $gte: startDateThang, $lte: endDateThang }
+                        ngayDatHang: { $gte: startDateThang, $lte: endDateThang },
+                        trangThaiDonHang: { $in: ['Đang thực hiện', 'Đã hoàn thành'] }
                     });
         
                     let doanhThuThang = 0;
@@ -697,7 +701,6 @@ export const resolvers = {
                 // Lấy thông tin đơn hàng từ cơ sở dữ liệu
                 const donHang = await DonHangModel.findById(args.idDonHang);
                 donHang.trangThaiDonHang = "Đã hủy đơn";
-
                 // Tìm kiếm thông tin nhân viên liên quan đến đơn hàng
                 const nhanVien = await NhanVienModel.find({ _id: { $in: donHang.nhanVien } });
 

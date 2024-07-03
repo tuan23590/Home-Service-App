@@ -40,6 +40,7 @@ export const apiChiTietDonHang = async ({params})=> {
       diaChi {
         ghiChu
         quanHuyen
+        xaPhuong
         soNhaTenDuong
         tinhTP
       }
@@ -222,6 +223,7 @@ export const apiDanhSachDonHangChoXacNhanTheoNhanVien = async (idNhanVien)=> {
       }
       diaChi {
         ghiChu
+        xaPhuong
         quanHuyen
         soNhaTenDuong
         tinhTP
@@ -268,6 +270,7 @@ export const apiDanhSachDonHangDaXacNhanTheoNhanVien = async (idNhanVien)=> {
       diaChi {
         ghiChu
         quanHuyen
+        xaPhuong
         soNhaTenDuong
         tinhTP
       }
@@ -342,6 +345,7 @@ export const apiTimDanhSachDonHangTheoDanhSachLichThucHien = async (idLichThucHi
         quanHuyen
         soNhaTenDuong
         tinhTP
+        xaPhuong
       }
       dichVuChinh {
         gia

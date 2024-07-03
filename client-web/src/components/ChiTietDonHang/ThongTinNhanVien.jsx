@@ -27,7 +27,7 @@ const ThongTinNhanVien = ({nhanVienDaChon}) => {
             <Grid container spacing={2}>
               <Grid item xs={6} sx={{ display: 'flex' }}>
                 <Typography sx={{ width: '20%' }}>
-                  <strong>Tên nhân viên: </strong>
+                  <strong>Tên NV: </strong>
                 </Typography>
                 <Typography sx={{ width: '80%' }}>
                   {nhanVienDaChon.tenNhanVien}
@@ -62,17 +62,17 @@ const ThongTinNhanVien = ({nhanVienDaChon}) => {
                   <strong>Đánh giá: </strong>
                 </Typography>
                 <Typography sx={{ width: '80%' }}>
-                  {nhanVienDaChon.danhGia}
+                  {nhanVienDaChon.danhGia||'Chưa có đánh giá'}
                 </Typography>
               </Grid>
-              <Grid item xs={6} sx={{ display: 'flex' }}>
+              {/* <Grid item xs={6} sx={{ display: 'flex' }}>
                 <Typography sx={{ width: '20%' }}>
                   <strong>Chuyên môn: </strong>
                 </Typography>
                 <Typography sx={{ width: '80%' }}>
                   {nhanVienDaChon.chuyenMon}
                 </Typography>
-              </Grid>
+              </Grid> */}
               <Grid item xs={6} sx={{ display: 'flex' }}>
                 <Typography sx={{ width: '20%' }}>
                   <strong>Ghi chú: </strong>

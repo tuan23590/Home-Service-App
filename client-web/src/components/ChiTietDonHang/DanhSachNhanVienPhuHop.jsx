@@ -2,6 +2,9 @@ import { Box, Grid, Pagination, Paper, Table, TableBody, TableCell, TableHead, T
 import React, { useEffect, useState } from 'react';
 import { apiDanhSachNhanVienNhanDonHang } from '../../../utils/NhanVienUtils';
 
+import { EPOCHTODATE } from '../../function/index'
+
+
 const DanhSachNhanVienPhuHop = ({data}) => {
     const {setNhanVienDaChon,nhanVienDaChon,donHang} = data;
     const [page, setPage] = useState(1);
@@ -54,9 +57,9 @@ const DanhSachNhanVienPhuHop = ({data}) => {
                         >
                           <TableCell sx={{display: 'flex', alignItems: 'center',justifyContent: 'space-around'}}><Avatar src={employee.anhDaiDien}/> {employee.tenNhanVien}</TableCell>
                           <TableCell>{employee.gioiTinh}</TableCell>
-                          <TableCell>{employee.ngaySinh}</TableCell>
-                          <TableCell>{employee.dichVu.map(dv => dv.tenDichVu).join(', ')}</TableCell>
-                          <TableCell>{employee.danhGia}</TableCell>
+                          <TableCell>{EPOCHTODATE(employee.ngaySinh)}</TableCell>
+                          <TableCell>{employee.chuyenMon}</TableCell>
+                          <TableCell>{employee.danhGia||'Chưa có đánh giá'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -103,7 +106,7 @@ const DanhSachNhanVienPhuHop = ({data}) => {
                           <strong>Ngày sinh: </strong>
                         </Typography>
                         <Typography sx={{ width: '65%' }}>
-                          {nhanVienDaChon.ngaySinh}
+                          {EPOCHTODATE(nhanVienDaChon.ngaySinh)}
                         </Typography>
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -111,7 +114,15 @@ const DanhSachNhanVienPhuHop = ({data}) => {
                           <strong>Đánh giá: </strong>
                         </Typography>
                         <Typography sx={{ width: '65%' }}>
-                          {nhanVienDaChon.danhGia}
+                          {nhanVienDaChon.danhGia||'chưa có đánh giá'}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6} sx={{ display: 'flex' }}>
+                        <Typography sx={{ width: '35%' }}>
+                          <strong>Số điện thoại: </strong>
+                        </Typography>
+                        <Typography sx={{ width: '65%' }}>
+                          {nhanVienDaChon.soDienThoai}
                         </Typography>
                       </Grid>
                       <Grid item xs={6} sx={{ display: 'flex' }}>

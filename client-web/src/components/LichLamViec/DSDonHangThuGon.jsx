@@ -17,7 +17,7 @@ export default function DSDonHangThuGon({ data }) {
                
         }
     };
-    
+    console.log(danhSachDonHang);
     
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', width: '100%' }}>

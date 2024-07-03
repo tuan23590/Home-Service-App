@@ -19,7 +19,7 @@ export default function TabNavigation() {
       headerShown: false,
       tabBarActiveTintColor: Colors.ORANGE,
     }}>
-    <Tab.Screen name="Tab-TrangChu" component={TrangChu}
+    <Tab.Screen name="NV-TrangChu" component={TrangChu}
       options={{
         tabBarLabel: ({color})=>(
           <Text style={{color:color,fontSize: 12,marginTop:-7}}>Trang chủ</Text>

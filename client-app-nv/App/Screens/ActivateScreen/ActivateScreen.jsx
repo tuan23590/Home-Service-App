@@ -210,13 +210,13 @@ const styles = StyleSheet.create({
     height: 420,
   },
   dayItem: {
-    width: 50,
+    width: 48,
     height: 50,
     borderWidth: 1,
     borderColor: '#ccc',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 5,
+    margin: 1,
   },
   nonCurrentMonthDayItem: {
     borderColor: 'transparent',

@@ -32,7 +32,6 @@ const ChiTietDonHangModal = ({ visible, closeModal, order}) => {
     };
 
     if (!visible) return null;
-
     return (
         <Modal
             animationType="slide"
@@ -58,6 +57,7 @@ const ChiTietDonHangModal = ({ visible, closeModal, order}) => {
                                     <Text><Text style={styles.boldText}>Ngày đặt hàng:</Text> {new Date(order.ngayDatHang).toLocaleDateString()}</Text>
                                     <Text><Text style={styles.boldText}>Tổng tiền:</Text> {order.tongTien?.toLocaleString()} VNĐ</Text>
                                     <Text><Text style={styles.boldText}>Trạng thái đơn hàng:</Text> {order.trangThaiDonHang}</Text>
+                                    {order.lyDoTuChoi && (<Text><Text style={styles.boldText}>Lý do từ chối:</Text> {order.lyDoTuChoi}</Text>)}
                                     <Text><Text style={styles.boldText}>Khách hàng:</Text> {order.khachHang?.tenKhachHang}</Text>
                                     <Text><Text style={styles.boldText}>Địa chỉ:</Text> ({order.diaChi?.ghiChu}) {order.diaChi?.soNhaTenDuong}, {order.diaChi?.quanHuyen}, {order.diaChi?.tinhTP}</Text>
                                     <Text><Text style={styles.boldText}>Vật nuôi:</Text> {order.vatNuoi || "Không có vật nuôi"}</Text>
@@ -104,6 +104,18 @@ const ChiTietDonHangModal = ({ visible, closeModal, order}) => {
                                     <Text><Text style={styles.boldText}>Số điện thoại:</Text> {order.khachHang?.soDienThoai}</Text>
                                     <Text><Text style={styles.boldText}>Email:</Text> {order.khachHang?.email}</Text>
                                 </View>
+
+                               {order.trangThaiDonHang !== 'Đã từ chối' && (
+                                 <View style={styles.box}>
+                                 <Text style={styles.title}>Thông tin nhân viên:</Text>
+                                 <Text><Text style={styles.boldText}>Tên nhân viên:</Text> {order.nhanVien[0]?.tenNhanVien}</Text>
+                                 <Text><Text style={styles.boldText}>Chuyên môn:</Text> {order.nhanVien[0]?.soDienThoai}</Text>
+                                 <Text><Text style={styles.boldText}>Số điện thoại:</Text> {order.nhanVien[0]?.email}</Text>
+                                 <Text><Text style={styles.boldText}>Email:</Text> {order.nhanVien[0]?.email}</Text>
+                             </View>)
+
+                               }
+
                                 {
                                     order.trangThaiDonHang === 'Đã hoàn thành' && !order.saoDanhGia && (
                                         <View style={styles.box}>

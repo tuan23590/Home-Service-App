@@ -164,7 +164,7 @@ const ThongTinDonHang = ({ donHang }) => {
                   <TableCell>Tên Dịch vụ</TableCell>
                   <TableCell>Giá tiền</TableCell>
                   <TableCell>Thời gian</TableCell>
-                  <TableCell>Số lần thực hiện</TableCell>
+                  
                   <TableCell>Loại dịch vụ</TableCell>
                 </TableRow>
               </TableHead>
@@ -181,9 +181,7 @@ const ThongTinDonHang = ({ donHang }) => {
                       <TableCell>
                         {service.thoiGian} giờ
                       </TableCell>
-                      <TableCell>
-                        {service.soLanThucHien} lần
-                      </TableCell>
+
                       <TableCell>
                         {service.loaiDichVu}
                       </TableCell>

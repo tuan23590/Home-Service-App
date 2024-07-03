@@ -85,6 +85,7 @@ export default function Login({ visible, onClose }) {
       if (res.user) {
         saveCredentials();
         const {TimKhachHangTheoUid} = await GlobalAPI.apiKhachHangTheoUid(res.user.uid);
+        console.log('TimKhachHangTheoUid: ',TimKhachHangTheoUid);
         if(!TimKhachHangTheoUid){
           Alert.alert("Đăng nhập thất bại", "Tài khoản không tồn tại!");
           FIREBASE_AUTH.signOut();

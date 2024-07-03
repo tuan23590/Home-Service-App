@@ -65,7 +65,6 @@ export default function Login({ visible, onClose }) {
       return;
     }
     try {
-      console.log('email', email);
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res.user) {
         saveCredentials();

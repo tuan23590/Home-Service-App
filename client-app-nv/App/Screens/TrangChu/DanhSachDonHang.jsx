@@ -54,12 +54,16 @@ const DanhSachDonHang = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Danh sách đơn hàng</Text>
-            <FlatList
-                data={danhSachDonHang}
-                renderItem={renderDonHangItem}
-                keyExtractor={item => item.id}
-            />
+            <Text style={styles.title}>Danh sách đơn hàng chờ xác nhận</Text>
+           {danhSachDonHang.length > 0 ? (
+             <FlatList
+             data={danhSachDonHang}
+             renderItem={renderDonHangItem}
+             keyExtractor={item => item.id}
+         />
+           ):(
+                <Text style={styles.text} >Không có đơn hàng nào</Text>
+           )}
             <ScrollView showsVerticalScrollIndicator={false}>
             <ChiTietDonHangModal
                 visible={modalVisible}
@@ -79,7 +83,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
     },
     title: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
     },
@@ -91,6 +95,11 @@ const styles = StyleSheet.create({
     },
     boldText: {
         fontWeight: 'bold',
+    },
+    text:{
+        fontSize: 16,
+        color: '#000000',
+        textAlign: 'center',
     },
 });
 
